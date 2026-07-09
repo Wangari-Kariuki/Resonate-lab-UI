@@ -1,0 +1,25 @@
+body{
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+   flex-direction: column;
+    min-height: 100vh;
+    column-gap: 20px;
+
+}
+#hero{
+    min-height:20vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 3;
+    border-color: rgb(31, 29, 29);
+
+}
+#ol{
+    min-height: 30vh;
+   display: flex;
+    flex-direction: column;
+    justify-content: center;   
+}
