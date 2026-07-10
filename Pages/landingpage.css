@@ -1,0 +1,74 @@
+body{
+    /* border: 1px solid;
+    min-height: 100vh; */
+    /* height: auto; */
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+
+}
+
+header{
+    width: 100%;
+    align-items: center;
+    padding: 20px;
+    text-align: center;
+}
+#mid-container {
+    display: flex;
+    flex: 1;
+    gap: 20px;
+    padding: 20px;
+    align-items: center;
+    justify-content: space-between;
+}
+
+#side-navigation {
+    width: fit-content;
+    /* border: 0.5px solid; */
+    flex-shrink: 0;  /* Keeps nav from shrinking */
+    order: 1;        /* Stays on left */
+ 
+}
+/* ul{
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+} */
+li{
+    padding: 10px;
+    list-style: none;
+}
+
+#buttons {
+    /* border: 0.5px solid; */
+    width: fit-content;
+    margin: 0 auto;  /* Centers the buttons */
+    order: 2;        /* Appears after nav */
+
+    
+}
+button{
+    margin: 10px;
+    padding: 20px;
+    border-width: 0.5px;
+    border-radius: 10%;
+}
+ul{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    float: left;
+}
+footer{
+  /* border: 0.5px solid; */
+    height: auto;
+    margin-top: auto;
+    padding: 20px;
+}
