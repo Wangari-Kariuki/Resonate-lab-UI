@@ -4,6 +4,8 @@ vendor/
 
 # Local configs
 config/autoload/*.local.php
+.env
+.env.local/
 
 # Binary gettext files
 *.mo
