@@ -9,28 +9,35 @@
     <link rel="stylesheet" type="text/css" href="newP.css">
 
 </head>
-<body>
+<body class="new-project-page">
     <h1> New project page</h1>
     <button id = "go-to-home"  aria-label = "Open tab for home page" >Back to home page</button>
-<div id="mid-container">
-    <nav id = "side-navigation" aria-label="side-navigation">
-        <ul>
-             <li> <a href="/settings.html">Go to Settings</a></li>
-            <li><a href="./project-history.html"> Project History</a></li>
-            <li><a href ="./help.html"> Help </a></li>
-        </ul>   
-    </nav>
- <section id="buttons">
-<audio id="audio">
-    <source src="" id="thesource" />
-</audio>
-<input type="file" id="upload" title="Upload File" />
-<audio id = "audio" >
-<source src ="" id="src"/>
-</audio>
-        <!-- <button id="upload-new" aria-label="Upoad new auio file" >Click here to upload a new file</button> -->
-        <button id = "select-from-library" aria-label = "Select file from our library">Click to select file from our library</button> 
-    </section>
-</div>
+      <nav id = "side-navigation" aria-label="side-navigation">
+            <ul>
+                <li> <a href="/settings.html">Go to Settings</a></li>
+                <li><a href="./project-history.html"> Project History</a></li>
+                <li><a href ="./help.html"> Help </a></li>
+            </ul>   
+        </nav>
+    <main id="mid-container">
+         <section id = "audio-trim" >
+            <!-- Display uploaded file  -->
+             <section class="player-container">
+                <label for ="audio-upload" class= "custom-upload-btn">Choose audio File</label>
+                <input type="file" id="audio-upload" accept = "audio/*">
+                <div id = "file-info" class="file-info">No file selected Yet</div>
+                <audio id = "audio-player" controls></audio>
+            <section id = "keyboard-navigations">
+                <p> Key board navigations to trim audio</p>
+                <p> To  preview audio file - press p</p>
+                <p> to mark starting point - press m</p>
+                <p>To mark end point - press mm</p>
+                <p> To stop Audio from playing - press s </p>
+            </section>
+        </section>
+       
+        
+    </main>
+    <script src="../Scripts/landing-newP.js"></script>
 </body>
 </html>

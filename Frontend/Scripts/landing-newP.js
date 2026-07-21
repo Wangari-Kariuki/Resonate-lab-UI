@@ -20,4 +20,27 @@ function handleFies(event){
     $("#src").attr("src", URL.createObjectURL.Url(files[0]));
     document.getElementById("audio").load();
 }
-document.getElementById("upload").addEventListener("change", handleFies,false)
+
+document.getElementById('audio-upload').addEventListener('change', function(event) {
+    const file = event.target.files[0]; // Get the uploaded file
+    const fileInfo = document.getElementById('file-info');
+    const audioPlayer = document.getElementById('audio-player');
+
+    // Check if a file was actually selected
+    if (file) {
+        // Display the selected file's name
+        fileInfo.textContent = `Playing: ${file.name}`;
+
+        // Create a local, temporary blob URL for the audio file
+        const fileURL = URL.createObjectURL(file);
+
+        // Pass the blob link to the audio elements source
+        audioPlayer.src = fileURL;
+
+        // Automatically start playback
+        audioPlayer.play();
+    } else {
+        fileInfo.textContent = "No file selected yet";
+        audioPlayer.src = "";
+    }
+});
