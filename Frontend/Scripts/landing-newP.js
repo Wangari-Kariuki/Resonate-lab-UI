@@ -1,46 +1,103 @@
+const uploadInput = document.getElementById("audio-input");
+const previewPlayer = document.getElementById("preview-player");
+const trimPlayer = document.getElementById("trim-player");
+const fileInfo = document.getElementById("file-info");
 
-const btn1 = document.getElementById("guide-page-link");
-const btn2 = document.getElementById("new-project-link");
-const btn3 = document.getElementById("upload-new");
-const btn4 = document.getElementById("select-from-library");
-const btn5 =  document.getElementById("go-to-home");
-btn1.addEventListener ("click",  () => {
-    window.location.href ="./guide.html";
-});
+let trimmingMode = false;
 
-btn2.addEventListener ("click",  () => {
-    window.location.href ="./new-project.html";
-});
+function loadAudioFile(file) {
+    if (!file) {
+        fileInfo.textContent = "No file selected yet";
 
-btn5.addEventListener ("click",  () => {
-    window.location.href ="./landing_page.html";
-});
-function handleFies(event){
-    var files = event.target.files;
-    $("#src").attr("src", URL.createObjectURL.Url(files[0]));
-    document.getElementById("audio").load();
+        previewPlayer.src = "";
+        trimPlayer.src = "";
+
+        previewPlayer.load();
+        trimPlayer.load();
+        return;
+    }
+
+    const fileURL = URL.createObjectURL(file);
+
+    previewPlayer.src = fileURL;
+    trimPlayer.src = fileURL;
+
+    previewPlayer.load();
+    trimPlayer.load();
+
+    fileInfo.innerHTML = `
+        <strong>Audio uploaded successfully.</strong><br>
+        File: ${file.name}<br>
+        Size: ${Math.round(file.size / 1024)} KB
+    `;
 }
 
-document.getElementById('audio-upload').addEventListener('change', function(event) {
-    const file = event.target.files[0]; // Get the uploaded file
-    const fileInfo = document.getElementById('file-info');
-    const audioPlayer = document.getElementById('audio-player');
+uploadInput.addEventListener("change", (event) => {
+    loadAudioFile(event.target.files[0]);
+});
 
-    // Check if a file was actually selected
-    if (file) {
-        // Display the selected file's name
-        fileInfo.textContent = `Playing: ${file.name}`;
+function toggleSection() {
+    const section = document.getElementById("audio-trimmer");
 
-        // Create a local, temporary blob URL for the audio file
-        const fileURL = URL.createObjectURL(file);
+    trimmingMode = !trimmingMode;
+    section.style.display = trimmingMode ? "block" : "none";
+}
 
-        // Pass the blob link to the audio elements source
-        audioPlayer.src = fileURL;
+document.addEventListener("keydown", (event) => {
 
-        // Automatically start playback
-        audioPlayer.play();
-    } else {
-        fileInfo.textContent = "No file selected yet";
-        audioPlayer.src = "";
+    // Decide which player is active
+    const activePlayer = trimmingMode ? trimPlayer : previewPlayer;
+
+    // Play/Pause
+    if (event.code === "Space") {
+        event.preventDefault();
+
+        if (activePlayer.readyState >= 2) {
+            if (activePlayer.paused) {
+                activePlayer.play().catch(() => {});
+            } else {
+                activePlayer.pause();
+            }
+        }
+    }
+
+    // Stop
+    if (event.key === "s" || event.key === "S") {
+        activePlayer.pause();
+        activePlayer.currentTime = 0;
+    }
+
+    // Everything below only works in trim mode
+    if (!trimmingMode) return;
+
+    const startTime = document.getElementById("Start-time");
+    const endTime = document.getElementById("End-time");
+
+    // Mark start
+    if (event.key === "t" || event.key === "T") {
+        startTime.textContent =
+            `Start time: ${trimPlayer.currentTime.toFixed(2)} seconds`;
+    }
+
+    // Mark end
+    if (event.key === "e" || event.key === "E") {
+        endTime.textContent =
+            `End time: ${trimPlayer.currentTime.toFixed(2)} seconds`;
+    }
+
+    // Skip forward 5 seconds
+    if (event.key === "ArrowUp") {
+        trimPlayer.currentTime = Math.min(
+            trimPlayer.duration,
+            trimPlayer.currentTime + 5
+        );
+    }
+
+    // Skip backward 5 seconds
+    if (event.key === "ArrowDown") {
+        trimPlayer.currentTime = Math.max(
+            0,
+            trimPlayer.currentTime - 5
+        );
     }
 });

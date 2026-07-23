@@ -10,34 +10,71 @@
 
 </head>
 <body class="new-project-page">
-    <h1> New project page</h1>
-    <button id = "go-to-home"  aria-label = "Open tab for home page" >Back to home page</button>
-      <nav id = "side-navigation" aria-label="side-navigation">
-            <ul>
-                <li> <a href="/settings.html">Go to Settings</a></li>
-                <li><a href="./project-history.html"> Project History</a></li>
-                <li><a href ="./help.html"> Help </a></li>
-            </ul>   
-        </nav>
+    <header>
+        <h1>New project page</h1>
+        <button id="go-to-home" aria-label="Open tab for home page">Back to home page</button>
+    </header>
+
+    <nav id="side-navigation" aria-label="side-navigation">
+        <ul>
+            <li><a href="/settings.html">Go to Settings</a></li>
+            <li><a href="./project-history.html">Project History</a></li>
+            <li><a href="./help.html">Help</a></li>
+        </ul>
+    </nav>
+
     <main id="mid-container">
-         <section id = "audio-trim" >
-            <!-- Display uploaded file  -->
-             <section class="player-container">
-                <label for ="audio-upload" class= "custom-upload-btn">Choose audio File</label>
-                <input type="file" id="audio-upload" accept = "audio/*">
-                <div id = "file-info" class="file-info">No file selected Yet</div>
-                <audio id = "audio-player" controls></audio>
-            <section id = "keyboard-navigations">
-                <p> Key board navigations to trim audio</p>
-                <p> To  preview audio file - press p</p>
-                <p> to mark starting point - press m</p>
-                <p>To mark end point - press mm</p>
-                <p> To stop Audio from playing - press s </p>
-            </section>
-        </section>
-       
+        <!-- Upload section -->
+        <section id="upload-section">
+            <p>To upload a new audio enter U if you wish to use existing audio press enter</p>
+
+            <!-- uploading audio -->
+            <label for="audio-upload" class="custom-upload-btn">Choose audio File</label>
+            <br>
+            <input type="file" id="audio-input" accept="audio/*">
+            <br>
+
+            <!-- TO DO: Success log -->
+            <p id="file-info"></p>
+            <br>
+            <p>Press the space bar to preview the uploaded audio.</p>
+            <audio id="preview-player" controls></audio>
+            <br>
+            <td>
+                <button>SAVE</button>
+            </td>
+            <td>
+                <button onclick="toggleSection()">Trim</button>
+            </td>
+
+            <!-- if trim option is clicked -->
+            <section id="audio-trimmer" style="display: none;">
+                <h4>Trim bar</h4>
+            <!-- navigation guide -->
+             
+             <section id = "trim-guide">
+                
+                <p id = "t">To mark starting point - press t</p>
+                <p id = "e">To mark end point - press e</p>
+                <p >use spacebar to pause or play audio</p>
+                <p id="up">use the up arrow key to move 5 seconds ahead of the audio</p>
+                <p id="down">use the down arrow key to move 5 seconds behind of the audio</p>
+             </section>
+              <audio id="trim-player" controls></audio>
+              <br>
+              <input id="in01" type="text" placeholder="Press Enter">
+              <br>
+              <td>
+                <span id="Start-time">Start time: </span>
+              </td>
+              <td>
+                <span id="End-time">End time: </span>
+              </td>
+              <br>
+    
         
     </main>
+
     <script src="../Scripts/landing-newP.js"></script>
 </body>
 </html>
