@@ -12,10 +12,10 @@
 <body class="new-project-page">
     <header>
         <h1>New project page</h1>
-        <button id="go-to-home" aria-label="Open tab for home page">Back to home page</button>
+        <button id="go-to-home" type="button" aria-label="Return to the home page">Back to home page</button>
     </header>
 
-    <nav id="side-navigation" aria-label="side-navigation">
+    <nav id="side-navigation" aria-label="Sidebar navigation">
         <ul>
             <li><a href="/settings.html">Go to Settings</a></li>
             <li><a href="./project-history.html">Project History</a></li>
@@ -24,55 +24,46 @@
     </nav>
 
     <main id="mid-container">
-        <!-- Upload section -->
-        <section id="upload-section">
-            <p>To upload a new audio enter U if you wish to use existing audio press enter</p>
+        <section id="upload-section" aria-labelledby="upload-heading">
+            <h2 id="upload-heading">Upload audio project</h2>
+            <p id="upload-help">To upload a new audio file, press U. To use existing audio, press Enter.</p>
 
-            <!-- uploading audio -->
-            <label for="audio-upload" class="custom-upload-btn">Choose audio File</label>
-            <br>
-            <input type="file" id="audio-input" accept="audio/*">
-            <br>
+            <label for="audio-input" class="custom-upload-btn">Choose audio file</label>
+            <input type="file" id="audio-input" accept="audio/*" aria-describedby="upload-help file-info">
 
-            <!-- TO DO: Success log -->
-            <p id="file-info"></p>
-            <br>
+            <p id="file-info" role="status" aria-live="polite">No file selected yet.</p>
+
             <p>Press the space bar to preview the uploaded audio.</p>
-            <audio id="preview-player" controls></audio>
-            <br>
-            <td>
-                <button>SAVE</button>
-            </td>
-            <td>
-                <button onclick="toggleSection()">Trim</button>
-            </td>
+            <audio id="preview-player" controls aria-label="Audio preview player"></audio>
 
-            <!-- if trim option is clicked -->
-            <section id="audio-trimmer" style="display: none;">
-                <h4>Trim bar</h4>
-            <!-- navigation guide -->
-             
-             <section id = "trim-guide">
-                
-                <p id = "t">To mark starting point - press t</p>
-                <p id = "e">To mark end point - press e</p>
-                <p >use spacebar to pause or play audio</p>
-                <p id="up">use the up arrow key to move 5 seconds ahead of the audio</p>
-                <p id="down">use the down arrow key to move 5 seconds behind of the audio</p>
-             </section>
-              <audio id="trim-player" controls></audio>
-              <br>
-              <input id="in01" type="text" placeholder="Press Enter">
-              <br>
-              <td>
-                <span id="Start-time">Start time: </span>
-              </td>
-              <td>
-                <span id="End-time">End time: </span>
-              </td>
-              <br>
-    
-        
+            <div class="action-row">
+                <button type="button" id="save-audio">Save</button>
+                <button type="button" id="toggle-trim" aria-controls="audio-trimmer" aria-expanded="false">Trim</button>
+            </div>
+
+            <section id="audio-trimmer" style="display: none;" aria-labelledby="trim-heading">
+                <h3 id="trim-heading">Trim audio</h3>
+
+                <section id="trim-guide" aria-labelledby="trim-guide-heading">
+                    <h4 id="trim-guide-heading">Trim controls</h4>
+                    <p id="t">To mark the starting point, press T.</p>
+                    <p id="e">To mark the end point, press E.</p>
+                    <p>Use the space bar to pause or play audio.</p>
+                    <p id="up">Use the up arrow key to move 5 seconds ahead in the audio.</p>
+                    <p id="down">Use the down arrow key to move 5 seconds behind in the audio.</p>
+                </section>
+
+                <audio id="trim-player" controls aria-label="Trim audio player"></audio>
+
+                <label for="in01">Trim marker input</label>
+                <input id="in01" type="text" placeholder="Press Enter" aria-describedby="trim-guide">
+
+                <div class="time-display">
+                    <p><span id="Start-time">Start time: </span></p>
+                    <p><span id="End-time">End time: </span></p>
+                </div>
+            </section>
+        </section>
     </main>
 
     <script src="../Scripts/landing-newP.js"></script>

@@ -2,6 +2,14 @@ const uploadInput = document.getElementById("audio-input");
 const previewPlayer = document.getElementById("preview-player");
 const trimPlayer = document.getElementById("trim-player");
 const fileInfo = document.getElementById("file-info");
+const trimToggle = document.getElementById("toggle-trim");
+const homebtn = document.getElementById("go-to-home");
+
+if (homebtn) {
+    homebtn.addEventListener("click", () => {
+        window.location.href = "./landing_page.html";
+    });
+}
 
 let trimmingMode = false;
 
@@ -41,6 +49,15 @@ function toggleSection() {
 
     trimmingMode = !trimmingMode;
     section.style.display = trimmingMode ? "block" : "none";
+
+    if (trimToggle) {
+        trimToggle.setAttribute("aria-expanded", String(trimmingMode));
+        trimToggle.textContent = trimmingMode ? "Hide trim" : "Trim";
+    }
+}
+
+if (trimToggle) {
+    trimToggle.addEventListener("click", toggleSection);
 }
 
 document.addEventListener("keydown", (event) => {
