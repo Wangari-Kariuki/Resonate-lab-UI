@@ -118,3 +118,37 @@ document.addEventListener("keydown", (event) => {
         );
     }
 });
+
+//Trimming logic 
+async function extractAudioSlice(file, startTime, endTime){
+    //convert the file object to arraybuffer
+    const arrayBuffer = await loadAudioFile.arrayBuffer();
+
+    //decode the audio binary data into an AudioBuffer
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const mainAudioBuffer =  await audioCtx.decodeAudioData(arrayBuffer);
+
+    //calculate the frames and bounderies (now that we have an audiobuffer- collection of samples 
+    //airpreasure reading sper instant  we can calculate the sample rate at the start and end time)
+
+    const sampleRate = mainAudioBuffer.sampleRate;
+    const numberOfChannels = mainAudioBuffer.numberOfChannels;
+
+    const StartFrame = Math.floor(startTime * sampleRate);
+    const EndFrame = Math.floor(endTime * sampleRate );
+    const totalFrames = EndFrame - StartFrame;
+
+    //create a new empty audiobuffer for the trimmed clip
+    const trimmedBuffer =  audioCtx.createBuffer(numberOfChannels, totalFrames, sampleRate);
+
+    for (let channel = 0; channel < numberOfChannels; channel++){
+        const originalData = mainAudioBuffer.getChannelData(channel);
+        const trimmedData = trimmedData = trimmedBuffer.getChannelData(channel);
+
+        //slice the specific frame range
+        const chunk = originalData.subarray(StartFrame, EndFrame);
+        trimmedData.set(chunk);
+    }
+    return trimmedBuffer;
+
+}
