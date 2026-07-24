@@ -1,16 +1,14 @@
 body{
-    /* border: 1px solid;
-    min-height: 100vh; */
-    /* height: auto; */
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     gap: 20px;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
-    align-content: center;
-
+    justify-content: flex-start;
+    align-items: flex-start;
+    align-content: stretch;
+    margin: 0;
+    padding: 20px;
+    box-sizing: border-box;
 }
 
 header{
@@ -23,9 +21,11 @@ header{
     display: flex;
     flex: 1;
     gap: 20px;
-    padding: 20px;
-    align-items: center;
-    justify-content: space-between;
+    padding: 0;
+    align-items: flex-start;
+    justify-content: flex-start;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 #side-navigation {
@@ -46,12 +46,9 @@ li{
 }
 
 #buttons {
-    /* border: 0.5px solid; */
     width: fit-content;
-    margin: 0 auto;  /* Centers the buttons */
-    order: 2;        /* Appears after nav */
-
-    
+    margin: 0;
+    order: 1;
 }
 button{
     margin: 10px;
