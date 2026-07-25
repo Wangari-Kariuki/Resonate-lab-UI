@@ -1,5 +1,4 @@
-
-
+import * as lamejs from "lamejs"
 //Trimming logic 
 async function extractAudioSlice(file, startTime, endTime){
 
@@ -103,22 +102,25 @@ function encodeMp3(trimmedBuffer, bitrate = 128){
 const saveButton = document.getElementById("save-trim");
 
 saveButton.addEventListener("click", async () => {
-    try{
-         const trimBuffer = await extractAudioSlice(
-        file, 
-        startTime, 
-        endTime
-    );
-    const mp3Blob = encodeMp3(trimmedBuffer);
+    try {
+        if (!selectedAudioFile) {
+            throw new Error("No audio file selected.");
+        }
+        const trimmedBuffer = await extractAudioSlice(
+            selectedAudioFile,
+            trimStart,
+            trimEnd
+        );
+        const mp3Blob = encodeMp3(trimmedBuffer);
 
-    downloadMp3(mp3Blob);
-    }catch (error){
+        downloadMp3(mp3Blob);
+    } catch (error) {
         console.error(error);
     }
 });
 
 function downloadMp3(blob){
-    const url = URL.createObjectUrl(blob);
+    const url = URL.createObjectURL(blob);
 
     const link = document.createElement("a");
     link.href = url;

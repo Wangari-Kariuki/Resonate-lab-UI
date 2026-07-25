@@ -12,6 +12,7 @@ if (homebtn) {
 }
 
 let trimmingMode = false;
+let selectedAudioFile = null;
 
 function loadAudioFile(file) {
     if (!file) {
@@ -41,7 +42,8 @@ function loadAudioFile(file) {
 }
 
 uploadInput.addEventListener("change", (event) => {
-    loadAudioFile(event.target.files[0]);
+    selectedAudioFile = event.target.files[0];
+    loadAudioFile(selectedAudioFile);
 });
 
 function toggleSection() {
@@ -87,20 +89,22 @@ document.addEventListener("keydown", (event) => {
     // Everything below only works in trim mode
     if (!trimmingMode) return;
 
+
     const startTime = document.getElementById("Start-time");
     const endTime = document.getElementById("End-time");
 
-    // Mark start
+    // Mark and store start as trimStart variable
     if (event.key === "t" || event.key === "T") {
-        startTime.textContent =
-            `Start time: ${trimPlayer.currentTime.toFixed(2)} seconds`;
+        trimStart = trimPlayer.currentTime;
+        startTime.textContent = `Start time: ${trimStart.toFixed(2)} seconds`;
     }
 
-    // Mark end
+    // Mark and store end as trimEnd variable
     if (event.key === "e" || event.key === "E") {
-        endTime.textContent =
-            `End time: ${trimPlayer.currentTime.toFixed(2)} seconds`;
+        trimEnd = trimPlayer.currentTime;
+        endTime.textContent = `End time: ${trimEnd.toFixed(2)} seconds`;
     }
+
 
     // Skip forward 5 seconds
     if (event.key === "ArrowUp") {
