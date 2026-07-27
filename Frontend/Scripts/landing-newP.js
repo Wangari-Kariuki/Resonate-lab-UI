@@ -1,3 +1,5 @@
+import { audioState, setSelectedAudioFile, setTrimRange, clearTrimSelection } from './audioState.js';
+
 const uploadInput = document.getElementById("audio-input");
 const previewPlayer = document.getElementById("preview-player");
 const trimPlayer = document.getElementById("trim-player");
@@ -12,7 +14,6 @@ if (homebtn) {
 }
 
 let trimmingMode = false;
-let selectedAudioFile = null;
 
 function loadAudioFile(file) {
     if (!file) {
@@ -42,8 +43,10 @@ function loadAudioFile(file) {
 }
 
 uploadInput.addEventListener("change", (event) => {
-    selectedAudioFile = event.target.files[0];
-    loadAudioFile(selectedAudioFile);
+    const selectedFile = event.target.files[0];
+    setSelectedAudioFile(selectedFile);
+    clearTrimSelection();
+    loadAudioFile(selectedFile);
 });
 
 function toggleSection() {
@@ -63,6 +66,8 @@ if (trimToggle) {
 }
 
 document.addEventListener("keydown", (event) => {
+    const startTime = document.getElementById("Start-time");
+    const endTime = document.getElementById("End-time");
 
     // Decide which player is active
     const activePlayer = trimmingMode ? trimPlayer : previewPlayer;
@@ -79,7 +84,6 @@ document.addEventListener("keydown", (event) => {
             }
         }
     }
-
     // Stop
     if (event.key === "s" || event.key === "S") {
         activePlayer.pause();
@@ -90,19 +94,18 @@ document.addEventListener("keydown", (event) => {
     if (!trimmingMode) return;
 
 
-    const startTime = document.getElementById("Start-time");
-    const endTime = document.getElementById("End-time");
-
     // Mark and store start as trimStart variable
     if (event.key === "t" || event.key === "T") {
-        trimStart = trimPlayer.currentTime;
-        startTime.textContent = `Start time: ${trimStart.toFixed(2)} seconds`;
+        const start = trimPlayer.currentTime;
+        setTrimRange(start, audioState.trimEnd);
+        startTime.textContent = `Start time: ${start.toFixed(2)} seconds`;
     }
 
     // Mark and store end as trimEnd variable
     if (event.key === "e" || event.key === "E") {
-        trimEnd = trimPlayer.currentTime;
-        endTime.textContent = `End time: ${trimEnd.toFixed(2)} seconds`;
+        const end = trimPlayer.currentTime;
+        setTrimRange(audioState.trimStart, end);
+        endTime.textContent = `End time: ${end.toFixed(2)} seconds`;
     }
 
 

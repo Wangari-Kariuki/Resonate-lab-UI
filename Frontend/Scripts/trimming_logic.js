@@ -1,4 +1,6 @@
-import * as lamejs from "lamejs"
+import lamejs from "@breezystack/lamejs";
+import { audioState } from './audioState.js';
+
 //Trimming logic 
 async function extractAudioSlice(file, startTime, endTime){
 
@@ -103,13 +105,16 @@ const saveButton = document.getElementById("save-trim");
 
 saveButton.addEventListener("click", async () => {
     try {
-        if (!selectedAudioFile) {
+        if (!audioState.selectedAudioFile) {
             throw new Error("No audio file selected.");
         }
+        if (audioState.trimStart === null || audioState.trimEnd === null) {
+            throw new Error("Please mark both a start and end time before saving.");
+        }
         const trimmedBuffer = await extractAudioSlice(
-            selectedAudioFile,
-            trimStart,
-            trimEnd
+            audioState.selectedAudioFile,
+            audioState.trimStart,
+            audioState.trimEnd
         );
         const mp3Blob = encodeMp3(trimmedBuffer);
 

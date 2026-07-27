@@ -1,5 +1,20 @@
 {
   "dependencies": {
+    "@breezystack/lamejs": "^1.2.7",
     "lamejs": "^1.2.1"
-  }
+  },
+  "name": "resonate-lab-ui",
+  "version": "1.0.0",
+  "description": "Accessible 3D printing web interface for blind and visually impaired users",
+  "main": "index.js",
+  "devDependencies": {
+    "vite": "^8.1.5"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "vite"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }
