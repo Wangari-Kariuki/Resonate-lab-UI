@@ -1,5 +1,4 @@
 import { audioState, setSelectedAudioFile, setTrimRange, clearTrimSelection } from './audioState.js';
-
 const uploadInput = document.getElementById("audio-input");
 const previewPlayer = document.getElementById("preview-player");
 const trimPlayer = document.getElementById("trim-player");
@@ -99,11 +98,13 @@ const ARROW_NAV_OVERRIDE_IDS = new Set([
     'trim-player'
 ]);
 
+// Decide whether the arrow key should trigger custom navigation.
+// Return true if focus is not on an interactive element or if it's on an allowed control.
 function shouldUseArrowNavigation() {
     const el = document.activeElement;
     return !focusIsOnInteractiveElement() || ARROW_NAV_OVERRIDE_IDS.has(el.id);
 }
-// ─────────────────────────────────────────────────────────────────────────────
+// ────────────────────────────────────────────────────────────────────────────
 
 function loadAudioFile(file) {
     if (!file) {
@@ -174,7 +175,7 @@ document.addEventListener("keydown", (event) => {
     const activePlayer = trimmingMode ? trimPlayer : previewPlayer;
 
     // Play/Pause
-    if (event.code === "Space") {
+    if (event.key === " ") {
         event.preventDefault();
 
         if (activePlayer.readyState >= 2) {
@@ -225,4 +226,5 @@ document.addEventListener("keydown", (event) => {
         setTrimRange(audioState.trimStart, end);
         endTime.textContent = `${end.toFixed(2)} seconds`;
     }
+
 });

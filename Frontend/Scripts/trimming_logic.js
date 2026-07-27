@@ -103,7 +103,7 @@ function encodeMp3(trimmedBuffer, bitrate = 128){
 
 const saveButton = document.getElementById("save-trim");
 
-saveButton.addEventListener("click", async () => {
+ async function saveTrimmedAudio ()  {
     try {
         if (!audioState.selectedAudioFile) {
             throw new Error("No audio file selected.");
@@ -121,6 +121,15 @@ saveButton.addEventListener("click", async () => {
         downloadMp3(mp3Blob);
     } catch (error) {
         console.error(error);
+    }
+};
+saveButton.addEventListener("click", saveTrimmedAudio);
+
+//Enter key trigger when trim input is focused
+document.addEventListener("keydown", (event) => {
+    if(event.key === "Enter"){
+        event.preventDefault();
+        saveTrimmedAudio();
     }
 });
 
