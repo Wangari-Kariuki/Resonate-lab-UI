@@ -24,7 +24,9 @@ function getNavigableSections() {
         document.querySelector('nav#side-navigation'),         // Sidebar nav
         document.getElementById('upload-heading'),             // "Upload audio project"
         document.getElementById('audio-input'),                // File picker
+        document.getElementById('file-info'),                  // File info status
         document.getElementById('preview-player'),             // Audio preview player
+        document.getElementById('action-row'),                 // Action row
         document.getElementById('save-audio'),                 // Save button
         document.getElementById('toggle-trim'),                // Trim button
     ];
@@ -33,30 +35,73 @@ function getNavigableSections() {
     if (trimmer && trimmer.style.display !== 'none') {
         sections.push(
             document.getElementById('trim-heading'),           // "Trim audio"
+            document.getElementById('trim-guide'),             // Trim controls section
+            document.getElementById('trim-guide-heading'),     // Trim controls heading
+            document.getElementById('t'),                      // "Press T" instruction
+            document.getElementById('e'),                      // "Press E" instruction
+            document.querySelector('#trim-guide p:not([id])'), // Spacebar instruction
+            document.getElementById('up'),                     // "Arrow up" instruction
+            document.getElementById('down'),                   // "Arrow down" instruction
             document.getElementById('trim-player'),            // Trim audio player
+            document.getElementById('trim-input-desc'),        // Input description
             document.getElementById('in01'),                   // Trim marker input
+            document.querySelector('.time-display'),           // Time display
+            document.getElementById('Start-time'),             // Start time value
+            document.getElementById('End-time'),               // End time value
             document.getElementById('save-trim'),              // Save trimmed audio
         );
     }
 
-    return sections;
+    return sections.filter(Boolean);
 }
 
 let currentSectionIndex = 0;
 
 function navigateSection(direction) {
+
     const sections = getNavigableSections();
-    currentSectionIndex = Math.max(0, Math.min(sections.length - 1, currentSectionIndex + direction));
-    const target = sections[currentSectionIndex];
-    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    let currentIndex = sections.indexOf(document.activeElement);
+
+    if (currentIndex === -1) {
+        currentIndex = 0;
+    }
+
+    const nextIndex = Math.max(
+        0,
+        Math.min(sections.length - 1, currentIndex + direction)
+    );
+
+    const target = sections[nextIndex];
+
     target.focus();
+
+    target.scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+    });
 }
 
 // Tags that own arrow-key behaviour — don't intercept in these cases.
 const INTERACTIVE_TAGS = new Set(['INPUT', 'TEXTAREA', 'SELECT', 'BUTTON', 'AUDIO', 'VIDEO', 'A']);
 
 function focusIsOnInteractiveElement() {
-    return INTERACTIVE_TAGS.has(document.activeElement.tagName);
+    const el = document.activeElement;
+    return INTERACTIVE_TAGS.has(el.tagName);
+}
+
+const ARROW_NAV_OVERRIDE_IDS = new Set([
+    'audio-input',
+    'preview-player',
+    'save-audio',
+    'toggle-trim',
+    'save-trim',
+    'trim-player'
+]);
+
+function shouldUseArrowNavigation() {
+    const el = document.activeElement;
+    return !focusIsOnInteractiveElement() || ARROW_NAV_OVERRIDE_IDS.has(el.id);
 }
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -92,6 +137,9 @@ uploadInput.addEventListener("change", (event) => {
     setSelectedAudioFile(selectedFile);
     clearTrimSelection();
     loadAudioFile(selectedFile);
+    // Sync navigation index to the file input stop so Down arrow
+    // moves to file-info next.
+    // currentSectionIndex = getNavigableSections().findIndex(el => el === uploadInput);
 });
 
 function toggleSection() {
@@ -110,7 +158,7 @@ function toggleSection() {
     if (trimmingMode) {
         const trimHeading = document.getElementById('trim-heading');
         trimHeading.focus();
-        currentSectionIndex = getNavigableSections().length - 1;
+        // currentSectionIndex = getNavigableSections().length - 1;
     }
 }
 
@@ -143,17 +191,17 @@ document.addEventListener("keydown", (event) => {
         activePlayer.currentTime = 0;
     }
 
-    // Arrow keys: in trim mode they scrub the audio; outside trim mode they
-    // navigate between page sections (only when no interactive element is focused).
+    // Arrow keys: on trim-player they scrub audio. Otherwise they navigate
+    // through the configured section stops when allowed.
     if (event.key === "ArrowDown" || event.key === "ArrowUp") {
-        if (trimmingMode) {
+        if (trimmingMode && document.activeElement === trimPlayer) {
             // Audio scrubbing — existing behaviour
             if (event.key === "ArrowUp") {
                 trimPlayer.currentTime = Math.min(trimPlayer.duration, trimPlayer.currentTime + 5);
             } else {
                 trimPlayer.currentTime = Math.max(0, trimPlayer.currentTime - 5);
             }
-        } else if (!focusIsOnInteractiveElement()) {
+        } else if (shouldUseArrowNavigation()) {
             // Section navigation
             event.preventDefault();
             navigateSection(event.key === "ArrowDown" ? 1 : -1);
@@ -178,4 +226,3 @@ document.addEventListener("keydown", (event) => {
         endTime.textContent = `${end.toFixed(2)} seconds`;
     }
 });
-

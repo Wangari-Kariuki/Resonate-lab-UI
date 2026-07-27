@@ -30,39 +30,39 @@
             <label for="audio-input" class="custom-upload-btn">Choose audio file</label>
             <input type="file" id="audio-input" accept="audio/*" aria-describedby="upload-help">
 
-            <p id="file-info" role="status" aria-live="polite">No file selected yet.</p>
+            <p id="file-info" role="status" aria-live="polite" tabindex="-1">No file selected yet.</p>
 
-            <p id="preview-hint">Press the space bar to preview the uploaded audio.</p>
-            <audio id="preview-player" controls aria-label="Audio preview player" aria-describedby="preview-hint"></audio>
+            <p id="preview-hint" tabindex="-1">Press the space bar to preview the uploaded audio.</p>
+            <audio tabindex="-1" id="preview-player" controls aria-label="Audio preview player" aria-describedby="preview-hint"></audio>
+            <p id="file-info"></p>
+            <section id="action-row" tabindex="-1" id="action-row">
+                <button  tabindex="-1" type="button" id="save-audio" aria-label="Save audio file">Save</button>
+                <button tabindex="-1" type="button" id="toggle-trim" aria-controls="audio-trimmer" aria-expanded="false" aria-label="Trim audio">Trim</button>
+            </section>
 
-            <div class="action-row">
-                <button type="button" id="save-audio" aria-label="Save audio file">Save</button>
-                <button type="button" id="toggle-trim" aria-controls="audio-trimmer" aria-expanded="false" aria-label="Trim audio">Trim</button>
-            </div>
-
-            <section id="audio-trimmer" style="display: none;" aria-labelledby="trim-heading">
+            <section tabindex="-1" id="audio-trimmer" style="display: none;" aria-labelledby="trim-heading">
                 <h3 id="trim-heading" tabindex="-1">Trim audio</h3>
 
-                <section id="trim-guide" aria-labelledby="trim-guide-heading">
-                    <h4 id="trim-guide-heading">Trim controls</h4>
-                    <p id="t">To mark the starting point, press T.</p>
-                    <p id="e">To mark the end point, press E.</p>
-                    <p>Use the space bar to pause or play audio.</p>
-                    <p id="up">Use the up arrow key to move 5 seconds ahead in the audio.</p>
-                    <p id="down">Use the down arrow key to move 5 seconds behind in the audio.</p>
+                <section tabindex="-1" id="trim-guide" aria-labelledby="trim-guide-heading">
+                    <h4 id="trim-guide-heading" tabindex="-1">Trim controls</h4>
+                    <p id="t" tabindex="-1">To mark the starting point, press T.</p>
+                    <p id="e" tabindex="-1">To mark the end point, press E.</p>
+                    <p tabindex="-1">Use the space bar to pause or play audio.</p>
+                    <p id="up" tabindex="-1">Use the up arrow key to move 5 seconds ahead in the audio.</p>
+                    <p id="down" tabindex="-1">Use the down arrow key to move 5 seconds behind in the audio.</p>
                 </section>
 
-                <audio id="trim-player" controls aria-label="Trim audio player"></audio>
+                <audio tabindex="-1" id="trim-player" controls aria-label="Trim audio player"></audio>
 
-                <label for="in01">Trim marker time (e.g. 0:30)</label>
-                <p id="trim-input-desc">Press T to mark the start point, press E to mark the end point. Then press Enter to confirm.</p>
-                <input id="in01" type="text" aria-describedby="trim-input-desc">
+                <label tabindex="-1" for="in01">Trim marker time (e.g. 0:30)</label>
+                <p  tabindex="-1" id="trim-input-desc">Press T to mark the start point, press E to mark the end point. Then press Enter to confirm.</p>
+                <input tabindex="-1" id="in01" type="text" aria-describedby="trim-input-desc">
 
-                <div class="time-display" aria-live="polite" aria-atomic="true">
-                    <p>Start time: <span id="Start-time">--</span></p>
-                    <p>End time: <span id="End-time">--</span></p>
+                <div id="time-display" aria-live="polite" aria-atomic="true" tabindex="-1">
+                    <p tabindex="-1">Start time: <span id="Start-time" tabindex="-1">--</span></p>
+                    <p tabindex="-1">End time: <span id="End-time" tabindex="-1">--</span></p>
                 </div>
-                <button type="button" id="save-trim" aria-label="Save trimmed audio">Save</button>
+                <button type="button" id="save-trim" aria-label="Save trimmed audio" tabindex="-1">Save</button>
             </section>
         </section>
     </main>
