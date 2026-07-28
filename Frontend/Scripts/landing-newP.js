@@ -1,10 +1,35 @@
 import { audioState, setSelectedAudioFile, setTrimRange, clearTrimSelection } from './audioState.js';
 const uploadInput = document.getElementById("audio-input");
+const uploadLabel = document.querySelector('label[for="audio-input"]');
 const previewPlayer = document.getElementById("preview-player");
 const trimPlayer = document.getElementById("trim-player");
+const previewHint = document.getElementById("preview-hint");
+const trimGuide = document.getElementById("trim-guide");
+const srAnnouncer = document.getElementById("sr-announcer");
 const fileInfo = document.getElementById("file-info");
 const trimToggle = document.getElementById("toggle-trim");
 const homebtn = document.getElementById("go-to-home");
+const audioTrimmer = document.getElementById("audio-trimmer")
+
+function announceFileStatus(message) {
+    if (!fileInfo) return;
+
+    // Reset first so assistive tech detects this as a fresh announcement.
+    fileInfo.textContent = "";
+
+    requestAnimationFrame(() => {
+        fileInfo.textContent = message;
+    });
+}
+
+function announceForScreenReader(message) {
+    if (!srAnnouncer) return;
+
+    srAnnouncer.textContent = "";
+    requestAnimationFrame(() => {
+        srAnnouncer.textContent = message;
+    });
+}
 
 if (homebtn) {
     homebtn.addEventListener("click", () => {
@@ -44,7 +69,7 @@ function getNavigableSections() {
             document.getElementById('trim-player'),            // Trim audio player
             document.getElementById('trim-input-desc'),        // Input description
             document.getElementById('in01'),                   // Trim marker input
-            document.querySelector('.time-display'),           // Time display
+            document.querySelector('time-display'),           // Time display
             document.getElementById('Start-time'),             // Start time value
             document.getElementById('End-time'),               // End time value
             document.getElementById('save-trim'),              // Save trimmed audio
@@ -108,7 +133,7 @@ function shouldUseArrowNavigation() {
 
 function loadAudioFile(file) {
     if (!file) {
-        fileInfo.textContent = "No file selected yet";
+        announceFileStatus("No file selected yet.");
 
         previewPlayer.src = "";
         trimPlayer.src = "";
@@ -126,11 +151,7 @@ function loadAudioFile(file) {
     previewPlayer.load();
     trimPlayer.load();
 
-    fileInfo.innerHTML = `
-        <strong>Audio uploaded successfully.</strong><br>
-        File: ${file.name}<br>
-        Size: ${Math.round(file.size / 1024)} KB
-    `;
+    announceFileStatus(`Audio uploaded successfully. File: ${file.name}. Size: ${Math.round(file.size / 1024)} KB.`);
 }
 
 function uploadFile(event){
@@ -153,15 +174,29 @@ if (uploadInput) {
     });
 }
 
-// uploadInput.addEventListener("change", (event) => {
-//     if (event.key === "Enter") {
-//             event.preventDefault();
-//          const selectedFile = event.target.files[0];
-//     setSelectedAudioFile(selectedFile);
-//     clearTrimSelection();
-//     loadAudioFile(selectedFile);
-//         }
-// });
+if (uploadLabel && uploadInput) {
+    uploadLabel.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            uploadInput.focus();
+            uploadInput.click();
+        }
+    });
+}
+
+if (previewPlayer && previewHint) {
+    previewPlayer.addEventListener("focus", () => {
+        announceForScreenReader(previewHint.textContent.trim());
+    });
+}
+
+if (trimPlayer && trimGuide) {
+    trimPlayer.addEventListener("focus", () => {
+        announceForScreenReader(trimGuide.textContent.trim());
+    });
+}
+
+
 function toggleSection() {
     const section = document.getElementById("audio-trimmer");
 
@@ -192,7 +227,7 @@ if (trimToggle) {
     });
 }
 
-document.addEventListener("keydown", (event) => {
+audioTrimmer.addEventListener("keydown", (event) => {
     const startTime = document.getElementById("Start-time");
     const endTime = document.getElementById("End-time");
 
