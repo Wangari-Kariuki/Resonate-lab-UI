@@ -133,16 +133,35 @@ function loadAudioFile(file) {
     `;
 }
 
-uploadInput.addEventListener("change", (event) => {
+function uploadFile(event){
     const selectedFile = event.target.files[0];
     setSelectedAudioFile(selectedFile);
     clearTrimSelection();
     loadAudioFile(selectedFile);
-    // Sync navigation index to the file input stop so Down arrow
-    // moves to file-info next.
-    // currentSectionIndex = getNavigableSections().findIndex(el => el === uploadInput);
-});
+}
 
+if (uploadInput) {
+    // Process the file after the user confirms a selection.
+    uploadInput.addEventListener("change", uploadFile);
+
+    // Keep keyboard support explicit: Enter opens the picker.
+    uploadInput.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            uploadInput.click();
+        }
+    });
+}
+
+// uploadInput.addEventListener("change", (event) => {
+//     if (event.key === "Enter") {
+//             event.preventDefault();
+//          const selectedFile = event.target.files[0];
+//     setSelectedAudioFile(selectedFile);
+//     clearTrimSelection();
+//     loadAudioFile(selectedFile);
+//         }
+// });
 function toggleSection() {
     const section = document.getElementById("audio-trimmer");
 
@@ -165,6 +184,12 @@ function toggleSection() {
 
 if (trimToggle) {
     trimToggle.addEventListener("click", toggleSection);
+    trimToggle.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            toggleSection();
+        }
+    });
 }
 
 document.addEventListener("keydown", (event) => {
@@ -178,7 +203,7 @@ document.addEventListener("keydown", (event) => {
     if (event.key === " ") {
         event.preventDefault();
 
-        if (activePlayer.readyState >= 2) {
+        if (activePlayer.audioState >= 2) {
             if (activePlayer.paused) {
                 activePlayer.play().catch(() => {});
             } else {
