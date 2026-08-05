@@ -29,7 +29,7 @@
             <h2 id="upload-heading" tabindex="-1">Upload audio project</h2>
             <p id="upload-help">To upload a new audio file, click choose file. </p>
 
-            <label for="audio-input" class="custom-upload-btn" role="button" tabindex="0" aria-describedby="upload-help">Choose audio file</label>
+            <!-- <input for="audio-input" accept="audio/*" aria-describedby="upload-help" role="button" tabindex="0" aria-describedby="upload-help"> -->
             <input type="file" id="audio-input" accept="audio/*" aria-describedby="upload-help">
 
             <p id="file-info" role="status" aria-live="assertive" aria-atomic="true" tabindex="-1">No file selected yet.</p>
@@ -57,9 +57,10 @@
                 </section>
 
                 <audio tabindex="0" id="trim-player" controls aria-label="Trim audio player" aria-describedby="trim-guide"></audio>
-
-                <label tabindex="-1" for="in01">Trim marker time (e.g. 0:30)</label>
-                <input tabindex="-1" id="in01" type="text" aria-describedby="trim-input-desc">
+<br>
+                <label tabindex="-1" for="trim-time-input">Trim marker</label>
+                <br>
+                <input tabindex="-1" id="trim-time-input" type="text" aria-describedby="trim-input-desc">
 
                 <div id="time-display" aria-live="polite" aria-atomic="true" tabindex="-1">
                     <p tabindex="-1">Start time: <span id="Start-time" tabindex="-1">--</span></p>
@@ -69,9 +70,11 @@
                  <audio tabindex="0" id="trim-preview" controls aria-label="Trim audio preview" aria-describedby="trim-guide"></audio>
                 <section id = "trim-actions">
             <button type="button" id="trim-preview-btn" aria-describedby="trim-guide" tabindex="0">Preview trim</button>      
-            <button  type="button"   tabindex="0"> New Trim</button>
-            <button type="button" id="save-trim"  tabindex="0">Save</button>
-            <button type = "button" id = "proceed-to-print"> Proceed to print -> </button>
+            <button  type="button" id = "new-trim"   tabindex="0"> New Trim</button>
+            <button type="button" id="save-trim"  tabindex="0">Save Mp3</button>
+            <button type="button" id="save-trim"  tabindex="0">Save STL</button>
+            <p id="action-help-next">Proceed to choose 3D model</p>
+            <button type = "button" id = "proceed-to-print" aria-describedby="action-help-next">Next </button>
                 </section>
 
         </section>
@@ -79,6 +82,7 @@
 
     <script type="module" src="../Scripts/landing-newP.js"></script>
     <script type="module" src = "../Scripts/trimming_logic.js"></script>
+    <script type = "module" src = "../Scripts/"></script>
 
 
 </body>

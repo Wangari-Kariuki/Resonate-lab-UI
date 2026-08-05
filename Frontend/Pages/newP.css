@@ -14,7 +14,6 @@ body.new-project-page {
 body.new-project-page header {
     width: 100%;
     display: grid;
-    grid-template-columns: 1fr min(100%, 420px) 1fr;
     align-items: center;
     gap: 12px;
 }
@@ -24,7 +23,7 @@ body.new-project-page header {
 body.new-project-page #go-to-home:hover,
 body.new-project-page #go-to-home:focus-visible {
     background: #dbeafe;
-    outline: 2px solid #1d4ed8;
+    outline: 2px solid #252525;
     outline-offset: 2px;
 }
 
@@ -35,9 +34,9 @@ body.new-project-page #side-navigation {
     align-self: center;
 }
 body.new-project-page #title{
-    display: flex;
+    /* display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: center; */
     grid-column: 2;
     width: 100%;
     text-align: center;
@@ -78,11 +77,9 @@ body.new-project-page #upload-section {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
-body.new-project-page .custom-upload-btn {
-    display: inline-block;
-    margin-top: 8px;
-    padding: 10px 14px;
-    background: #2563eb;
+body.new-project-page #audio-input {
+    
+    border-radius: 40px;
     color: #ffffff;
     border-radius: 6px;
     cursor: pointer;
@@ -105,13 +102,13 @@ body.new-project-page .action-row {
     flex-wrap: wrap;
     margin-top: 16px;
 }
-#trim-preview-btn{
+/* #trim-preview-btn{
      padding: 10px 14px;
     border: 1px solid #070808;
     border-radius: 6px;
     background: #f8fafc;
     cursor: pointer;
-}
+} */
 
 button{
   padding: 10px 14px;

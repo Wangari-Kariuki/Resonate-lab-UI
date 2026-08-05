@@ -16,4 +16,5 @@ export function setTrimRange(start, end) {
 export function clearTrimSelection() {
   audioState.trimStart = null;
   audioState.trimEnd = null;
+   // screen reader: trim starting points cleared
 }

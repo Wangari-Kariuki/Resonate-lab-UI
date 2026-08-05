@@ -1,5 +1,6 @@
 import lamejs from "@breezystack/lamejs";
-import { audioState } from './audioState.js';
+import { audioState, setSelectedAudioFile, setTrimRange, clearTrimSelection } from './audioState.js';
+
 
 //Trimming logic 
 async function extractAudioSlice(file, startTime, endTime){
@@ -176,3 +177,5 @@ const trimPreviewBtn = document.getElementById("trim-preview-btn");
 trimPreviewBtn?.addEventListener("click", () => {
   previewTrimmedAudio();
 });
+//setting new trim
+//call on the extract audio slice function

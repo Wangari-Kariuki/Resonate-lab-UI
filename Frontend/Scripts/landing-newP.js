@@ -68,7 +68,7 @@ function getNavigableSections() {
             document.getElementById('down'),                   // "Arrow down" instruction
             document.getElementById('trim-player'),            // Trim audio player
             document.getElementById('trim-input-desc'),        // Input description
-            document.getElementById('in01'),                   // Trim marker input
+            document.getElementById('trim-time-input'),                   // Trim marker input
             document.querySelector('time-display'),           // Time display
             document.getElementById('Start-time'),             // Start time value
             document.getElementById('End-time'),               // End time value
@@ -131,7 +131,7 @@ function shouldUseArrowNavigation() {
 }
 // ────────────────────────────────────────────────────────────────────────────
 
-function loadAudioFile(file) {
+async function loadAudioFile(file) {
     if (!file) {
         announceFileStatus("No file selected yet.");
 
@@ -144,14 +144,17 @@ function loadAudioFile(file) {
     }
 
     const fileURL = URL.createObjectURL(file);
-
     previewPlayer.src = fileURL;
     trimPlayer.src = fileURL;
 
-    previewPlayer.load();
-    trimPlayer.load();
+    await new Promise((resolve) => {
+        previewPlayer.addEventListener("loadedmetadata", resolve, {once: true});
+    });
+    const durationInSeconds = Math.floor(previewPlayer.duration || 0 );
+    const minutes = Math.floor(durationInSeconds /60);
+    const remainingSeconds = durationInSeconds;
 
-    announceFileStatus(`Audio uploaded successfully. File: ${file.name}. Size: ${Math.round(file.size / 1024)} KB.`);
+    announceFileStatus(`Audio uploaded successfully. File: ${file.name}. Size: ${Math.round(file.size / 1024)} KB. Length: ${minutes}: ${remainingSeconds.toString().padStart(2, "0")}`);
 }
 
 function uploadFile(event){
@@ -226,11 +229,11 @@ if (trimToggle) {
         }
     });
 }
+ const startTime = document.getElementById("Start-time");
+const endTime = document.getElementById("End-time");
 
 audioTrimmer.addEventListener("keydown", (event) => {
-    const startTime = document.getElementById("Start-time");
-    const endTime = document.getElementById("End-time");
-
+   
     // Decide which player is active
     const activePlayer = trimmingMode ? trimPlayer : previewPlayer;
 
@@ -288,3 +291,8 @@ audioTrimmer.addEventListener("keydown", (event) => {
     }
 
 });
+const newTrim = document.getElementById("new-trim");
+newTrim.addEventListener("click", (event) => {
+    startTime.textContent = null;
+    endTime.textContent = null;
+})
