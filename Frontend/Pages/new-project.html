@@ -45,10 +45,8 @@
             </section>
 
             <section tabindex="-1" id="audio-trimmer" style="display: none;" aria-labelledby="trim-heading">
-                <h3 id="trim-heading" tabindex="-1" aria-describedby="trim-guide">Trim audio</h3>
-
-                <section tabindex="-1" id="trim-guide" aria-labelledby="trim-guide-heading" >
-                    <h4 id="trim-guide-heading" tabindex="-1">Trim controls</h4>
+                <section tabindex="-1" id="trim-guide" aria-labelledby="trim-guide-heading" aria-describedby="trim-controls-desc">
+                    <h3 id="trim-heading" tabindex="-1" >Trim controls</h3>
                     <p id="t" tabindex="-1">To mark the starting point, press T.</p>
                     <p id="e" tabindex="-1">To mark the end point, press E.</p>
                     <p tabindex="-1">Use the space bar to pause or play audio.</p>
@@ -68,8 +66,14 @@
                     <p tabindex="-1">End time: <span id="End-time" tabindex="-1">--</span></p>
                 </div>
                 <!-- TO DO: PREVIEWING TRIMMED AUDIO  -->
-                <button type="button" id="save-trim" aria-describedby="trim-guide" tabindex="0">Save</button>
-            </section>
+                 <audio tabindex="0" id="trim-preview" controls aria-label="Trim audio preview" aria-describedby="trim-guide"></audio>
+                <section id = "trim-actions">
+            <button type="button" id="trim-preview-btn" aria-describedby="trim-guide" tabindex="0">Preview trim</button>      
+            <button  type="button"   tabindex="0"> New Trim</button>
+            <button type="button" id="save-trim"  tabindex="0">Save</button>
+            <button type = "button" id = "proceed-to-print"> Proceed to print -> </button>
+                </section>
+
         </section>
     </main>
 

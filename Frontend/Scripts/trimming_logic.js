@@ -133,8 +133,9 @@ document.addEventListener("keydown", (event) => {
     }
 });
 
-function downloadMp3(blob){
-    const url = URL.createObjectURL(blob);
+function downloadMp3(mp3Blob){
+    //we create a blob so that the browser can treat the mp3 as a downloadable file
+    const url = URL.createObjectURL(mp3Blob);
 
     const link = document.createElement("a");
     link.href = url;
@@ -144,3 +145,34 @@ function downloadMp3(blob){
 
     URL.revokeObjectURL(url);
 }
+async function previewTrimmedAudio() {
+  try {
+    if (!audioState.selectedAudioFile) {
+      throw new Error("No audio file selected.");
+    }
+    if (audioState.trimStart === null || audioState.trimEnd === null) {
+      throw new Error("Please mark both a start and end time before previewing.");
+    }
+
+    const trimmedBuffer = await extractAudioSlice(
+      audioState.selectedAudioFile,
+      audioState.trimStart,
+      audioState.trimEnd
+    );
+    const mp3Blob = encodeMp3(trimmedBuffer);
+
+    const trimPreview = document.getElementById("trim-preview");
+    const url = URL.createObjectURL(mp3Blob);
+
+    trimPreview.src = url;
+    trimPreview.load();
+    await trimPreview.play();
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+const trimPreviewBtn = document.getElementById("trim-preview-btn");
+trimPreviewBtn?.addEventListener("click", () => {
+  previewTrimmedAudio();
+});

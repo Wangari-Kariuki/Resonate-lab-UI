@@ -3,8 +3,8 @@ body{
     display: flex;
     flex-direction: column;
     gap: 20px;
-    justify-content: flex-start;
-    align-items: flex-start;
+    justify-content: center;
+    align-items: center;
     align-content: stretch;
     margin: 0;
     padding: 20px;
@@ -17,32 +17,67 @@ header{
     padding: 20px;
     text-align: center;
 }
-#mid-container {
+body.landing-page #mid-container {
     display: flex;
     flex: 1;
     gap: 20px;
     padding: 0;
-    align-items: flex-start;
-    justify-content: flex-start;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
     width: 100%;
     box-sizing: border-box;
+    
+  width: min(100%, 720px);
+    background: #ffffff;
+    border: 1px solid #d1d5db;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 #side-navigation {
     width: fit-content;
-    /* border: 0.5px solid; */
-    flex-shrink: 0;  /* Keeps nav from shrinking */
-    order: 1;        /* Stays on left */
- 
-}
-/* ul{
+    flex-shrink: 0;
+    order: 0;
+    margin-right: 0;
     display: flex;
     align-items: flex-start;
     justify-content: flex-start;
-} */
-li{
-    padding: 10px;
+}
+
+#side-navigation ul {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
     list-style: none;
+}
+
+#side-navigation li {
+    margin: 0;
+    padding: 0;
+}
+
+#side-navigation a {
+    display: block;
+    padding: 10px 14px;
+    border: 1px solid #bfdbfe;
+    border-radius: 8px;
+    background: #eff6ff;
+    color: #1d4ed8;
+    text-decoration: none;
+    font-weight: 400;
+}
+
+#side-navigation a:hover,
+#side-navigation a:focus-visible {
+    background: #dbeafe;
+    outline: 2px solid #1d4ed8;
+    outline-offset: 2px;
 }
 
 #buttons {
@@ -50,13 +85,15 @@ li{
     margin: 0;
     order: 1;
 }
-button{
+#links-to-projects{
+    display: flex;
+    flex-direction: column;
     margin: 10px;
     padding: 20px;
     border-width: 0.5px;
     border-radius: 10%;
 }
-ul{
+body.landing-page ul{
     display: flex;
     flex-direction: column;
     justify-content: flex-start;

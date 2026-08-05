@@ -30,3 +30,9 @@ client.connect()
     .finally(() => {
         client.end();
     });
+
+
+// retrieving trimmed audio and loading it print options page 
+//set the trimmed audio to download in the  local chrome storage
+//fetch from local chrome storage to 
+//
