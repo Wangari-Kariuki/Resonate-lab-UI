@@ -3,69 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>New Project | Resonate Lab</title>
     <link rel="stylesheet" type="text/css" href="landingpage.css"/>
-    <script defer src="../Scripts/landing-newP.js"></script>
     <link rel="stylesheet" type="text/css" href="newP.css">
 
 </head>
 <body class="new-project-page">
     <header>
-        <h1>New project page</h1>
-        <button id="go-to-home" type="button" aria-label="Return to the home page">Back to home page</button>
-    </header>
-
-    <nav id="side-navigation" aria-label="Sidebar navigation">
+         <nav id="side-navigation" aria-label="Sidebar navigation" tabindex="-1">
         <ul>
+            <li><button id = "skip-to-main">Skip to Main Content</button></li>
+            <li><a href="./landing_page.html">Go to Home page</a></li>
             <li><a href="/settings.html">Go to Settings</a></li>
             <li><a href="./project-history.html">Project History</a></li>
             <li><a href="./help.html">Help</a></li>
         </ul>
     </nav>
 
+    <section id = "title">
+        <h1 tabindex="-1">New project page</h1>
+    </section>
+
+    </header>
     <main id="mid-container">
         <section id="upload-section" aria-labelledby="upload-heading">
-            <h2 id="upload-heading">Upload audio project</h2>
-            <p id="upload-help">To upload a new audio file, press U. To use existing audio, press Enter.</p>
+            <h2 id="upload-heading" tabindex="-1">Upload audio project</h2>
+            <p id="upload-help">To upload a new audio file, click choose file. </p>
 
-            <label for="audio-input" class="custom-upload-btn">Choose audio file</label>
-            <input type="file" id="audio-input" accept="audio/*" aria-describedby="upload-help file-info">
+            <!-- <input for="audio-input" accept="audio/*" aria-describedby="upload-help" role="button" tabindex="0" aria-describedby="upload-help"> -->
+            <label for="audio-input">Choose an audio file to upload</label>
+            <input type="file" id="audio-input" accept="audio/*" aria-describedby="upload-help">
+            <p id="file-info" role="status" aria-live="assertive" aria-atomic="true" tabindex="-1">No file selected yet.</p>
 
-            <p id="file-info" role="status" aria-live="polite">No file selected yet.</p>
+            <p id="preview-hint">Press the space bar to preview the uploaded audio.</p>
+            <p id="sr-announcer" role="status" aria-live="polite" aria-atomic="true" style="position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden;"> </p>
+            <audio tabindex="0" id="preview-player" controls aria-label="Audio preview player" aria-describedby="preview-hint"></audio>
+            <p id="action-help-save">Save stores the current audio.</p>
+            <p id="action-help-trim" > Trim opens controls to select start and end points before saving.</p>
+            <section id="action-row" tabindex="-1">
+                <button tabindex="0" type="button" id="save-audio" aria-describedby="action-help-save">Save</button>
+                <button tabindex="0" type="button" id="toggle-trim" aria-controls="audio-trimmer" aria-expanded="false" aria-describedby="action-help-trim" >Trim</button>
+            </section>
 
-            <p>Press the space bar to preview the uploaded audio.</p>
-            <audio id="preview-player" controls aria-label="Audio preview player"></audio>
+            <section tabindex="-1" id="audio-trimmer" style="display: none;" aria-labelledby="trim-heading">
+                <section tabindex="-1" id="trim-guide" aria-labelledby="trim-guide-heading" aria-describedby="trim-controls-desc">
+                    <h3 id="trim-heading" tabindex="-1" >Trim controls</h3>
+                    <p id="t" tabindex="-1">To mark the starting point, press T.</p>
+                    <p id="e" tabindex="-1">To mark the end point, press E.</p>
+                    <p tabindex="-1">Use the space bar to pause or play audio.</p>
+                    <p id="up" tabindex="-1">Use the up arrow key to move 5 seconds ahead in the audio.</p>
+                    <p id="down" tabindex="-1">Use the down arrow key to move 5 seconds behind in the audio.</p>
 
-            <div class="action-row">
-                <button type="button" id="save-audio">Save</button>
-                <button type="button" id="toggle-trim" aria-controls="audio-trimmer" aria-expanded="false">Trim</button>
-            </div>
-
-            <section id="audio-trimmer" style="display: none;" aria-labelledby="trim-heading">
-                <h3 id="trim-heading">Trim audio</h3>
-
-                <section id="trim-guide" aria-labelledby="trim-guide-heading">
-                    <h4 id="trim-guide-heading">Trim controls</h4>
-                    <p id="t">To mark the starting point, press T.</p>
-                    <p id="e">To mark the end point, press E.</p>
-                    <p>Use the space bar to pause or play audio.</p>
-                    <p id="up">Use the up arrow key to move 5 seconds ahead in the audio.</p>
-                    <p id="down">Use the down arrow key to move 5 seconds behind in the audio.</p>
+                    <p>After entering the start and end of your trimmed audio, click enter to save. </p>
                 </section>
 
-                <audio id="trim-player" controls aria-label="Trim audio player"></audio>
+                <audio tabindex="0" id="trim-player" controls aria-label="Trim audio player" aria-describedby="trim-guide"></audio>
+                <br>
+                <label tabindex="-1" for="trim-time-input">Trim marker</label>
+                <br>
+                <input tabindex="-1" id="trim-time-input" type="text">
 
-                <label for="in01">Trim marker input</label>
-                <input id="in01" type="text" placeholder="Press Enter" aria-describedby="trim-guide">
-
-                <div class="time-display">
-                    <p><span id="Start-time">Start time: </span></p>
-                    <p><span id="End-time">End time: </span></p>
+                <div id="time-display" aria-live="polite" aria-atomic="true" tabindex="-1">
+                    <p tabindex="-1">Start time: <span id="Start-time" tabindex="-1">--</span></p>
+                    <p tabindex="-1">End time: <span id="End-time" tabindex="-1">--</span></p>
                 </div>
+                <!-- TO DO: PREVIEWING TRIMMED AUDIO  -->
+                 <p id="trimmed-audifile-info" role="status" aria-live="assertive" aria-atomic="true" tabindex="-1"></p>
+                 <audio tabindex="0" id="trim-preview" controls aria-label="Trim audio preview" aria-describedby="trim-guide"></audio>
+                <section id = "trim-actions" aria-label="Trim playback and save actions">
+                    <button type="button" id="trim-preview-btn" aria-describedby="trim-guide" tabindex="0">Preview trim</button>      
+                    <button  type="button" id = "new-trim"   tabindex="0"> New Trim</button>
+                    <button type="button" id="save-Mp3-trim"  tabindex="0">Save Mp3</button>
+                    <button type="button" id="save-trim"  tabindex="0">Save STL</button>
+                    <p id="action-help-next">Proceed to choose 3D model</p>
+                    <a  id = "proceed-to-print" aria-describedby="action-help-next" href="http://127.0.0.1:5173/Pages/Printing_options.html">Next</a>
+                </section>
             </section>
         </section>
     </main>
 
-    <script src="../Scripts/landing-newP.js"></script>
+    <script type="module" src="../Scripts/landing-newP.js"></script>
+    <script type="module" src = "../Scripts/trimming_logic.js"></script>
+
+
 </body>
 </html>

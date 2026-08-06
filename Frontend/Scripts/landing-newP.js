@@ -1,21 +1,71 @@
+import { audioState, setSelectedAudioFile, clearTrimSelection, selectActivePlayer, clearActivePlayer } from './audioState.js';
+import { initTrimKeyboard, initNewTrimButton } from './navigating_trimmer.js';
 const uploadInput = document.getElementById("audio-input");
+const uploadLabel = document.querySelector('label[for="audio-input"]');
 const previewPlayer = document.getElementById("preview-player");
 const trimPlayer = document.getElementById("trim-player");
+const previewHint = document.getElementById("preview-hint");
+const trimGuide = document.getElementById("trim-guide");
+const srAnnouncer = document.getElementById("sr-announcer");
 const fileInfo = document.getElementById("file-info");
 const trimToggle = document.getElementById("toggle-trim");
-const homebtn = document.getElementById("go-to-home");
+const audioTrimmer = document.getElementById("audio-trimmer")
+const trimmedAudioPlayer = document.getElementById("trim-preview");
+const skipToMain = document.getElementById("skip-to-main");
+const Main = document.getElementById("mid-container");
 
-if (homebtn) {
-    homebtn.addEventListener("click", () => {
-        window.location.href = "./landing_page.html";
+skipToMain?.addEventListener("click", () => {
+    event.preventDefault();
+    Main?.scrollIntoView({behavior: "smooth", block: "start"});
+    Main?.focus();
+});
+function pausePlayer(player){
+    if(!player) return;
+    player.pause();
+    player.currentTime = 0;
+};
+//if trimplayer starts stop trimmedAudioPlayer
+trimPlayer?.addEventListener("play", ()=> {
+    if(!trimmedAudioPlayer.paused) pausePlayer(trimmedAudioPlayer);
+    selectActivePlayer("trim-player");
+});
+//if trimmed preview starts, stop trim player
+trimmedAudioPlayer?.addEventListener("play", () => {
+    if(!trimPlayer.paused) pausePlayer(trimPlayer);
+    selectActivePlayer("trim-preview");
+});
+trimPlayer?.addEventListener("pause", () =>{
+    if (audioState.activePlayerID === "trim-player") clearActivePlayer();
+});
+trimmedAudioPlayer?.addEventListener("pause", ()=> {
+    if(audioState.activePlayerID === "trim-preview") clearActivePlayer();
+});
+function announceFileStatus(message) {
+    if (!fileInfo) return;
+
+    // Reset first so assistive tech detects this as a fresh announcement.
+    fileInfo.textContent = "";
+
+    requestAnimationFrame(() => {
+        fileInfo.textContent = message;
     });
 }
 
+function announceForScreenReader(message) {
+    if (!srAnnouncer) return;
+
+    srAnnouncer.textContent = "";
+    requestAnimationFrame(() => {
+        srAnnouncer.textContent = message;
+    });
+}
+
+
 let trimmingMode = false;
 
-function loadAudioFile(file) {
+async function loadAudioFile(file) {
     if (!file) {
-        fileInfo.textContent = "No file selected yet";
+        announceFileStatus("No file selected yet.");
 
         previewPlayer.src = "";
         trimPlayer.src = "";
@@ -26,23 +76,61 @@ function loadAudioFile(file) {
     }
 
     const fileURL = URL.createObjectURL(file);
-
     previewPlayer.src = fileURL;
     trimPlayer.src = fileURL;
 
-    previewPlayer.load();
-    trimPlayer.load();
+    await new Promise((resolve) => {
+        previewPlayer.addEventListener("loadedmetadata", resolve, {once: true});
+    });
+    const durationInSeconds = Math.floor(previewPlayer.duration || 0 );
+    const minutes = Math.floor(durationInSeconds / 60);
+    const remainingSeconds = durationInSeconds % 60;
 
-    fileInfo.innerHTML = `
-        <strong>Audio uploaded successfully.</strong><br>
-        File: ${file.name}<br>
-        Size: ${Math.round(file.size / 1024)} KB
-    `;
+    announceFileStatus(`Audio uploaded successfully. File: ${file.name}. Size: ${Math.round(file.size / 1024)} KB. Length: ${minutes}: ${remainingSeconds.toString().padStart(2, "0")} mm:ss. `);
 }
 
-uploadInput.addEventListener("change", (event) => {
-    loadAudioFile(event.target.files[0]);
-});
+function uploadFile(event){
+    const selectedFile = event.target.files[0];
+    setSelectedAudioFile(selectedFile);
+    clearTrimSelection();
+    loadAudioFile(selectedFile);
+}
+
+if (uploadInput) {
+    // Process the file after the user confirms a selection.
+    uploadInput.addEventListener("change", uploadFile);
+
+    // Keep keyboard support explicit: Enter opens the picker.
+    uploadInput.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            uploadInput.click();
+        }
+    });
+}
+
+if (uploadLabel && uploadInput) {
+    uploadLabel.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            uploadInput.focus();
+            uploadInput.click();
+        }
+    });
+}
+
+if (previewPlayer && previewHint) {
+    previewPlayer.addEventListener("focus", () => {
+        announceForScreenReader(previewHint.textContent.trim());
+    });
+}
+
+if (trimPlayer && trimGuide) {
+    trimPlayer.addEventListener("focus", () => {
+        announceForScreenReader(trimGuide.textContent.trim());
+    });
+}
+
 
 function toggleSection() {
     const section = document.getElementById("audio-trimmer");
@@ -54,101 +142,40 @@ function toggleSection() {
         trimToggle.setAttribute("aria-expanded", String(trimmingMode));
         trimToggle.textContent = trimmingMode ? "Hide trim" : "Trim";
     }
+
+    // Move focus into the newly revealed trim section so screen reader users
+    // land there immediately without having to search for it.
+    if (trimmingMode) {
+        const trimHeading = document.getElementById('trim-heading');
+        trimHeading.focus();
+        // currentSectionIndex = getNavigableSections().length - 1;
+    }
 }
 
 if (trimToggle) {
     trimToggle.addEventListener("click", toggleSection);
-}
-
-document.addEventListener("keydown", (event) => {
-
-    // Decide which player is active
-    const activePlayer = trimmingMode ? trimPlayer : previewPlayer;
-
-    // Play/Pause
-    if (event.code === "Space") {
-        event.preventDefault();
-
-        if (activePlayer.readyState >= 2) {
-            if (activePlayer.paused) {
-                activePlayer.play().catch(() => {});
-            } else {
-                activePlayer.pause();
-            }
+    trimToggle.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+            event.preventDefault();
+            toggleSection();
         }
-    }
+    });
+}
+const startTime = document.getElementById("Start-time");
+const endTime = document.getElementById("End-time");
 
-    // Stop
-    if (event.key === "s" || event.key === "S") {
-        activePlayer.pause();
-        activePlayer.currentTime = 0;
-    }
-
-    // Everything below only works in trim mode
-    if (!trimmingMode) return;
-
-    const startTime = document.getElementById("Start-time");
-    const endTime = document.getElementById("End-time");
-
-    // Mark start
-    if (event.key === "t" || event.key === "T") {
-        startTime.textContent =
-            `Start time: ${trimPlayer.currentTime.toFixed(2)} seconds`;
-    }
-
-    // Mark end
-    if (event.key === "e" || event.key === "E") {
-        endTime.textContent =
-            `End time: ${trimPlayer.currentTime.toFixed(2)} seconds`;
-    }
-
-    // Skip forward 5 seconds
-    if (event.key === "ArrowUp") {
-        trimPlayer.currentTime = Math.min(
-            trimPlayer.duration,
-            trimPlayer.currentTime + 5
-        );
-    }
-
-    // Skip backward 5 seconds
-    if (event.key === "ArrowDown") {
-        trimPlayer.currentTime = Math.max(
-            0,
-            trimPlayer.currentTime - 5
-        );
-    }
+initTrimKeyboard({
+    audioTrimmer,
+    trimPlayer,
+    previewPlayer,
+    getTrimmingMode: () => trimmingMode,
+    startTimeEl: startTime,
+    endTimeEl: endTime,
 });
 
-//Trimming logic 
-async function extractAudioSlice(file, startTime, endTime){
-    //convert the file object to arraybuffer
-    const arrayBuffer = await loadAudioFile.arrayBuffer();
-
-    //decode the audio binary data into an AudioBuffer
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    const mainAudioBuffer =  await audioCtx.decodeAudioData(arrayBuffer);
-
-    //calculate the frames and bounderies (now that we have an audiobuffer- collection of samples 
-    //airpreasure reading sper instant  we can calculate the sample rate at the start and end time)
-
-    const sampleRate = mainAudioBuffer.sampleRate;
-    const numberOfChannels = mainAudioBuffer.numberOfChannels;
-
-    const StartFrame = Math.floor(startTime * sampleRate);
-    const EndFrame = Math.floor(endTime * sampleRate );
-    const totalFrames = EndFrame - StartFrame;
-
-    //create a new empty audiobuffer for the trimmed clip
-    const trimmedBuffer =  audioCtx.createBuffer(numberOfChannels, totalFrames, sampleRate);
-
-    for (let channel = 0; channel < numberOfChannels; channel++){
-        const originalData = mainAudioBuffer.getChannelData(channel);
-        const trimmedData = trimmedData = trimmedBuffer.getChannelData(channel);
-
-        //slice the specific frame range
-        const chunk = originalData.subarray(StartFrame, EndFrame);
-        trimmedData.set(chunk);
-    }
-    return trimmedBuffer;
-
-}
+const newTrim = document.getElementById("new-trim");
+initNewTrimButton({
+    newTrimButton: newTrim,
+    startTimeEl: startTime,
+    endTimeEl: endTime,
+});
