@@ -1,8 +1,9 @@
+
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&family=Inter:wght@400;500&display=swap');
  
 :root {
-  --bg:       #f3f3e0; /* FILL IN — page background */
-  --surface:  #eee34e; /* FILL IN — trim panel background */
+  --bg:       #ffffff; /* FILL IN — page background */
+  --surface:  #fafafa; /* FILL IN — trim panel background */
   --ink:      #1a1a1a; /* FILL IN — text */
   --muted:    #5a5a5a; /* FILL IN — helper text */
   --accent:   #1a1a1a; /* FILL IN — buttons, focus ring, borders */
@@ -206,3 +207,4 @@ button:disabled {
   header { flex-direction: column; align-items: flex-start; }
   #action-row, #trim-actions { flex-direction: column; align-items: stretch; }
 }
+ 
