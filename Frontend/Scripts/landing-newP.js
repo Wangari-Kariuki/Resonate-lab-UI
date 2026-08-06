@@ -14,14 +14,16 @@ const trimmedAudioPlayer = document.getElementById("trim-preview");
 const skipToMain = document.getElementById("skip-to-main");
 const Main = document.getElementById("mid-container");
 
-skipToMain.addEventListener("click", () => {
-    Window.scrollTo(Main);
-})
+skipToMain?.addEventListener("click", () => {
+    event.preventDefault();
+    Main?.scrollIntoView({behavior: "smooth", block: "start"});
+    Main?.focus();
+});
 function pausePlayer(player){
     if(!player) return;
     player.pause();
     player.currentTime = 0;
-}
+};
 //if trimplayer starts stop trimmedAudioPlayer
 trimPlayer?.addEventListener("play", ()=> {
     if(!trimmedAudioPlayer.paused) pausePlayer(trimmedAudioPlayer);
@@ -58,11 +60,6 @@ function announceForScreenReader(message) {
     });
 }
 
-if (homebtn) {
-    homebtn.addEventListener("click", () => {
-        window.location.href = "./landing_page.html";
-    });
-}
 
 let trimmingMode = false;
 

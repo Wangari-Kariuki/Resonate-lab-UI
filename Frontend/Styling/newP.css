@@ -1,0 +1,208 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&family=Inter:wght@400;500&display=swap');
+ 
+:root {
+  --bg:       #f3f3e0; /* FILL IN — page background */
+  --surface:  #eee34e; /* FILL IN — trim panel background */
+  --ink:      #1a1a1a; /* FILL IN — text */
+  --muted:    #5a5a5a; /* FILL IN — helper text */
+  --accent:   #1a1a1a; /* FILL IN — buttons, focus ring, borders */
+ 
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-body:    'Inter', system-ui, sans-serif;
+ 
+  --radius: 999px; /* pill shape used on buttons and inputs */
+  --border: 2px solid var(--accent);
+}
+ 
+* { box-sizing: border-box; }
+ 
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  line-height: 1.5;
+}
+ 
+p { color: var(--muted); }
+ 
+:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
+ 
+/* Skip link */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  background: var(--ink);
+  color: var(--bg);
+  padding: 0.5em 1em;
+}
+.skip-link:focus { left: 0; }
+ 
+/* Header */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1.5rem 2rem;
+  border-bottom: var(--border);
+}
+ 
+#side-navigation ul {
+  display: flex;
+  gap: 0.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+ 
+#side-navigation a {
+  padding: 0.4em 1em;
+  border-radius: var(--radius);
+  border: var(--border);
+  color: var(--ink);
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+ 
+#title h1 {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 4vw, 2.25rem);
+  margin: 0;
+}
+ 
+/* Main content */
+#mid-container {
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem;
+}
+ 
+h2, #trim-heading {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+}
+ 
+/* Upload input */
+#audio-input {
+  display: block;
+  width: 100%;
+  padding: 1rem;
+  border: 2px dashed var(--accent);
+  border-radius: 12px;
+  background: var(--surface);
+  margin-bottom: 1rem;
+}
+ 
+#file-info {
+  display: inline-block;
+  padding: 0.4em 1em;
+  border-radius: var(--radius);
+  border: var(--border);
+  font-size: 0.85rem;
+  margin-bottom: 1.5rem;
+}
+ 
+audio {
+  display: block;
+  width: 100%;
+  border-radius: var(--radius);
+  margin-bottom: 1rem;
+}
+ 
+/* Buttons */
+button,
+#proceed-to-print {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.7em 1.5em;
+  border-radius: var(--radius);
+  border: var(--border);
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  text-decoration: none;
+  cursor: pointer;
+}
+ 
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+ 
+#save-audio,
+#save-trim-mp3,
+#save-trim-stl,
+#proceed-to-print {
+  background: var(--accent);
+  color: var(--bg);
+}
+ 
+#action-row,
+#trim-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+ 
+#proceed-to-print[aria-disabled="true"] {
+  opacity: 0.5;
+  pointer-events: none;
+}
+ 
+/* Trim panel */
+#audio-trimmer {
+  border: var(--border);
+  border-radius: 16px;
+  background: var(--surface);
+  padding: 1.5rem;
+}
+ 
+#trim-guide {
+  background: var(--bg);
+  border: 1px dashed var(--accent);
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+}
+ 
+#trim-guide p {
+  font-size: 0.85rem;
+  margin: 0.3em 0;
+}
+ 
+#trim-time-input {
+  padding: 0.5em 1em;
+  border-radius: var(--radius);
+  border: var(--border);
+  width: 100%;
+  max-width: 10rem;
+  margin: 0.5rem 0 1rem;
+}
+ 
+#time-display {
+  display: flex;
+  gap: 1.5rem;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  background: var(--bg);
+  border: var(--border);
+  margin-bottom: 1.5rem;
+}
+ 
+#time-display p { margin: 0; font-size: 0.9rem; color: var(--ink); }
+#time-display span { font-family: var(--font-display); }
+ 
+/* Responsive */
+@media (max-width: 40rem) {
+  header { flex-direction: column; align-items: flex-start; }
+  #action-row, #trim-actions { flex-direction: column; align-items: stretch; }
+}
