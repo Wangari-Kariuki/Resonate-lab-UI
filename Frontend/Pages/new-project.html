@@ -26,12 +26,12 @@
     </header>
     <main id="mid-container">
         <section id="upload-section" aria-labelledby="upload-heading">
-            <h2 id="upload-heading" tabindex="-1">Upload audio project</h2>
+            <h2 id="upload-heading" tabindex="0">Upload audio project</h2>
             <p id="upload-help">To upload a new audio file, click choose file. </p>
 
             <!-- <input for="audio-input" accept="audio/*" aria-describedby="upload-help" role="button" tabindex="0" aria-describedby="upload-help"> -->
             <label for="audio-input">Choose an audio file to upload</label>
-            <input type="file" id="audio-input" accept="audio/*" aria-describedby="upload-help">
+            <input type="file" id="audio-input" accept="audio/*" aria-describedby="upload-help" tabindex="0">
             <p id="file-info" role="status" aria-live="assertive" aria-atomic="true" tabindex="-1">No file selected yet.</p>
 
             <p id="preview-hint">Press the space bar to preview the uploaded audio.</p>
@@ -60,7 +60,7 @@
                 <br>
                 <label tabindex="-1" for="trim-time-input">Trim marker</label>
                 <br>
-                <input tabindex="-1" id="trim-time-input" type="text">
+                <input tabindex="0" id="trim-time-input" type="text">
 
                 <div id="time-display" aria-live="polite" aria-atomic="true" tabindex="-1">
                     <p tabindex="-1">Start time: <span id="Start-time" tabindex="-1">--</span></p>
@@ -75,7 +75,7 @@
                     <button type="button" id="save-Mp3-trim"  tabindex="0">Save Mp3</button>
                     <button type="button" id="save-trim"  tabindex="0">Save STL</button>
                     <p id="action-help-next">Proceed to choose 3D model</p>
-                    <a  id = "proceed-to-print" aria-describedby="action-help-next" href="http://127.0.0.1:5173/Pages/Printing_options.html">Next</a>
+                    <a tabindex="0" id = "proceed-to-print" aria-describedby="action-help-next" href="http://127.0.0.1:5173/Pages/Printing_options.html">Next</a>
                 </section>
             </section>
         </section>

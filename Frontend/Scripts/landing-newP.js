@@ -14,7 +14,7 @@ const trimmedAudioPlayer = document.getElementById("trim-preview");
 const skipToMain = document.getElementById("skip-to-main");
 const Main = document.getElementById("mid-container");
 
-skipToMain?.addEventListener("click", () => {
+skipToMain?.addEventListener("click", (event) => {
     event.preventDefault();
     Main?.scrollIntoView({behavior: "smooth", block: "start"});
     Main?.focus();
@@ -24,19 +24,38 @@ function pausePlayer(player){
     player.pause();
     player.currentTime = 0;
 };
-//if trimplayer starts stop trimmedAudioPlayer
-trimPlayer?.addEventListener("play", ()=> {
-    if(!trimmedAudioPlayer.paused) pausePlayer(trimmedAudioPlayer);
-    selectActivePlayer("trim-player");
+
+const audioPlayers = [previewPlayer, trimPlayer, trimmedAudioPlayer].filter(Boolean);
+
+function setExclusivePlayback(activePlayer, activePlayerId) {
+    for (const player of audioPlayers) {
+        if (player !== activePlayer && !player.paused) {
+            pausePlayer(player);
+        }
+    }
+    selectActivePlayer(activePlayerId);
+}
+
+previewPlayer?.addEventListener("play", () => {
+    setExclusivePlayback(previewPlayer, "preview-player");
 });
-//if trimmed preview starts, stop trim player
+
+trimPlayer?.addEventListener("play", () => {
+    setExclusivePlayback(trimPlayer, "trim-player");
+});
+
 trimmedAudioPlayer?.addEventListener("play", () => {
-    if(!trimPlayer.paused) pausePlayer(trimPlayer);
-    selectActivePlayer("trim-preview");
+    setExclusivePlayback(trimmedAudioPlayer, "trim-preview");
 });
+
+previewPlayer?.addEventListener("pause", () => {
+    if (audioState.activePlayerID === "preview-player") clearActivePlayer();
+});
+
 trimPlayer?.addEventListener("pause", () =>{
     if (audioState.activePlayerID === "trim-player") clearActivePlayer();
 });
+
 trimmedAudioPlayer?.addEventListener("pause", ()=> {
     if(audioState.activePlayerID === "trim-preview") clearActivePlayer();
 });
