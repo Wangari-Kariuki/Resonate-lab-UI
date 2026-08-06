@@ -2,7 +2,15 @@ export const audioState = {
   selectedAudioFile: null,
   trimStart: null,
   trimEnd: null,
+  activePlayerID: null,
 };
+export function selectActivePlayer(id){
+  audioState.activePlayerID = id;
+}
+
+export function clearActivePlayer() {
+  audioState.activePlayerID = null;
+}
 
 export function setSelectedAudioFile(file) {
   audioState.selectedAudioFile = file;
@@ -18,3 +26,5 @@ export function clearTrimSelection() {
   audioState.trimEnd = null;
    // screen reader: trim starting points cleared
 }
+
+

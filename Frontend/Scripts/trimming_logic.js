@@ -1,5 +1,5 @@
 import lamejs from "@breezystack/lamejs";
-import { audioState, setSelectedAudioFile, setTrimRange, clearTrimSelection } from './audioState.js';
+import { audioState, selectActivePlayer } from './audioState.js';
 
 
 //Trimming logic 
@@ -102,7 +102,33 @@ function encodeMp3(trimmedBuffer, bitrate = 128){
         return pcm;
     }
 
-const saveButton = document.getElementById("save-trim");
+const saveButton = document.getElementById("save-Mp3-trim");
+const trimPreview = document.getElementById("trim-preview");
+const trimPlayer = document.getElementById("trim-player");
+const trimmedAudioInfo = document.getElementById("trimmed-audio-file-info");
+const srAnnouncer = document.getElementById("sr-announcer");
+
+//Writing and announcing trimmed audio file info
+function formatSeconds(totalSeconds) {
+    const safeSeconds = Math.max(0, Number(totalSeconds) || 0);
+    const minutes = Math.floor(safeSeconds / 60);
+    const seconds = safeSeconds % 60;
+    return `${minutes}:${seconds.toFixed(2).padStart(5, "0")}`;
+}
+
+function writeStatus(el, message) {
+    if (!el) return;
+    el.textContent = "";
+    requestAnimationFrame(() => {
+        el.textContent = message;
+    });
+}
+
+function announceTrimmedAudio(startTime, endTime, durationSeconds) {
+    const message = `Audio trimmed successfully. Start ${formatSeconds(startTime)}, end ${formatSeconds(endTime)}, duration ${formatSeconds(durationSeconds)}.`;
+    writeStatus(trimmedAudioInfo, message);
+    writeStatus(srAnnouncer, message);
+}
 
  async function saveTrimmedAudio ()  {
     try {
@@ -119,12 +145,14 @@ const saveButton = document.getElementById("save-trim");
         );
         const mp3Blob = encodeMp3(trimmedBuffer);
 
+        announceTrimmedAudio(audioState.trimStart, audioState.trimEnd, trimmedBuffer.duration);
+
         downloadMp3(mp3Blob);
     } catch (error) {
         console.error(error);
     }
 };
-saveButton.addEventListener("click", saveTrimmedAudio);
+saveButton?.addEventListener("click", saveTrimmedAudio);
 
 //Enter key trigger when trim input is focused
 document.addEventListener("keydown", (event) => {
@@ -155,19 +183,27 @@ async function previewTrimmedAudio() {
       throw new Error("Please mark both a start and end time before previewing.");
     }
 
+        if (trimPlayer && !trimPlayer.paused) {
+            trimPlayer.pause();
+            trimPlayer.currentTime = 0;
+        }
+
     const trimmedBuffer = await extractAudioSlice(
       audioState.selectedAudioFile,
       audioState.trimStart,
       audioState.trimEnd
     );
-    const mp3Blob = encodeMp3(trimmedBuffer);
+        const mp3Blob = encodeMp3(trimmedBuffer);
+        const url = URL.createObjectURL(mp3Blob);
 
-    const trimPreview = document.getElementById("trim-preview");
-    const url = URL.createObjectURL(mp3Blob);
-
+        if (!trimPreview) {
+            throw new Error("Trim preview player not found.");
+        }
     trimPreview.src = url;
     trimPreview.load();
     await trimPreview.play();
+        selectActivePlayer("trim-preview");
+                announceTrimmedAudio(audioState.trimStart, audioState.trimEnd, trimmedBuffer.duration);
   } catch (error) {
     console.error(error);
   }

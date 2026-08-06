@@ -1,4 +1,5 @@
-import { audioState, setSelectedAudioFile, setTrimRange, clearTrimSelection } from './audioState.js';
+import { audioState, setSelectedAudioFile, clearTrimSelection, selectActivePlayer, clearActivePlayer } from './audioState.js';
+import { initTrimKeyboard, initNewTrimButton } from './navigating_trimmer.js';
 const uploadInput = document.getElementById("audio-input");
 const uploadLabel = document.querySelector('label[for="audio-input"]');
 const previewPlayer = document.getElementById("preview-player");
@@ -8,9 +9,35 @@ const trimGuide = document.getElementById("trim-guide");
 const srAnnouncer = document.getElementById("sr-announcer");
 const fileInfo = document.getElementById("file-info");
 const trimToggle = document.getElementById("toggle-trim");
-const homebtn = document.getElementById("go-to-home");
 const audioTrimmer = document.getElementById("audio-trimmer")
+const trimmedAudioPlayer = document.getElementById("trim-preview");
+const skipToMain = document.getElementById("skip-to-main");
+const Main = document.getElementById("mid-container");
 
+skipToMain.addEventListener("click", () => {
+    Window.scrollTo(Main);
+})
+function pausePlayer(player){
+    if(!player) return;
+    player.pause();
+    player.currentTime = 0;
+}
+//if trimplayer starts stop trimmedAudioPlayer
+trimPlayer?.addEventListener("play", ()=> {
+    if(!trimmedAudioPlayer.paused) pausePlayer(trimmedAudioPlayer);
+    selectActivePlayer("trim-player");
+});
+//if trimmed preview starts, stop trim player
+trimmedAudioPlayer?.addEventListener("play", () => {
+    if(!trimPlayer.paused) pausePlayer(trimPlayer);
+    selectActivePlayer("trim-preview");
+});
+trimPlayer?.addEventListener("pause", () =>{
+    if (audioState.activePlayerID === "trim-player") clearActivePlayer();
+});
+trimmedAudioPlayer?.addEventListener("pause", ()=> {
+    if(audioState.activePlayerID === "trim-preview") clearActivePlayer();
+});
 function announceFileStatus(message) {
     if (!fileInfo) return;
 
@@ -39,98 +66,6 @@ if (homebtn) {
 
 let trimmingMode = false;
 
-// ── Section navigation ────────────────────────────────────────────────────────
-// Returns focusable targets in top-to-bottom DOM order.
-// Trim section stops are only included when that panel is visible.
-function getNavigableSections() {
-    const sections = [
-        document.querySelector('h1'),                          // Page title
-        document.querySelector('nav#side-navigation'),         // Sidebar nav
-        document.getElementById('upload-heading'),             // "Upload audio project"
-        document.getElementById('audio-input'),                // File picker
-        document.getElementById('file-info'),                  // File info status
-        document.getElementById('preview-player'),             // Audio preview player
-        document.getElementById('action-row'),                 // Action row
-        document.getElementById('save-audio'),                 // Save button
-        document.getElementById('toggle-trim'),                // Trim button
-    ];
-
-    const trimmer = document.getElementById('audio-trimmer');
-    if (trimmer && trimmer.style.display !== 'none') {
-        sections.push(
-            document.getElementById('trim-heading'),           // "Trim audio"
-            document.getElementById('trim-guide'),             // Trim controls section
-            document.getElementById('trim-guide-heading'),     // Trim controls heading
-            document.getElementById('t'),                      // "Press T" instruction
-            document.getElementById('e'),                      // "Press E" instruction
-            document.querySelector('#trim-guide p:not([id])'), // Spacebar instruction
-            document.getElementById('up'),                     // "Arrow up" instruction
-            document.getElementById('down'),                   // "Arrow down" instruction
-            document.getElementById('trim-player'),            // Trim audio player
-            document.getElementById('trim-input-desc'),        // Input description
-            document.getElementById('trim-time-input'),                   // Trim marker input
-            document.querySelector('time-display'),           // Time display
-            document.getElementById('Start-time'),             // Start time value
-            document.getElementById('End-time'),               // End time value
-            document.getElementById('save-trim'),              // Save trimmed audio
-        );
-    }
-
-    return sections.filter(Boolean);
-}
-
-let currentSectionIndex = 0;
-
-function navigateSection(direction) {
-
-    const sections = getNavigableSections();
-
-    let currentIndex = sections.indexOf(document.activeElement);
-
-    if (currentIndex === -1) {
-        currentIndex = 0;
-    }
-
-    const nextIndex = Math.max(
-        0,
-        Math.min(sections.length - 1, currentIndex + direction)
-    );
-
-    const target = sections[nextIndex];
-
-    target.focus();
-
-    target.scrollIntoView({
-        behavior: "smooth",
-        block: "center"
-    });
-}
-
-// Tags that own arrow-key behaviour — don't intercept in these cases.
-const INTERACTIVE_TAGS = new Set(['INPUT', 'TEXTAREA', 'SELECT', 'BUTTON', 'AUDIO', 'VIDEO', 'A']);
-
-function focusIsOnInteractiveElement() {
-    const el = document.activeElement;
-    return INTERACTIVE_TAGS.has(el.tagName);
-}
-
-const ARROW_NAV_OVERRIDE_IDS = new Set([
-    'audio-input',
-    'preview-player',
-    'save-audio',
-    'toggle-trim',
-    'save-trim',
-    'trim-player'
-]);
-
-// Decide whether the arrow key should trigger custom navigation.
-// Return true if focus is not on an interactive element or if it's on an allowed control.
-function shouldUseArrowNavigation() {
-    const el = document.activeElement;
-    return !focusIsOnInteractiveElement() || ARROW_NAV_OVERRIDE_IDS.has(el.id);
-}
-// ────────────────────────────────────────────────────────────────────────────
-
 async function loadAudioFile(file) {
     if (!file) {
         announceFileStatus("No file selected yet.");
@@ -151,10 +86,10 @@ async function loadAudioFile(file) {
         previewPlayer.addEventListener("loadedmetadata", resolve, {once: true});
     });
     const durationInSeconds = Math.floor(previewPlayer.duration || 0 );
-    const minutes = Math.floor(durationInSeconds /60);
-    const remainingSeconds = durationInSeconds;
+    const minutes = Math.floor(durationInSeconds / 60);
+    const remainingSeconds = durationInSeconds % 60;
 
-    announceFileStatus(`Audio uploaded successfully. File: ${file.name}. Size: ${Math.round(file.size / 1024)} KB. Length: ${minutes}: ${remainingSeconds.toString().padStart(2, "0")}`);
+    announceFileStatus(`Audio uploaded successfully. File: ${file.name}. Size: ${Math.round(file.size / 1024)} KB. Length: ${minutes}: ${remainingSeconds.toString().padStart(2, "0")} mm:ss. `);
 }
 
 function uploadFile(event){
@@ -229,70 +164,21 @@ if (trimToggle) {
         }
     });
 }
- const startTime = document.getElementById("Start-time");
+const startTime = document.getElementById("Start-time");
 const endTime = document.getElementById("End-time");
 
-audioTrimmer.addEventListener("keydown", (event) => {
-   
-    // Decide which player is active
-    const activePlayer = trimmingMode ? trimPlayer : previewPlayer;
-
-    // Play/Pause
-    if (event.key === " ") {
-        event.preventDefault();
-
-        if (activePlayer.audioState >= 2) {
-            if (activePlayer.paused) {
-                activePlayer.play().catch(() => {});
-            } else {
-                activePlayer.pause();
-            }
-        }
-    }
-    // Stop
-    if (event.key === "s" || event.key === "S") {
-        activePlayer.pause();
-        activePlayer.currentTime = 0;
-    }
-
-    // Arrow keys: on trim-player they scrub audio. Otherwise they navigate
-    // through the configured section stops when allowed.
-    if (event.key === "ArrowDown" || event.key === "ArrowUp") {
-        if (trimmingMode && document.activeElement === trimPlayer) {
-            // Audio scrubbing — existing behaviour
-            if (event.key === "ArrowUp") {
-                trimPlayer.currentTime = Math.min(trimPlayer.duration, trimPlayer.currentTime + 5);
-            } else {
-                trimPlayer.currentTime = Math.max(0, trimPlayer.currentTime - 5);
-            }
-        } else if (shouldUseArrowNavigation()) {
-            // Section navigation
-            event.preventDefault();
-            navigateSection(event.key === "ArrowDown" ? 1 : -1);
-        }
-        return;
-    }
-
-    // Everything below only works in trim mode
-    if (!trimmingMode) return;
-
-    // Mark and store start as trimStart variable
-    if (event.key === "t" || event.key === "T") {
-        const start = trimPlayer.currentTime;
-        setTrimRange(start, audioState.trimEnd);
-        startTime.textContent = `${start.toFixed(2)} seconds`;
-    }
-
-    // Mark and store end as trimEnd variable
-    if (event.key === "e" || event.key === "E") {
-        const end = trimPlayer.currentTime;
-        setTrimRange(audioState.trimStart, end);
-        endTime.textContent = `${end.toFixed(2)} seconds`;
-    }
-
+initTrimKeyboard({
+    audioTrimmer,
+    trimPlayer,
+    previewPlayer,
+    getTrimmingMode: () => trimmingMode,
+    startTimeEl: startTime,
+    endTimeEl: endTime,
 });
+
 const newTrim = document.getElementById("new-trim");
-newTrim.addEventListener("click", (event) => {
-    startTime.textContent = null;
-    endTime.textContent = null;
-})
+initNewTrimButton({
+    newTrimButton: newTrim,
+    startTimeEl: startTime,
+    endTimeEl: endTime,
+});
