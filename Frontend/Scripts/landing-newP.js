@@ -1,6 +1,6 @@
 import { audioState, setSelectedAudioFile, clearTrimSelection, selectActivePlayer, clearActivePlayer } from './audioState.js';
 import { initTrimKeyboard, initNewTrimButton } from './navigating_trimmer.js';
-const uploadInput = document.getElementById("audio-input");
+export const uploadInput = document.getElementById("audio-input");
 const uploadLabel = document.querySelector('label[for="audio-input"]');
 const previewPlayer = document.getElementById("preview-player");
 const trimPlayer = document.getElementById("trim-player");
@@ -82,7 +82,7 @@ function announceForScreenReader(message) {
 
 let trimmingMode = false;
 
-async function loadAudioFile(file) {
+export async function loadAudioFile(file) {
     if (!file) {
         announceFileStatus("No file selected yet.");
 

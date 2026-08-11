@@ -55,7 +55,13 @@
 
                     <p>After entering the start and end of your trimmed audio, click enter to save. </p>
                 </section>
-
+                <button id = "open-waveform-btn">Show Waveform</button>
+                <section id = "waveform" style="display: none;">
+                    <section id = "waveform"></section>
+                    <button>Activate slider</button>
+                    <button id = "play-button">Play Audio</button>
+                    <button id = "pause-button">Pause audio</button>
+                </section>
                 <audio tabindex="0" id="trim-player" controls aria-label="Trim audio player" aria-describedby="trim-guide"></audio>
                 <br>
                 <label tabindex="-1" for="trim-time-input">Trim marker</label>
@@ -83,6 +89,7 @@
 
     <script type="module" src="../Scripts/landing-newP.js"></script>
     <script type="module" src = "../Scripts/trimming_logic.js"></script>
+    <script type = "module" src = "../Features//waveform.js"></script>
 
 
 </body>
