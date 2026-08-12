@@ -1,6 +1,6 @@
 import WaveSurfer from "https://cdn.jsdelivr.net/npm/wavesurfer.js@7/dist/wavesurfer.esm.js";
-import { audioState } from "../Scripts/audioState.js";
-import RegionsPlugin from "wavesurfer.js/dist/plugins/regions.js";
+import RegionsPlugin from "https://cdn.jsdelivr.net/npm/wavesurfer.js@7/dist/plugins/regions.esm.js";
+import { audioState, setTrimRange } from "../Scripts/audioState.js";
 
 const waveformPanel = document.getElementById("waveform-panel");
 const waveformContainer = document.getElementById("waveform-canvas");
@@ -8,23 +8,44 @@ const audioFileInput = document.getElementById("audio-input");
 const playButton = document.getElementById("play-button");
 const pauseButton = document.getElementById("pause-button");
 const openWaveBtn = document.getElementById("open-waveform-btn");
+const startTimeEl = document.getElementById("Start-time");
+const endTimeEl = document.getElementById("End-time");
 
 let isWaveformVisible = false;
 let waveSurfer = null;
+let regions = null;
+let regionEventsBound = false;
+
+function updateTimeLabels(start, end) {
+    if (startTimeEl) startTimeEl.textContent = `${start.toFixed(2)} seconds`;
+    if (endTimeEl) endTimeEl.textContent = `${end.toFixed(2)} seconds`;
+}
 
 function ensureWaveSurfer() {
     if (waveSurfer || !waveformContainer) return;
 
-    let regions;
     waveSurfer = WaveSurfer.create({
         container: waveformContainer,
         height: 96,
         waveColor: "#8a8a8a",
-        progressColor: "#1a1a1a",
-        cursorColor: "#1a1a1a",
+        progressColor: "#ac3737",
+        cursorColor: "#10b619",
         normalize: true,
     });
+
     regions = waveSurfer.registerPlugin(RegionsPlugin.create());
+
+    if (!regionEventsBound && regions) {
+        regions.on("region-updated", (region) => {
+            setTrimRange(region.start, region.end);
+            updateTimeLabels(region.start, region.end);
+        });
+        regionEventsBound = true;
+    }
+
+    waveSurfer.on("ready", () => {
+        syncRegionFromState();
+    });
 }
 
 function loadSelectedFileIntoWaveform() {
@@ -36,6 +57,35 @@ function loadSelectedFileIntoWaveform() {
     waveSurfer.once("ready", cleanupObjectUrl);
     waveSurfer.once("error", cleanupObjectUrl);
     waveSurfer.load(fileUrl);
+}
+
+function syncRegionFromState() {
+    if (!waveSurfer || !regions) return;
+
+    const duration = waveSurfer.getDuration() || 0;
+    if (duration <= 0) return;
+
+    const start = Math.max(0, Number(audioState.trimStart ?? 0));
+    const defaultEnd = Math.min(start + 1, duration);
+    const endCandidate = Number(audioState.trimEnd ?? defaultEnd);
+    const end = Math.max(start + 0.05, Math.min(endCandidate, duration));
+
+    const existing = regions.getRegions()[0];
+    if (existing) {
+        existing.setOptions({ start, end });
+    } else {
+        regions.addRegion({
+            id: "trim-range",
+            start,
+            end,
+            drag: true,
+            resize: true,
+            color: "rgba(26,26,26,0.20)",
+        });
+    }
+
+    setTrimRange(start, end);
+    updateTimeLabels(start, end);
 }
 
 function toggleWaveformDisplay() {
@@ -50,7 +100,6 @@ function toggleWaveformDisplay() {
     }
 
     if (isWaveformVisible) {
-        // Initialize only after the panel is visible so width calculations are correct.
         ensureWaveSurfer();
         loadSelectedFileIntoWaveform();
         waveformPanel.focus();
@@ -83,41 +132,16 @@ pauseButton?.addEventListener("click", () => {
     waveSurfer.pause();
 });
 
-
 // activate_slider
 
 
 //creating and updating region from existing start/end fucntions
 
-function syncRegionFromState(){
-    if(!waveSurfer || !regions) return;
-    const duration = waveSurfer.getDuration() ||0;
-    const start = Math.max(0,
-        Number(audioState.trimStart ?? 0)
-    );
-    const endCandidate = Number(audioState.trimEnd ??
-        Math.min(start + 1, duration));
-    const end = Math.max(start + 0.05, 
-        Math.min(endCandidate, duration  || endCandidate));
-    const existing = regions.getRegions()[0];
-    if(existing){
-        existing.setOptions({start, end});
 
-    }else {
-        regions.addRegion({
-            id:"trim-range",
-            start,
-            end,
-            drag: true,
-            resize: true,
-            color: "rgba(26,26,26,0.20)",
-        });
-    }
-}
 
 //updating the start end regions while user drags 
-regions.on("region-updated", (region) => {
-setTrimRange(region.start, region.end);
-startTimeEl.textContent = region.start.toFixed(2) + " seconds";
-endTimeEl.textContent = region.end.toFixed(2) + " seconds";
-});
+// regions.on("region-updated", (region) => {
+// setTrimRange(region.start, region.end);
+// startTimeEl.textContent = region.start.toFixed(2) + " seconds";
+// endTimeEl.textContent = region.end.toFixed(2) + " seconds";
+// });

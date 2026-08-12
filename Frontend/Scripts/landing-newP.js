@@ -187,6 +187,7 @@ initTrimKeyboard({
     audioTrimmer,
     trimPlayer,
     previewPlayer,
+    trimmedAudioPlayer,
     getTrimmingMode: () => trimmingMode,
     startTimeEl: startTime,
     endTimeEl: endTime,
