@@ -55,9 +55,9 @@
 
                     <p>After entering the start and end of your trimmed audio, click enter to save. </p>
                 </section>
-                <button id = "open-waveform-btn">Show Waveform</button>
-                <section id = "waveform" style="display: none;">
-                    <section id = "waveform"></section>
+                <button id = "open-waveform-btn" aria-controls="waveform-panel" aria-expanded="false">Show Waveform</button>
+                <section id = "waveform-panel" style="display: none;" tabindex="-1" aria-label="Waveform preview">
+                    <section id = "waveform-canvas"></section>
                     <button>Activate slider</button>
                     <button id = "play-button">Play Audio</button>
                     <button id = "pause-button">Pause audio</button>

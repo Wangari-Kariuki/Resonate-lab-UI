@@ -1,7 +1,8 @@
 {
   "dependencies": {
     "@breezystack/lamejs": "^1.2.7",
-    "lamejs": "^1.2.1"
+    "lamejs": "^1.2.1",
+    "wavesurfer.js": "^7.12.11"
   },
   "name": "resonate-lab-ui",
   "version": "1.0.0",
