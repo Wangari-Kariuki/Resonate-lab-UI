@@ -6,11 +6,13 @@ const previewPlayer = document.getElementById("preview-player");
 const trimPlayer = document.getElementById("trim-player");
 const previewHint = document.getElementById("preview-hint");
 const trimGuide = document.getElementById("trim-guide");
+const trimPlayerHint = document.getElementById("trim-player-hint");
 const srAnnouncer = document.getElementById("sr-announcer");
 const fileInfo = document.getElementById("file-info");
 const trimToggle = document.getElementById("toggle-trim");
 const audioTrimmer = document.getElementById("audio-trimmer")
 const trimmedAudioPlayer = document.getElementById("trim-preview");
+const skipTrimGuideButton = document.getElementById("skip-trim-guide");
 const skipToMain = document.getElementById("skip-to-main");
 const Main = document.getElementById("mid-container");
 
@@ -74,9 +76,10 @@ function announceForScreenReader(message) {
     if (!srAnnouncer) return;
 
     srAnnouncer.textContent = "";
-    requestAnimationFrame(() => {
+    // Small async delay helps screen readers re-announce repeated guidance text.
+    setTimeout(() => {
         srAnnouncer.textContent = message;
-    });
+    }, 30);
 }
 
 
@@ -144,9 +147,29 @@ if (previewPlayer && previewHint) {
     });
 }
 
-if (trimPlayer && trimGuide) {
-    trimPlayer.addEventListener("focus", () => {
-        announceForScreenReader(trimGuide.textContent.trim());
+if (audioTrimmer && trimPlayer && trimPlayerHint) {
+    // Use focusin so the announcement runs regardless of whether focus arrives
+    // via Tab, arrow-key navigation, or programmatic focus movement.
+    audioTrimmer.addEventListener("focusin", (event) => {
+        if (event.target === trimPlayer) {
+            announceForScreenReader(trimPlayerHint.textContent.trim());
+        }
+    });
+}
+
+if (skipTrimGuideButton && trimPlayer) {
+    const skipTrimGuide = () => {
+        trimPlayer.focus();
+        trimPlayer.scrollIntoView({ behavior: "smooth", block: "center" });
+        announceForScreenReader(trimPlayerHint?.textContent.trim() || "You are now in the trimming audio player.");
+    };
+
+    skipTrimGuideButton.addEventListener("click", skipTrimGuide);
+    skipTrimGuideButton.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            skipTrimGuide();
+        }
     });
 }
 
@@ -182,6 +205,27 @@ if (trimToggle) {
 }
 const startTime = document.getElementById("Start-time");
 const endTime = document.getElementById("End-time");
+const durationTime = document.getElementById("trim-duration");
+
+function formatDuration(seconds) {
+    const wholeSeconds = Math.max(0, Math.round(seconds));
+    const minutes = Math.floor(wholeSeconds / 60);
+    const remainingSeconds = wholeSeconds % 60;
+
+    return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
+}
+
+function updateTrimDuration() {
+    if (!durationTime) return;
+
+    if (audioState.trimStart == null || audioState.trimEnd == null || audioState.trimEnd < audioState.trimStart) {
+        durationTime.textContent = "--";
+        return;
+    }
+
+    const duration = audioState.trimEnd - audioState.trimStart;
+    durationTime.textContent = `${formatDuration(duration)} mm:ss`;
+}
 
 initTrimKeyboard({
     audioTrimmer,
@@ -191,6 +235,7 @@ initTrimKeyboard({
     getTrimmingMode: () => trimmingMode,
     startTimeEl: startTime,
     endTimeEl: endTime,
+    updateTrimDuration,
 });
 
 const newTrim = document.getElementById("new-trim");
@@ -198,4 +243,6 @@ initNewTrimButton({
     newTrimButton: newTrim,
     startTimeEl: startTime,
     endTimeEl: endTime,
+    durationTimeEl: durationTime,
+    updateTrimDuration,
 });

@@ -88,6 +88,14 @@ function syncRegionFromState() {
     updateTimeLabels(start, end);
 }
 
+document.addEventListener("trim-range-changed", () => {
+    if (!waveSurfer || !regions) return;
+
+    // Only sync once audio is decoded; opening waveform later still syncs on "ready".
+    if ((waveSurfer.getDuration() || 0) <= 0) return;
+    syncRegionFromState();
+});
+
 function toggleWaveformDisplay() {
     if (!waveformPanel) return;
 

@@ -27,7 +27,7 @@
     <main id="mid-container">
         <section id="upload-section" aria-labelledby="upload-heading">
             <h2 id="upload-heading" tabindex="0">Upload audio project</h2>
-            <p id="upload-help">To upload a new audio file, click choose file. </p>
+            <p id="upload-help" style="position:absolute;left:-10000px;width:1px;height:1px;overflow: hidden;">To upload a new audio file, click choose file. </p>
 
             <!-- <input for="audio-input" accept="audio/*" aria-describedby="upload-help" role="button" tabindex="0" aria-describedby="upload-help"> -->
             <label for="audio-input">Choose an audio file to upload</label>
@@ -47,14 +47,20 @@
             <section tabindex="-1" id="audio-trimmer" style="display: none;" aria-labelledby="trim-heading">
                 <section tabindex="-1" id="trim-guide" aria-labelledby="trim-guide-heading" aria-describedby="trim-controls-desc">
                     <h3 id="trim-heading" tabindex="-1" >Trim controls</h3>
-                    <p id="t" tabindex="-1">To mark the starting point, press T.</p>
+                    <p id="t" tabindex="-1">To mark the starting point, press T or Ctrl+T.</p>
                     <p id="e" tabindex="-1">To mark the end point, press E.</p>
-                    <p tabindex="-1">Use the space bar to pause or play audio.</p>
+                    <p tabindex="-1">Use the space bar or Ctrl+Space to pause or play audio.</p>
                     <p id="up" tabindex="-1">Use the up arrow key to move 5 seconds ahead in the audio.</p>
                     <p id="down" tabindex="-1">Use the down arrow key to move 5 seconds behind in the audio.</p>
 
                     <p>After entering the start and end of your trimmed audio, click enter to save. </p>
-                </section>
+                    <button type="button" id="skip-trim-guide" aria-describedby="trim-guide">Skip trim controls guide and go to trimming player</button>
+                </section>        
+                <audio tabindex="0" id="trim-player" controls aria-label="Trim audio player" aria-describedby="trim-player-hint"></audio>
+                <br>
+                <p id="trim-player-hint" tabindex="-1">You are now in the trimming audio player. Press Space or Ctrl+Space to play or pause. Press T or Ctrl+T to set start time. Press E to set end time.</p>
+                <br>
+                <!-- WAVEFORM  -->
                 <button id = "open-waveform-btn" aria-controls="waveform-panel" aria-expanded="false">Show Waveform</button>
                 <section id = "waveform-panel" style="display: none;" tabindex="-1" aria-label="Waveform preview">
                     <section id = "waveform-canvas"></section>
@@ -62,7 +68,6 @@
                     <button id = "play-button">Play Audio</button>
                     <button id = "pause-button">Pause audio</button>
                 </section>
-                <audio tabindex="0" id="trim-player" controls aria-label="Trim audio player" aria-describedby="trim-guide"></audio>
                 <br>
                 <label tabindex="-1" for="trim-time-input">Trim marker</label>
                 <br>
@@ -71,17 +76,19 @@
                 <div id="time-display" aria-live="polite" aria-atomic="true" tabindex="-1">
                     <p tabindex="-1">Start time: <span id="Start-time" tabindex="-1">--</span></p>
                     <p tabindex="-1">End time: <span id="End-time" tabindex="-1">--</span></p>
+                    <p tabindex="-1">Duration: <span id="trim-duration" tabindex="-1">--</span></p>
                 </div>
                 <!-- TO DO: PREVIEWING TRIMMED AUDIO  -->
                  <p id="trimmed-audifile-info" role="status" aria-live="assertive" aria-atomic="true" tabindex="-1"></p>
+                 <section id="trim-actions">
+                        <button type="button" id="trim-preview-btn" aria-describedby="trim-guide" tabindex="0">Preview trim</button>      
+                        <button  type="button" id = "new-trim"   tabindex="0"> New Trim</button>
+                 </section>
                  <audio tabindex="0" id="trim-preview" controls aria-label="Trim audio preview" aria-describedby="trim-guide"></audio>
-                <section id = "trim-actions" aria-label="Trim playback and save actions">
-                    <button type="button" id="trim-preview-btn" aria-describedby="trim-guide" tabindex="0">Preview trim</button>      
-                    <button  type="button" id = "new-trim"   tabindex="0"> New Trim</button>
+                <section id = "trim-actions" aria-label="Trim playback and save actions">    
                     <button type="button" id="save-Mp3-trim"  tabindex="0">Save Mp3</button>
                     <button type="button" id="save-trim"  tabindex="0">Save STL</button>
-                    <p id="action-help-next">Proceed to choose 3D model</p>
-                    <a tabindex="0" id = "proceed-to-print" aria-describedby="action-help-next" href="http://127.0.0.1:5173/Pages/Printing_options.html">Next</a>
+                    <a tabindex="0" id = "proceed-to-print" aria-describedby="action-help-next" href="http://127.0.0.1:5173/Pages/Printing_options.html">Proceed to choose 3D model</a>
                 </section>
             </section>
         </section>

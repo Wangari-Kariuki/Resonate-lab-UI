@@ -19,11 +19,29 @@ export function setSelectedAudioFile(file) {
 export function setTrimRange(start, end) {
   audioState.trimStart = start;
   audioState.trimEnd = end;
+
+  document.dispatchEvent(
+    new CustomEvent("trim-range-changed", {
+      detail: {
+        start,
+        end,
+      },
+    })
+  );
 }
 
 export function clearTrimSelection() {
   audioState.trimStart = null;
   audioState.trimEnd = null;
+
+  document.dispatchEvent(
+    new CustomEvent("trim-range-changed", {
+      detail: {
+        start: null,
+        end: null,
+      },
+    })
+  );
    // screen reader: trim starting points cleared
 }
 

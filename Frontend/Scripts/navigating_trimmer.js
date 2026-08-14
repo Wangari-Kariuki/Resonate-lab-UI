@@ -25,6 +25,7 @@ function getNavigableSections() {
             document.querySelector('#trim-guide p:not([id])'),
             document.getElementById('up'),
             document.getElementById('down'),
+            document.getElementById('skip-trim-guide'),
             document.getElementById('trim-player'),
             document.getElementById('trim-input-desc'),
             document.getElementById('trim-time-input'),
@@ -99,14 +100,54 @@ export function initTrimKeyboard({
     getTrimmingMode,
     startTimeEl,
     endTimeEl,
+    updateTrimDuration,
 }) {
     if (!audioTrimmer || !trimPlayer || !previewPlayer) return;
+
+    function shiftTrimWindow(deltaSeconds) {
+        const duration = Number(trimPlayer.duration || 0);
+        const start = Number(audioState.trimStart);
+        const end = Number(audioState.trimEnd);
+
+        if (!Number.isFinite(duration) || duration <= 0) {
+            announceForScreenReader('Audio duration is not available yet.');
+            return;
+        }
+
+        if (!Number.isFinite(start) || !Number.isFinite(end) || end <= start) {
+            announceForScreenReader('Mark both start and end times before moving the trim window.');
+            return;
+        }
+
+        const windowSize = end - start;
+        const maxStart = Math.max(0, duration - windowSize);
+        const nextStart = Math.min(Math.max(0, start + deltaSeconds), maxStart);
+        const nextEnd = Math.min(duration, nextStart + windowSize);
+
+        setTrimRange(nextStart, nextEnd);
+
+        if (startTimeEl) startTimeEl.textContent = `${nextStart.toFixed(2)} seconds`;
+        if (endTimeEl) endTimeEl.textContent = `${nextEnd.toFixed(2)} seconds`;
+
+        trimPlayer.currentTime = Math.min(
+            duration,
+            Math.max(0, trimPlayer.currentTime + (nextStart - start))
+        );
+
+        updateTrimDuration?.();
+        announceForScreenReader(
+            `Trim window moved to start ${nextStart.toFixed(2)} seconds and end ${nextEnd.toFixed(2)} seconds.`
+        );
+    }
 
     audioTrimmer.addEventListener('keydown', (event) => {
         const trimmingMode = getTrimmingMode();
         const activePlayer = trimmingMode ? trimPlayer : previewPlayer;
 
-        if (event.key === ' ') {
+        const isSpace = event.key === ' ';
+        const isCtrlSpace = event.ctrlKey && event.code === 'Space';
+
+        if (isSpace || isCtrlSpace) {
             event.preventDefault();
 
             if (activePlayer.readyState >= 2) {
@@ -121,6 +162,12 @@ export function initTrimKeyboard({
         if (event.key === 's' || event.key === 'S') {
             activePlayer.pause();
             activePlayer.currentTime = 0;
+        }
+
+        if (trimmingMode && document.activeElement === trimPlayer && (event.key === 'ArrowLeft' || event.key === 'ArrowRight')) {
+            event.preventDefault();
+            shiftTrimWindow(event.key === 'ArrowRight' ? 5 : -5);
+            return;
         }
 
         if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
@@ -141,30 +188,39 @@ export function initTrimKeyboard({
         return trimPlayer;
     }
         if (!trimmingMode) return;
-        if ((event.key === 't' || event.key === 'T') && !isTypingContext(event.target)) {
+        const isPlainT = event.key === 't' || event.key === 'T';
+        const isCtrlT = event.ctrlKey && (event.key === 't' || event.key === 'T');
+
+        if ((isPlainT || isCtrlT) && !isTypingContext(event.target)) {
+            event.preventDefault();
             const source = getTimeSource();
             const start = source.currentTime;
             setTrimRange(start, audioState.trimEnd);
             startTimeEl.textContent = `${start.toFixed(2)} seconds`;
+            updateTrimDuration?.();
             announceForScreenReader(`Start time marked at ${start.toFixed(2)} seconds.`);
             };
 
             if ((event.key === 'e' || event.key === 'E') && !isTypingContext(event.target)) {
+             event.preventDefault();
             const source = getTimeSource();
             const end = source.currentTime;
             setTrimRange(audioState.trimStart, end);
             endTimeEl.textContent = `${end.toFixed(2)} seconds`;
+            updateTrimDuration?.();
             announceForScreenReader(`End time marked at ${end.toFixed(2)} seconds.`);
             }
 
     });
 }
 
-export function initNewTrimButton({ newTrimButton, startTimeEl, endTimeEl }) {
+export function initNewTrimButton({ newTrimButton, startTimeEl, endTimeEl, durationTimeEl, updateTrimDuration }) {
     if (!newTrimButton) return;
 
     newTrimButton.addEventListener('click', () => {
         if (startTimeEl) startTimeEl.textContent = null;
         if (endTimeEl) endTimeEl.textContent = null;
+        if (durationTimeEl) durationTimeEl.textContent = null;
+        updateTrimDuration?.();
     });
 }
