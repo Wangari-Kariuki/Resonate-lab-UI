@@ -1,38 +1,65 @@
-//this is the server
-const express = require("express"); //node loads express into memory
-const app = express(); // creates an express application
-app.listen(3000); //port opens "any http request arriving in port 3000 belongs to this application"
-
-//adding a route
-app.get("/", (req, res) => {
-    res.send("Hello");
+require("dotenv").config({
+    path: require("path").join(__dirname, ".env")
 });
 
-//connecting express to PostgreSQL
-const { Client } = require("pg");
+const express = require("express");
+const cors = require("cors");
+const multer = require("multer");
+const { google } = require("googleapis");
+const { Readable } = require("node:stream");
 
-const client = new Client({
-    host: process.env.PGHOST || "localhost",
-    port: Number(process.env.PGPORT || 5433),
-    user: process.env.PGUSER || "postgres",
-    password: process.env.PGPASSWORD || "",
-    database: process.env.PGDATABASE || "audio"
+const app = express();
+
+const upload = multer({
+    storage: multer.memoryStorage()
 });
 
-client.connect()
-    .then(() => client.query("select id, size,location FROM  audio_files"))
-    .then((res) => {
-        console.log(res.rows);
-    })
-    .catch((err) => {
-        console.error("PostgreSQL connection error:", err.message);
-    })
-    .finally(() => {
-        client.end();
-    });
+app.use(cors());
 
+const auth = new google.auth.GoogleAuth({
+    keyFile: require("path").join(__dirname, "apikeys.json"),
+    scopes: ["https://www.googleapis.com/auth/drive"]
+});
 
-// retrieving trimmed audio and loading it print options page 
-//set the trimmed audio to download in the  local chrome storage
-//fetch from local chrome storage to 
-//
+const drive = google.drive({
+    version: "v3",
+    auth
+});
+
+app.post("/api/audio", upload.single("audio"), async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({
+                error: "No audio file uploaded"
+            });
+        }
+
+        const driveResponse = await drive.files.create({
+            requestBody: {
+                name: req.file.originalname,
+                mimeType: req.file.mimetype,
+                parents: [process.env.GOOGLE_DRIVE_FOLDER_ID]
+            },
+            media: {
+                mimeType: req.file.mimetype,
+                body: Readable.from(req.file.buffer)
+            },
+            fields: "id,name,mimeType,parents,webViewLink"
+        });
+
+        res.status(201).json({
+            message: "Audio uploaded to Google Drive successfully",
+            file: driveResponse.data
+        });
+    } catch (error) {
+        console.error("Google Drive upload failed:", error);
+
+        res.status(500).json({
+            error: error.message
+        });
+    }
+});
+
+app.listen(3000, () => {
+    console.log("Server running on http://localhost:3000");
+});

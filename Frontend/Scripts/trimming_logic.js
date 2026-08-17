@@ -88,10 +88,10 @@ function encodeMp3(trimmedBuffer, bitrate = 128){
     }
     return new Blob(mp3Data, {type: "audio/mpeg"})
 
-   
-
   
 }
+
+
  // converts float 32 PCM (-1 TO 1)into int16 PCM
   function floatTo16BitPCM(float32Array){
         const pcm = new Int16Array(float32Array.length);
@@ -130,6 +130,8 @@ function announceTrimmedAudio(startTime, endTime, durationSeconds) {
     writeStatus(srAnnouncer, message);
 }
 
+
+ let latestTrimmedMp3 = null;
  async function saveTrimmedAudio ()  {
     try {
         if (!audioState.selectedAudioFile) {
@@ -143,7 +145,10 @@ function announceTrimmedAudio(startTime, endTime, durationSeconds) {
             audioState.trimStart,
             audioState.trimEnd
         );
+
         const mp3Blob = encodeMp3(trimmedBuffer);
+        latestTrimmedMp3 = encodeMp3(trimmedBuffer);
+        downloadMp3(latestTrimmedMp3);
 
         announceTrimmedAudio(audioState.trimStart, audioState.trimEnd, trimmedBuffer.duration);
 
@@ -191,8 +196,7 @@ async function previewTrimmedAudio() {
     const trimmedBuffer = await extractAudioSlice(
       audioState.selectedAudioFile,
       audioState.trimStart,
-      audioState.trimEnd
-    );
+      audioState.trimEnd);
         const mp3Blob = encodeMp3(trimmedBuffer);
         const url = URL.createObjectURL(mp3Blob);
 
@@ -215,3 +219,34 @@ trimPreviewBtn?.addEventListener("click", () => {
 });
 //setting new trim
 //call on the extract audio slice function
+
+
+
+//uploadin audio to drive
+async  function uploadTrimmedAudio(mp3Blob){
+    const formData = new FormData();
+    formData.append("audio", mp3Blob, "trimmed-audio.mp3");
+
+    const response = await fetch("http://127.0.0.1:3000/api/audio", {
+        method: "POST", 
+        body: formData
+    });
+    if(!response.ok){
+        throw new Error ("Upload Failed");
+    }
+    return response.json();
+}
+
+const SendToDrive = document.getElementById("Send-to-lab");
+
+SendToDrive.addEventListener("click", async()=>{
+    try {
+        if(!latestTrimmedMp3){
+            throw new Error("Please create a trimmed MP3 first.");
+        }
+        const uploadedFile = await uploadTrimmedAudio(latestTrimmedMp3);
+        console.log("uploaded file:", uploadedFile)
+    }catch (error){
+        console.error("upload Failed", error)
+    }
+})
