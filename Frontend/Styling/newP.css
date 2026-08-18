@@ -2,7 +2,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&family=Inter:wght@400;500&display=swap');
  
 :root {
-  --bg:       #ffffff; /* FILL IN — page background */
+  --bg:       #ecf029; /* FILL IN — page background */
   --surface:  #fafafa; /* FILL IN — trim panel background */
   --ink:      #1a1a1a; /* FILL IN — text */
   --muted:    #5a5a5a; /* FILL IN — helper text */

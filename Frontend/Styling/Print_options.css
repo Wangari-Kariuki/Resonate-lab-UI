@@ -9,10 +9,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&family=Inter:wght@400;500&display=swap');
 
 :root {
-  --bg:       #ffffff; /* FILL IN — page background */
+  --bg:       #d6cb29; /* FILL IN — page background */
   --surface:  #fafafa; /* FILL IN — option card background */
   --ink:      #1a1a1a; /* FILL IN — text */
-  --muted:    #5a5a5a; /* FILL IN — helper text */
+  --muted:    #080808; /* FILL IN — helper text */
   --accent:   #1a1a1a; /* FILL IN — buttons, borders, focus ring */
   --selected: #1a1a1a; /* FILL IN — border/fill for the chosen option */
 
@@ -56,11 +56,20 @@ h3 {
   gap: 1rem;
   margin-bottom: 2rem;
 }
-
+.print-options #image-box{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 3rem;
+}
+.print-options p{
+  width: 100%;
+}
 .print-options img {
   display: block;
-  width: 10rem;
-  height: 10rem;
+  width: 300px;
+  height: 300px;
   object-fit: cover;
   border-radius: 16px;
   border: var(--border);

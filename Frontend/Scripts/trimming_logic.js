@@ -1,6 +1,6 @@
 import lamejs from "@breezystack/lamejs";
-import { audioState, selectActivePlayer } from './audioState.js';
-
+import { audioState, selectActivePlayer, setTrimmedAudioUrl } from './audioState.js';
+import { saveTrimmedAudioForHandoff } from './audioHandoff.js';
 
 //Trimming logic 
 async function extractAudioSlice(file, startTime, endTime){
@@ -103,6 +103,7 @@ function encodeMp3(trimmedBuffer, bitrate = 128){
     }
 
 const saveButton = document.getElementById("save-Mp3-trim");
+const downloadButton = document.getElementById("download-Mp3-trim");
 const trimPreview = document.getElementById("trim-preview");
 const trimPlayer = document.getElementById("trim-player");
 const trimmedAudioInfo = document.getElementById("trimmed-audio-file-info");
@@ -132,32 +133,49 @@ function announceTrimmedAudio(startTime, endTime, durationSeconds) {
 
 
  let latestTrimmedMp3 = null;
- async function saveTrimmedAudio ()  {
+
+ //builds the trimmed mp3 blob once and caches it for saving/downloading
+ async function buildTrimmedMp3() {
+    if (!audioState.selectedAudioFile) {
+        throw new Error("No audio file selected.");
+    }
+    if (audioState.trimStart === null || audioState.trimEnd === null) {
+        throw new Error("Please mark both a start and end time before saving.");
+    }
+    const trimmedBuffer = await extractAudioSlice(
+        audioState.selectedAudioFile,
+        audioState.trimStart,
+        audioState.trimEnd
+    );
+
+    latestTrimmedMp3 = encodeMp3(trimmedBuffer);
+    announceTrimmedAudio(audioState.trimStart, audioState.trimEnd, trimmedBuffer.duration);
+    return latestTrimmedMp3;
+}
+
+//stores the trimmed mp3 as a local blob URL without downloading it
+async function saveTrimmedAudio() {
     try {
-        if (!audioState.selectedAudioFile) {
-            throw new Error("No audio file selected.");
-        }
-        if (audioState.trimStart === null || audioState.trimEnd === null) {
-            throw new Error("Please mark both a start and end time before saving.");
-        }
-        const trimmedBuffer = await extractAudioSlice(
-            audioState.selectedAudioFile,
-            audioState.trimStart,
-            audioState.trimEnd
-        );
+        const mp3Blob = await buildTrimmedMp3();
+        const url = URL.createObjectURL(mp3Blob);
+        setTrimmedAudioUrl(url);
+    } catch (error) {
+        console.error(error);
+    }
+}
 
-        const mp3Blob = encodeMp3(trimmedBuffer);
-        latestTrimmedMp3 = encodeMp3(trimmedBuffer);
-        downloadMp3(latestTrimmedMp3);
-
-        announceTrimmedAudio(audioState.trimStart, audioState.trimEnd, trimmedBuffer.duration);
-
+//downloads the trimmed mp3 to the user's computer, building it first if needed
+async function downloadTrimmedAudio() {
+    try {
+        const mp3Blob = latestTrimmedMp3 ?? await buildTrimmedMp3();
         downloadMp3(mp3Blob);
     } catch (error) {
         console.error(error);
     }
-};
+}
+
 saveButton?.addEventListener("click", saveTrimmedAudio);
+downloadButton?.addEventListener("click", downloadTrimmedAudio);
 
 //Enter key trigger when trim input is focused
 document.addEventListener("keydown", (event) => {
@@ -250,3 +268,17 @@ SendToDrive.addEventListener("click", async()=>{
         console.error("upload Failed", error)
     }
 })
+
+const proceedToPrintLink = document.getElementById("proceed-to-print");
+
+proceedToPrintLink?.addEventListener("click", async (event) => {
+    event.preventDefault();
+    try {
+        const mp3Blob = latestTrimmedMp3 ?? await buildTrimmedMp3();
+        await saveTrimmedAudioForHandoff(mp3Blob);
+        window.location.href = proceedToPrintLink.href;
+    } catch (error) {
+        console.error("Could not carry trimmed audio to the next page:", error);
+        window.location.href = proceedToPrintLink.href;
+    }
+});

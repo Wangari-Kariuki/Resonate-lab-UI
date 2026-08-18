@@ -3,7 +3,15 @@ export const audioState = {
   trimStart: null,
   trimEnd: null,
   activePlayerID: null,
+  trimmedAudioUrl: null,
 };
+
+export function setTrimmedAudioUrl(url) {
+  if (audioState.trimmedAudioUrl) {
+    URL.revokeObjectURL(audioState.trimmedAudioUrl);
+  }
+  audioState.trimmedAudioUrl = url;
+}
 export function selectActivePlayer(id){
   audioState.activePlayerID = id;
 }

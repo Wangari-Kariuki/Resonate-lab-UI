@@ -6,6 +6,7 @@ vendor/
 config/autoload/*.local.php
 .env
 .env.local/
+Backend/apikeys.json
 
 # Binary gettext files
 *.mo

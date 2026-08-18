@@ -150,10 +150,11 @@ export function initTrimKeyboard({
         if (isSpace || isCtrlSpace) {
             event.preventDefault();
 
-            if (activePlayer.readyState >= 2) {
-                if (activePlayer.paused) {
+            if (isSpace || isCtrlSpace ) {
+                event.preventDefault();
+                if (activePlayer.paused){
                     activePlayer.play().catch(() => {});
-                } else {
+                }else {
                     activePlayer.pause();
                 }
             }
