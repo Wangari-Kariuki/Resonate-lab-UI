@@ -21,6 +21,13 @@ skipToMain?.addEventListener("click", (event) => {
     Main?.scrollIntoView({behavior: "smooth", block: "start"});
     Main?.focus();
 });
+skipToMain.addEventListener("keydown", () => {
+     if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            Main?.scrollIntoView({behavior: "smooth", block: "start"});
+            Main?.focus();
+        }
+})
 function pausePlayer(player){
     if(!player) return;
     player.pause();
@@ -89,11 +96,11 @@ export async function loadAudioFile(file) {
     if (!file) {
         announceFileStatus("No file selected yet.");
 
-        previewPlayer.src = "";
-        trimPlayer.src = "";
+        // previewPlayer.src = "";
+        // trimPlayer.src = "";
 
-        previewPlayer.load();
-        trimPlayer.load();
+        // previewPlayer.load();
+        // trimPlayer.load();
         return;
     }
 
@@ -116,6 +123,8 @@ function uploadFile(event){
     setSelectedAudioFile(selectedFile);
     clearTrimSelection();
     loadAudioFile(selectedFile);
+
+    previewPlayer.focus()
 }
 
 if (uploadInput) {
@@ -129,17 +138,19 @@ if (uploadInput) {
             uploadInput.click();
         }
     });
+
+    
 }
 
-if (uploadLabel && uploadInput) {
-    uploadLabel.addEventListener("keydown", (event) => {
-        if (event.key === "Enter" || event.key === " ") {
-            event.preventDefault();
-            uploadInput.focus();
-            uploadInput.click();
-        }
-    });
-}
+// if (uploadLabel && uploadInput) {
+//     uploadLabel.addEventListener("keydown", (event) => {
+//         if (event.key === "Enter" || event.key === " ") {
+//             event.preventDefault();
+//             uploadInput.focus();
+//             uploadInput.click();
+//         }
+//     });
+// }
 
 if (previewPlayer && previewHint) {
     previewPlayer.addEventListener("focus", () => {

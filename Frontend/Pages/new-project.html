@@ -9,36 +9,37 @@
 </head>
 <body class="new-project-page">
     <header>
+        
+    <section id = "title">
+        <h1>Create a new project</h1>
+    </section>
          <nav id="side-navigation" aria-label="Sidebar navigation" tabindex="-1">
-        <ul>
+            <ul>
             <li><button id = "skip-to-main" aria-label="Skip to main content">Skip to Main Content</button></li>
             <li><a href="./landing_page.html" aria-label="Go to home page">Go to Home page</a></li>
             <li><a href="/settings.html" aria-label="Go to settings">Go to Settings</a></li>
             <li><a href="./project-history.html" aria-label="View project history">Project History</a></li>
             <li><a href="./help.html" aria-label="Open help">Help</a></li>
-        </ul>
+            </ul>
     </nav>
 
-    <section id = "title">
-        <h1 tabindex="-1">New project page</h1>
-    </section>
 
     </header>
     <main id="mid-container">
         <section id="upload-section" aria-labelledby="upload-heading">
-            <h2 id="upload-heading" tabindex="0">Upload audio project</h2>
+            <h2 id="upload-heading">Upload audio project</h2>
             <p id="upload-help" style="position:absolute;left:-10000px;width:1px;height:1px;overflow: hidden;">To upload a new audio file, click choose file. </p>
 
             <!-- <input for="audio-input" accept="audio/*" aria-describedby="upload-help" role="button" tabindex="0" aria-describedby="upload-help"> -->
             <label for="audio-input">Choose an audio file to upload</label>
             <input type="file" id="audio-input" accept="audio/*" aria-label="Choose an audio file to upload" aria-describedby="upload-help" tabindex="0">
-            <p id="file-info" role="status" aria-live="assertive" aria-atomic="true" tabindex="-1">No file selected yet.</p>
+            <p id="file-info" role="status" aria-live="polite" aria-atomic="true" tabindex="-1">No file selected yet.</p>
 
-            <p id="preview-hint">Press the space bar to preview the uploaded audio.</p>
+            <p id="preview-hint"style="position:absolute;left:-10000px;width:1px;height:1px;overflow: hidden;">Press the space bar to preview the uploaded audio.</p>
             <p id="sr-announcer" role="status" aria-live="polite" aria-atomic="true" style="position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden;"> </p>
             <audio tabindex="0" id="preview-player" controls aria-label="Audio preview player" aria-describedby="preview-hint"></audio>
-            <p id="action-help-save">Save stores the current audio.</p>
-            <p id="action-help-trim" > Trim opens controls to select start and end points before saving.</p>
+            <p id="action-help-save"style="position:absolute;left:-10000px;width:1px;height:1px;overflow: hidden;">Save stores the current audio.</p>
+            <p id="action-help-trim"style="position:absolute;left:-10000px;width:1px;height:1px;overflow: hidden;"> Trim opens controls to select start and end points before saving.</p>
             <section id="action-row" tabindex="-1">
                 <button tabindex="0" type="button" id="save-audio" aria-label="Save audio" aria-describedby="action-help-save">Save</button>
                 <button tabindex="0" type="button" id="toggle-trim" aria-controls="audio-trimmer" aria-expanded="false" aria-describedby="action-help-trim" aria-label="Open trim controls">Trim</button>
@@ -60,6 +61,12 @@
                 <br>
                 <p id="trim-player-hint" tabindex="-1">You are now in the trimming audio player. Press Space or Ctrl+Space to play or pause. Press T or Ctrl+T to set start time. Press E to set end time.</p>
                 <br>
+                <!-- TO DO: PREVIEWING TRIMMED AUDIO  -->
+                 <p id="trimmed-audifile-info" role="status" aria-live="assertive" aria-atomic="true" tabindex="-1"></p>
+                 <section id="trim-actions" class="trim-preview-actions">
+                        <button type="button" id="trim-preview-btn" aria-label="Preview trimmed audio" tabindex="0">Preview trim</button>      
+                        <button  type="button" id = "new-trim" aria-label="Start a new trim" tabindex="0"> New Trim</button>
+                 </section>
                 <!-- WAVEFORM  -->
                 <button id = "open-waveform-btn" aria-controls="waveform-panel" aria-expanded="false" aria-label="Show waveform">Show Waveform</button>
                 <section id = "waveform-panel" style="display: none;" tabindex="-1" aria-label="Waveform preview">
@@ -78,18 +85,14 @@
                     <p tabindex="-1">End time: <span id="End-time" tabindex="-1">--</span></p>
                     <p tabindex="-1">Duration: <span id="trim-duration" tabindex="-1">--</span></p>
                 </div>
-                <!-- TO DO: PREVIEWING TRIMMED AUDIO  -->
-                 <p id="trimmed-audifile-info" role="status" aria-live="assertive" aria-atomic="true" tabindex="-1"></p>
-                 <section id="trim-actions">
-                        <button type="button" id="trim-preview-btn" aria-label="Preview trimmed audio" aria-describedby="trim-guide" tabindex="0">Preview trim</button>      
-                        <button  type="button" id = "new-trim" aria-label="Start a new trim" tabindex="0"> New Trim</button>
-                 </section>
+                
                  <audio tabindex="0" id="trim-preview" controls aria-label="Trim audio preview" aria-describedby="trim-guide"></audio>
                 <section id = "trim-actions" aria-label="Trim playback and save actions">    
                     <button type="button" id="save-Mp3-trim" aria-label="Save trimmed audio as MP3" tabindex="0">Save Mp3</button>
                     <button type="button" id="download-Mp3-trim" aria-label="Download trimmed audio as MP3" tabindex="0">Download Mp3</button>
-                    <button type="button" id="save-trim" aria-label="Save trim as STL" tabindex="0">Save STL</button>
+                    <button type="button" id="save-stl" aria-label="Save trim as STL" tabindex="0">Save STL</button>
                     <a tabindex="0" id = "proceed-to-print" aria-label="Proceed to choose a 3D model" href="http://127.0.0.1:5173/Pages/Printing_options.html">Proceed to choose 3D model</a>
+                    <span id="send-status" class="send-status" role="status" aria-live="polite" aria-atomic="true" hidden></span>
                     <button id="Send-to-lab" aria-label="Send project to Resonate"> Send to Resonate</button>
                 </section>
             </section>

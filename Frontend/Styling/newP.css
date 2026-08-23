@@ -2,8 +2,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&family=Inter:wght@400;500&display=swap');
  
 :root {
-  --bg:       #ecf029; /* FILL IN — page background */
-  --surface:  #fafafa; /* FILL IN — trim panel background */
+  --bg:       #ffff; /* FILL IN — page background */
+  --surface:  #f1dc63; /* FILL IN — trim panel background */
   --ink:      #1a1a1a; /* FILL IN — text */
   --muted:    #5a5a5a; /* FILL IN — helper text */
   --accent:   #1a1a1a; /* FILL IN — buttons, focus ring, borders */
@@ -153,6 +153,31 @@ button:disabled {
   gap: 0.75rem;
   margin-bottom: 1.5rem;
 }
+
+.trim-preview-actions {
+  justify-content: center;
+  align-items: center;
+}
+
+#send-status {
+  align-self: center;
+  order: 1;
+  padding: 0.6em 1em;
+  border: 1px solid var(--accent);
+  border-radius: 12px;
+  background: var(--bg);
+  color: var(--ink);
+  font-size: 0.85rem;
+}
+
+#Send-to-lab {
+  order: 0;
+}
+
+#send-status[data-state="error"] {
+  border-color: #9b2226;
+  color: #9b2226;
+}
  
 #proceed-to-print[aria-disabled="true"] {
   opacity: 0.5;
@@ -206,5 +231,6 @@ button:disabled {
 @media (max-width: 40rem) {
   header { flex-direction: column; align-items: flex-start; }
   #action-row, #trim-actions { flex-direction: column; align-items: stretch; }
+  .trim-preview-actions { align-items: center; }
 }
  

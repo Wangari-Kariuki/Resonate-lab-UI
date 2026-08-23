@@ -144,6 +144,11 @@ export function initTrimKeyboard({
         const trimmingMode = getTrimmingMode();
         const activePlayer = trimmingMode ? trimPlayer : previewPlayer;
 
+        // Let the native audio controls handle Space for play and pause.
+        if (event.target === trimPlayer && event.code === 'Space') {
+            return;
+        }
+
         const isSpace = event.key === ' ';
         const isCtrlSpace = event.ctrlKey && event.code === 'Space';
 

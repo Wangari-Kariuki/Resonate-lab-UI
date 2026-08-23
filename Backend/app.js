@@ -3,14 +3,14 @@ require("dotenv").config({
 });
 
 const express = require("express");
-const cors = require("cors");
-const multer = require("multer");
-const { google } = require("googleapis");
-const { Readable } = require("node:stream");
+const cors = require("cors"); //to allow cross orogin resouse sharing between the two different ports 
+const multer = require("multer"); //to parse/unpack/  save the raw audio data because express can'tdo that express only parses text data
+const { google } = require("googleapis"); //calling google from api package
+const { Readable } = require("node:stream"); //
 const { randomUUID } = require("node:crypto");
 const path = require("node:path");
 
-const app = express();
+const app = express();  //creating express app instance
 
 const upload = multer({
     storage: multer.memoryStorage()
@@ -77,3 +77,30 @@ app.post("/api/audio", upload.single("audio"), async (req, res) => {
 app.listen(3000, () => {
     console.log("Server running on http://localhost:3000");
 });
+//initializing blender
+    //listen to users request to get stl
+const stl_req = document.getElementById("save-stl");
+
+
+    //upon request route to receive the saved mp3 blob 
+    app.post("/api/audio", upload.single("audio"), //multer expects one fike field named audio
+        async(req, res) => { 
+        if(!req.file){
+            return res.status(400).json({error: "No file found"})
+        }
+        //uploading file metadata and buffer
+        console.log(req.file.originalname);
+        console.log(req.file.mimetype);
+        console.log(req.file.buffer);
+    });
+    //get audio from saved trimmed audio
+
+   //send audio to blender 
+
+//blender job handling
+
+     //for every job 
+     //get job id, start time, end time and status 
+     //store job meta data in postgresql 
+     //send  status updates to front end
+

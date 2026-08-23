@@ -179,7 +179,7 @@ downloadButton?.addEventListener("click", downloadTrimmedAudio);
 
 //Enter key trigger when trim input is focused
 document.addEventListener("keydown", (event) => {
-    if(event.key === "Enter"){
+    if(event.key === "Enter" && event.target?.id === "trim-time-input"){
         event.preventDefault();
         saveTrimmedAudio();
     }
@@ -241,7 +241,7 @@ trimPreviewBtn?.addEventListener("click", () => {
 
 
 //uploadin audio to drive
-async  function uploadTrimmedAudio(mp3Blob){
+export async  function uploadTrimmedAudio(mp3Blob){
     const formData = new FormData();
     formData.append("audio", mp3Blob, "trimmed-audio.mp3");
 
@@ -256,16 +256,33 @@ async  function uploadTrimmedAudio(mp3Blob){
 }
 
 const SendToDrive = document.getElementById("Send-to-lab");
+const sendStatus = document.getElementById("send-status");
 
-SendToDrive.addEventListener("click", async()=>{
+function showSendStatus(message, state = "success") {
+    if (!sendStatus) return;
+
+    sendStatus.textContent = message;
+    sendStatus.dataset.state = state;
+    sendStatus.hidden = false;
+}
+
+SendToDrive?.addEventListener("click", async()=>{
+    if (SendToDrive.disabled) return;
+
+    SendToDrive.disabled = true;
+    showSendStatus("Sending audio...", "sending");
     try {
         if(!latestTrimmedMp3){
             throw new Error("Please create a trimmed MP3 first.");
         }
         const uploadedFile = await uploadTrimmedAudio(latestTrimmedMp3);
-        console.log("uploaded file:", uploadedFile)
+        console.log("uploaded file:", uploadedFile);
+        showSendStatus("Audio sent to Resonate.");
     }catch (error){
-        console.error("upload Failed", error)
+        console.error("upload Failed", error);
+        showSendStatus(error.message || "Audio could not be sent.", "error");
+    } finally {
+        SendToDrive.disabled = false;
     }
 })
 
@@ -282,3 +299,21 @@ proceedToPrintLink?.addEventListener("click", async (event) => {
         window.location.href = proceedToPrintLink.href;
     }
 });
+
+
+const stl_req = document.getElementById("save-stl");
+
+//uploading trimmed audio to backend endpoint 
+async function uploadTrimmedAudioToBackend() {
+    const mp3Blob = await buildTrimmedMp3();
+    const formData = new FormData();
+    formData.append("audio", mp3Blob, "trimmed-audio.mp3")
+
+    const response = await fetch ("http://localhost:3000/api/audio", {
+        method: "POST", 
+        body: formData
+    })
+
+    const result = await response.json();
+    console.log(result);
+}

@@ -74,3 +74,6 @@ Arrow keys move focus through the page in order when audio is **not** being acti
 | `T` | Mark trim start point at current playback time |
 | `E` | Mark trim end point at current playback time |
 | `Enter` (on trim input) | Trim and download audio |
+
+# integrating the audio to stl coverter into the choose print option pg
+
