@@ -90,6 +90,24 @@ h3 {
   border-color: var(--selected);
 }
 
+/* highlights the option section chosen via its Select/Download button */
+.print-options #image-box.selected {
+  background: var(--surface);
+  border: var(--border);
+  border-color: var(--selected);
+  border-radius: 16px;
+}
+
+.print-options #image-box.selected img {
+  border-color: var(--selected);
+}
+
+.model-status {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
 /* Part 3: confirm, prepare, send */
 #confirm-prep-send {
   display: flex;

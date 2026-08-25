@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
      <link rel="stylesheet" type="text/css" href="../Styling/Print_options.css">
+     <link rel="stylesheet" type="text/css" href="../Styling/loading.css">
 </head>
 <body>
     <!-- Part 1: top description of page/tool -->
@@ -14,20 +15,20 @@
       <section class= "print-options">
         <section id = "image-box">
             <img src="../Assets/cylinder-1.png" alt="A 3D-rendered gray ccylindrical ring with vertical grooves on the outer surface.">
-            <p id="img-description"><button  style="display: block;" >Cylindriacal ring</button> Computer rendered image of a 3d printed audio spectrogram in the shape of a ring. 
+            <p id="img-description"><button  style="display: block;" id="select1" >Select</button> <span id="select1-status" class="model-status" role="status" aria-live="polite"></span> <span style="display: block;">Cylindrical ring</span> rendered image of a 3d printed audio spectrogram in the shape of a ring. 
                 
             </p>
         </section>
         <section id = "image-box">
             <img src="../Assets/ring-1.png" alt = "Gray 3D-rendered ribbed bracelet or circular coil on a dark background, featuring a thicker clasp-like section at the front right.">
-               <p id="img-description"><button  style="display: block;" >Concentrated ring</button> Computer rendered image of a 3d printed audio spectrogram in the shape of a ring. 
-                
+               <p id="img-description"><button id="select2" style="display: block;" >Select</button> <span id="select2-status" class="model-status" role="status" aria-live="polite"></span><span style="display: block; font-weight: 400;">Concentrated ring</span> Computer rendered image of a 3d printed audio spectrogram in the shape of a ring. 
             </p>
+
         </section>
 
         <section id = "image-box">
             <img src="../Assets/ring-2.png" alt ="A gray, smooth, circular ring with a ridged texture is shown on a dark background." >
-                <p id="img-description"><button  style="display: block;" >Spread Out ring</button> Computer rendered image of a 3d printed audio spectrogram in the shape of a ring. 
+                <p id="img-description"><button id="select3" style="display: block;" >Select</button> <span id="select3-status" class="model-status" role="status" aria-live="polite"></span> <span style="display: block;">Spread out ring</span>Computer rendered image of a 3d printed audio spectrogram in the shape of a ring. 
                 
                 </p>
         </section>
@@ -35,18 +36,18 @@
 
       <!-- Part 3: confirming option, preparing model and sending to print -->
        <section id="confirm-prep-send">
-        <button aria-label="Confirm selected 3D model option"> Confirm Option</button>
-        <section id = "prep">
-            <img src="" alt="loading animation or icon"> 
-            <p id="preparing-model-announcement"></p>
+        <button id = "confirm-save-stl" aria-label="Confirm selected 3D model option"> Confirm Option</button>
+        <section id="prep" class="hidden">
+            <img src="../Assets/spinner.gif" alt="" aria-hidden="true">
+            <p id="preparing-model-announcement" role="status" aria-live="polite"></p>
         </section>
 
-        <button id="Send-to-lab" aria-label="Send selected model to Resonate"> Send to Resonate</button>
+        <button id="Send-to-lab" aria-label="Send selected model to Resonate"> Send Model to Resonate</button>
         <button aria-label="Print selected 3D model">Print</button>
         
        </section>
 
+
 </body>
 <script type="module" src="../Scripts/printing_options.js"></script>
-<script type = "moddule" src = "../Scripts/trimming_logic.js"></script>
 </html>

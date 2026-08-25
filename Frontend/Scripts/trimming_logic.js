@@ -39,6 +39,26 @@ async function extractAudioSlice(file, startTime, endTime){
     return trimmedBuffer; //ths contains floating point values of PCM samples 
 }
 
+//throws if there's no file/trim range selected yet, shared by every trim-consuming action
+function ensureTrimSelection(actionLabel = "saving") {
+    if (!audioState.selectedAudioFile) {
+        throw new Error("No audio file selected.");
+    }
+    if (audioState.trimStart === null || audioState.trimEnd === null) {
+        throw new Error(`Please mark both a start and end time before ${actionLabel}.`);
+    }
+}
+
+//validates the current selection, then slices it out of the source file
+async function getTrimmedBuffer(actionLabel = "saving") {
+    ensureTrimSelection(actionLabel);
+    return extractAudioSlice(
+        audioState.selectedAudioFile,
+        audioState.trimStart,
+        audioState.trimEnd
+    );
+}
+
 //Encoding the trimmedbuffer into mp3 blob
 function encodeMp3(trimmedBuffer, bitrate = 128){
     const channels = trimmedBuffer.numberOfChannels;
@@ -188,17 +208,7 @@ function announceTrimmedAudio(startTime, endTime, durationSeconds) {
 
  //builds the trimmed mp3 blob once and caches it for saving/downloading
  async function buildTrimmedMp3() {
-    if (!audioState.selectedAudioFile) {
-        throw new Error("No audio file selected.");
-    }
-    if (audioState.trimStart === null || audioState.trimEnd === null) {
-        throw new Error("Please mark both a start and end time before saving.");
-    }
-    const trimmedBuffer = await extractAudioSlice(
-        audioState.selectedAudioFile,
-        audioState.trimStart,
-        audioState.trimEnd
-    );
+    const trimmedBuffer = await getTrimmedBuffer("saving");
 
     latestTrimmedMp3 = encodeMp3(trimmedBuffer);
     announceTrimmedAudio(audioState.trimStart, audioState.trimEnd, trimmedBuffer.duration);
@@ -220,7 +230,7 @@ async function saveTrimmedAudio() {
 async function downloadTrimmedAudio() {
     try {
         const mp3Blob = latestTrimmedMp3 ?? await buildTrimmedMp3();
-        downloadMp3(mp3Blob);
+        downloadBlob(mp3Blob, "trimmed-audio.mp3");
     } catch (error) {
         console.error(error);
     }
@@ -237,13 +247,13 @@ document.addEventListener("keydown", (event) => {
     }
 });
 
-function downloadMp3(mp3Blob){
-    //we create a blob so that the browser can treat the mp3 as a downloadable file
-    const url = URL.createObjectURL(mp3Blob);
+//creates a temporary object URL and clicks a hidden link to save any blob as a named file
+function downloadBlob(blob, filename){
+    const url = URL.createObjectURL(blob);
 
     const link = document.createElement("a");
     link.href = url;
-    link.download = "trimmed-audio.mp3";
+    link.download = filename;
 
     link.click();
 
@@ -251,22 +261,12 @@ function downloadMp3(mp3Blob){
 }
 async function previewTrimmedAudio() {
   try {
-    if (!audioState.selectedAudioFile) {
-      throw new Error("No audio file selected.");
-    }
-    if (audioState.trimStart === null || audioState.trimEnd === null) {
-      throw new Error("Please mark both a start and end time before previewing.");
-    }
-
         if (trimPlayer && !trimPlayer.paused) {
             trimPlayer.pause();
             trimPlayer.currentTime = 0;
         }
 
-    const trimmedBuffer = await extractAudioSlice(
-      audioState.selectedAudioFile,
-      audioState.trimStart,
-      audioState.trimEnd);
+    const trimmedBuffer = await getTrimmedBuffer("previewing");
         const mp3Blob = encodeMp3(trimmedBuffer);
         const url = URL.createObjectURL(mp3Blob);
 
@@ -292,15 +292,20 @@ trimPreviewBtn?.addEventListener("click", () => {
 
 
 
-//uploadin audio to drive
-export async  function uploadTrimmedAudio(mp3Blob){
+//posts a blob as multipart form-data to a backend endpoint, shared by every upload/STL request
+async function postAudioFile(blob, filename, endpoint){
     const formData = new FormData();
-    formData.append("audio", mp3Blob, "trimmed-audio.mp3");
+    formData.append("audio", blob, filename);
 
-    const response = await fetch("http://127.0.0.1:3000/api/audio", {
-        method: "POST", 
+    return fetch(endpoint, {
+        method: "POST",
         body: formData
     });
+}
+
+//uploadin audio to drive
+export async function uploadTrimmedAudio(mp3Blob){
+    const response = await postAudioFile(mp3Blob, "trimmed-audio.mp3", "http://127.0.0.1:3000/api/audio");
     if(!response.ok){
         throw new Error ("Upload Failed");
     }
@@ -339,12 +344,14 @@ SendToDrive?.addEventListener("click", async()=>{
 })
 
 const proceedToPrintLink = document.getElementById("proceed-to-print");
-
+//proceed to print hands off the wav blob(raw trimmed PCM via encodeWAV(trimmedBuffer) instead of mp3)
 proceedToPrintLink?.addEventListener("click", async (event) => {
     event.preventDefault();
     try {
-        const mp3Blob = latestTrimmedMp3 ?? await buildTrimmedMp3();
-        await saveTrimmedAudioForHandoff(mp3Blob);
+        // hand off raw WAV (not the lossy MP3) since STL generation needs the trimmed PCM samples
+        const trimmedBuffer = await getTrimmedBuffer("saving");
+        const wavBlob = encodeWav(trimmedBuffer);
+        await saveTrimmedAudioForHandoff(wavBlob, "trimmed-audio.wav");
         window.location.href = proceedToPrintLink.href;
     } catch (error) {
         console.error("Could not carry trimmed audio to the next page:", error);
@@ -353,55 +360,3 @@ proceedToPrintLink?.addEventListener("click", async (event) => {
 });
 
 
-const stl_req = document.getElementById("save-stl");
-stl_req?.addEventListener("click", async () => {
-  try {
-    // STL generation reads raw PCM, so send WAV directly instead of encoding/decoding MP3
-    if (!audioState.selectedAudioFile) {
-        throw new Error("No audio file selected.");
-    }
-    if (audioState.trimStart === null || audioState.trimEnd === null) {
-        throw new Error("Please mark both a start and end time before saving.");
-    }
-    const trimmedBuffer = await extractAudioSlice(
-        audioState.selectedAudioFile,
-        audioState.trimStart,
-        audioState.trimEnd
-    );
-    const wavBlob = encodeWav(trimmedBuffer);
-
-    console.log("STL input:", wavBlob, wavBlob instanceof Blob);
-
-    if (!(wavBlob instanceof Blob)) {
-      throw new Error("Could not create a trimmed WAV Blob.");
-    }
-
-    const formData = new FormData();
-    formData.append("audio", wavBlob, "trimmed-audio.wav");
-
-    const response = await fetch("http://localhost:3000/api/stl", {
-      method: "POST",
-      body: formData
-    });
-
-    if (!response.ok) {
-      throw new Error(`STL request failed: ${response.status}`);
-    }
-  } catch (error) {
-    console.error("Could not create STL:", error);
-  }
-});
-//uploading trimmed audio to backend endpoint 
-async function uploadTrimmedAudioToBackend() {
-    const mp3Blob = await buildTrimmedMp3();
-    const formData = new FormData();
-    formData.append("audio", mp3Blob, "trimmed-audio.mp3")
-
-    const response = await fetch ("http://localhost:3000/api/audio", {
-        method: "POST", 
-        body: formData
-    })
-
-    const result = await response.json();
-    console.log(result);
-}
