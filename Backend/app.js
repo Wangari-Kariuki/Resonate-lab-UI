@@ -1,7 +1,7 @@
 require("dotenv").config({
     path: require("path").join(__dirname, ".env")
 });
-
+const { spawn } = require("node:child_process");
 const express = require("express");
 const cors = require("cors"); //to allow cross orogin resouse sharing between the two different ports 
 const multer = require("multer"); //to parse/unpack/  save the raw audio data because express can'tdo that express only parses text data
@@ -32,8 +32,10 @@ const drive = google.drive({
     version: "v3",
     auth
 });
-
-app.post("/api/audio", upload.single("audio"), async (req, res) => {
+app.listen(3000, () => {
+    console.log("Server running on http://localhost:3000");
+});
+app.post("/api/audio", upload.single("audio"), async (req, res) => { //multer expects one file field named audio
     try {
         if (!req.file) {
             return res.status(400).json({
@@ -74,28 +76,77 @@ app.post("/api/audio", upload.single("audio"), async (req, res) => {
     }
 });
 
-app.listen(3000, () => {
-    console.log("Server running on http://localhost:3000");
-});
-//initializing blender
-    //listen to users request to get stl
-const stl_req = document.getElementById("save-stl");
+// generates an STL from uploaded audio via the Python script
+app.post("/api/stl", upload.single("audio"), async (req, res) => {
+    if (!req.file) {
+        return res.status(400).json({ error: "No audio file uploaded" });
+    }
 
+    const jobId = randomUUID();
+    // audio_ring_to_stl.py reads raw WAV PCM via scipy, so keep the .wav extension
+    const inputAudioPath = path.join(__dirname, "tmp", `${jobId}-input.wav`);
+    const outputStlPath = path.join(__dirname, "tmp", `${jobId}-output.stl`);
 
-    //upon request route to receive the saved mp3 blob 
-    app.post("/api/audio", upload.single("audio"), //multer expects one fike field named audio
-        async(req, res) => { 
-        if(!req.file){
-            return res.status(400).json({error: "No file found"})
+    try {
+        await require("node:fs/promises").mkdir(path.join(__dirname, "tmp"), { recursive: true });
+        await require("node:fs/promises").writeFile(inputAudioPath, req.file.buffer);
+    } catch (error) {
+        console.error("Failed to save uploaded audio:", error);
+        return res.status(500).json({ error: "Could not save uploaded audio" });
+    }
+
+    // use the project's virtualenv python so scipy/numpy are available
+    const venvPython = path.join(__dirname, "..", ".venv", "Scripts", "python.exe");
+    const pythonExecutable = require("node:fs").existsSync(venvPython) ? venvPython : "python";
+
+    const python = spawn(pythonExecutable, [
+        path.join(__dirname, "audio_ring_to_stl.py"),
+        inputAudioPath,
+        outputStlPath
+    ]);
+
+    let stderr = "";
+    python.stderr.on("data", (chunk) => { stderr += chunk; });
+
+    python.on("close", (code) => {
+        if (code !== 0) {
+            console.error("STL generation failed:", stderr);
+            return res.status(500).json({ error: "STL generation failed" });
         }
-        //uploading file metadata and buffer
-        console.log(req.file.originalname);
-        console.log(req.file.mimetype);
-        console.log(req.file.buffer);
-    });
-    //get audio from saved trimmed audio
 
+        res.download(outputStlPath, "audio-ring.stl");
+    });
+
+    python.on("error", (error) => {
+        console.error("Failed to start python process:", error);
+        res.status(500).json({ error: "Could not start STL generation" });
+    });
+});
+
+
+// //initializing blender
+//     //listen to users request to get stl
+
+//     //upon request route to receive the saved mp3 blob 
+//     app.post("/api/audio", upload.single("audio"), //multer expects one file field named audio
+//         async(req, res) => { 
+//         if(!req.file){
+//             return res.status(400).json({error: "No file found"})
+//         }
+//         //uploading file metadata and buffer to backend 
+//         console.log(req.file.originalname);
+//         console.log(req.file.mimetype);
+//         console.log(req.file.buffer);
+
+
+        
+//     });
+
+//excecuting the python scripts 
+
+//set up trigger for excecuting python scripts 0> triger is user's keyboard input
    //send audio to blender 
+//what endpoint is receiving the audio input in blender?
 
 //blender job handling
 

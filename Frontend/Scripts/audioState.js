@@ -25,6 +25,11 @@ export function setSelectedAudioFile(file) {
 }
 
 export function setTrimRange(start, end) {
+  // skip the dispatch when nothing changed to avoid an event/listener feedback loop
+  if (audioState.trimStart === start && audioState.trimEnd === end) {
+    return;
+  }
+
   audioState.trimStart = start;
   audioState.trimEnd = end;
 

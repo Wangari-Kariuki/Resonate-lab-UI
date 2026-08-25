@@ -102,6 +102,58 @@ function encodeMp3(trimmedBuffer, bitrate = 128){
         return pcm;
     }
 
+//Encoding the trimmedbuffer into an uncompressed WAV blob (no lossy re-encode needed downstream)
+function encodeWav(trimmedBuffer){
+    const channels = trimmedBuffer.numberOfChannels;
+    const sampleRate = trimmedBuffer.sampleRate;
+    const channelData = [];
+    for (let channel = 0; channel < channels; channel++){
+        channelData.push(floatTo16BitPCM(trimmedBuffer.getChannelData(channel)));
+    }
+    const frameCount = channelData[0].length;
+
+    // interleave channels
+    const interleaved = new Int16Array(frameCount * channels);
+    for (let i = 0; i < frameCount; i++){
+        for (let channel = 0; channel < channels; channel++){
+            interleaved[i * channels + channel] = channelData[channel][i];
+        }
+    }
+
+    const bytesPerSample = 2;
+    const blockAlign = channels * bytesPerSample;
+    const dataSize = interleaved.length * bytesPerSample;
+    const buffer = new ArrayBuffer(44 + dataSize);
+    const view = new DataView(buffer);
+
+    const writeString = (offset, str) => {
+        for (let i = 0; i < str.length; i++){
+            view.setUint8(offset + i, str.charCodeAt(i));
+        }
+    };
+
+    writeString(0, "RIFF");
+    view.setUint32(4, 36 + dataSize, true);
+    writeString(8, "WAVE");
+    writeString(12, "fmt ");
+    view.setUint32(16, 16, true);           // PCM fmt chunk size
+    view.setUint16(20, 1, true);            // audio format = PCM
+    view.setUint16(22, channels, true);
+    view.setUint32(24, sampleRate, true);
+    view.setUint32(28, sampleRate * blockAlign, true); // byte rate
+    view.setUint16(32, blockAlign, true);
+    view.setUint16(34, 16, true);           // bits per sample
+    writeString(36, "data");
+    view.setUint32(40, dataSize, true);
+
+    let offset = 44;
+    for (let i = 0; i < interleaved.length; i++, offset += 2){
+        view.setInt16(offset, interleaved[i], true);
+    }
+
+    return new Blob([buffer], { type: "audio/wav" });
+}
+
 const saveButton = document.getElementById("save-Mp3-trim");
 const downloadButton = document.getElementById("download-Mp3-trim");
 const trimPreview = document.getElementById("trim-preview");
@@ -302,7 +354,43 @@ proceedToPrintLink?.addEventListener("click", async (event) => {
 
 
 const stl_req = document.getElementById("save-stl");
+stl_req?.addEventListener("click", async () => {
+  try {
+    // STL generation reads raw PCM, so send WAV directly instead of encoding/decoding MP3
+    if (!audioState.selectedAudioFile) {
+        throw new Error("No audio file selected.");
+    }
+    if (audioState.trimStart === null || audioState.trimEnd === null) {
+        throw new Error("Please mark both a start and end time before saving.");
+    }
+    const trimmedBuffer = await extractAudioSlice(
+        audioState.selectedAudioFile,
+        audioState.trimStart,
+        audioState.trimEnd
+    );
+    const wavBlob = encodeWav(trimmedBuffer);
 
+    console.log("STL input:", wavBlob, wavBlob instanceof Blob);
+
+    if (!(wavBlob instanceof Blob)) {
+      throw new Error("Could not create a trimmed WAV Blob.");
+    }
+
+    const formData = new FormData();
+    formData.append("audio", wavBlob, "trimmed-audio.wav");
+
+    const response = await fetch("http://localhost:3000/api/stl", {
+      method: "POST",
+      body: formData
+    });
+
+    if (!response.ok) {
+      throw new Error(`STL request failed: ${response.status}`);
+    }
+  } catch (error) {
+    console.error("Could not create STL:", error);
+  }
+});
 //uploading trimmed audio to backend endpoint 
 async function uploadTrimmedAudioToBackend() {
     const mp3Blob = await buildTrimmedMp3();
