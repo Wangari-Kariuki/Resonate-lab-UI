@@ -8,11 +8,26 @@
      <link rel="stylesheet" type="text/css" href="../Styling/loading.css">
 </head>
 <body>
-    <!-- Part 1: top description of page/tool -->
-     <h3> Choose 3D model</h3>
+    <!-- Part 1:header-->
+    <header>
+        
+        <section id = "title">
+            <h1>Choose 3D model</h1>
+        </section>
+            <nav id="side-navigation" aria-label="Sidebar navigation" tabindex="-1">
+                <ul>
+                <li><button id = "skip-to-main" aria-label="Skip to main content">Skip to Main Content</button></li>
+                <li><a href="./landing_page.html" aria-label="Go to home page">Go to Home page</a></li>
+                <li><a href="/new-project.html" aria-label="Go to trimmig">Back to trimmer</a></li>
+                <li><a href="./project-history.html" aria-label="View project history">Project History</a></li>
+                <li><a href="./help.html" aria-label="Open help">Help</a></li>
+                </ul>
+        </nav>
+    </header>
+     
 
      <!-- Part 2: Model options inimage format : IMAGES MUST HAVE DESCRIPTIVE ALT TEXT -->
-      <section class= "print-options">
+    <main class= "print-options">
         <section id = "image-box">
             <img src="../Assets/cylinder-1.png" alt="A 3D-rendered gray ccylindrical ring with vertical grooves on the outer surface.">
             <p id="img-description"><button  style="display: block;" id="select1" >Select</button> <span id="select1-status" class="model-status" role="status" aria-live="polite"></span> <span style="display: block;">Cylindrical ring</span> rendered image of a 3d printed audio spectrogram in the shape of a ring. 
@@ -45,7 +60,7 @@
         <button id="Send-to-lab" aria-label="Send selected model to Resonate"> Send Model to Resonate</button>
         <button aria-label="Print selected 3D model">Print</button>
         
-       </section>
+    </main>
 
 
 </body>
