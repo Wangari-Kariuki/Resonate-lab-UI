@@ -12,7 +12,7 @@
   --font-body:    'Inter', system-ui, sans-serif;
  
   --radius: 999px; /* pill shape used on buttons and inputs */
-  --border: 2px solid var(--accent);
+  --border: 0.7px solid var(--accent);
 }
  
 * { box-sizing: border-box; }
@@ -45,6 +45,7 @@ p { color: var(--muted); }
  
 /* Header */
 header {
+  background-color: antiquewhite;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -94,7 +95,7 @@ h2, #trim-heading {
   display: block;
   width: 100%;
   padding: 1rem;
-  border: 2px dashed var(--accent);
+  border: 0.7px solid var(--accent);
   border-radius: 12px;
   background: var(--surface);
   margin-bottom: 1rem;

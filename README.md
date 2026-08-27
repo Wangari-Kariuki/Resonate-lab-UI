@@ -1,5 +1,5 @@
 ﻿# Resonate-lab-UI
-Accessible 3D printing web interface for blind and visually impaired users 
+Accessible Audio to 3D interface for blind and visually impaired users. 
 
 ## File Structure
 
@@ -26,6 +26,53 @@ Resonate-lab-UI/
     └── Scripts/
         └── landing-newP.js
 ```
+
+## Install prereuisites
+Node.js, preferabl the lts version
+Python 3 
+Git
+Redis
+
+### install frontend packages 
+from the project root:
+ npm intall
+
+### install backend packages 
+ cd backend 
+ npm install
+
+This installs Express, Multer, Google APIs, CORS, BullMQ and other backend dependencies listed in _package.json_
+
+
+### Create and activate the project virtual environment
+ py -m venv .venv
+ .\.venv\Scripts\Activate.ps1
+
+### Install Python packages 
+Create requirements.tt in the repository root, then install dependencies with 
+ py -m intall -r requirements.txt
+
+### Cloning 
+1. Open terminal in command line
+2. Copy the github link to this repository
+3. In command line cd ito the folder you would like to add the repository and enter: git clone <github link>
+4. After cloning you will see the <file structure here>
+
+## Run the Project
+Open two terminals
+Terminal 1 from the project root:
+ npm run dev
+
+In terminal 2
+ cd backend 
+ node app.js
+
+
+
+## Requirements for this project
+This project contains 2 depedency systems Frontend/Backend uses npm manifests  and the converter uses python.
+The node environment contains all the path and routing handlers, interactive functions and logic.
+The Python system requires numpy and scipy libraries.
 
 ## New Project Page — Trimming & Keyboard Navigation
 
