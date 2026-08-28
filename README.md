@@ -26,18 +26,23 @@ Resonate-lab-UI/
     └── Scripts/
         └── landing-newP.js
 ```
+### Cloning 
+1. Open terminal in command line
+2. Copy the github link to this repository
+3. In command line cd ito the folder you would like to add the repository and enter: git clone _github link_
+4. After cloning you will see the _file structure here_
 
-## Install prereuisites
+## Install prerequisites
 Node.js, preferabl the lts version
 Python 3 
 Git
 Redis
 
-### install frontend packages 
+### Install frontend packages 
 from the project root:
  npm intall
 
-### install backend packages 
+### Install backend packages 
  cd backend 
  npm install
 
@@ -52,11 +57,7 @@ This installs Express, Multer, Google APIs, CORS, BullMQ and other backend depen
 Create requirements.tt in the repository root, then install dependencies with 
  py -m intall -r requirements.txt
 
-### Cloning 
-1. Open terminal in command line
-2. Copy the github link to this repository
-3. In command line cd ito the folder you would like to add the repository and enter: git clone <github link>
-4. After cloning you will see the <file structure here>
+
 
 ## Run the Project
 Open two terminals
@@ -72,9 +73,15 @@ In terminal 2
 ## Requirements for this project
 This project contains 2 depedency systems Frontend/Backend uses npm manifests  and the converter uses python.
 The node environment contains all the path and routing handlers, interactive functions and logic.
-The Python system requires numpy and scipy libraries.
 
-## New Project Page — Trimming & Keyboard Navigation
+The python script uses only numpy and scipy argparse and struct so it cn run on a normal python installation 
+Added command line inputs: The script uses command line inputs input.wav file and output.wav file as defined in audio_ring_to_stl.py
+Added WAV loading: scipy.io reads theuploaded audio, while the script converts integer and unsigned audio sampls into normalized floating point values 
+Added sterio support
+Added a native STL writer:Creates binary STL directly using python's STRUCT  module, avoiding another mesh package
+App.js loads the audio and saves it temporarily, starts the python script and returns the generated STL download
+
+Converter initially supports wav files
 
 ### Trimming Logic (`trimming_logic.js`)
 - Extracts an audio slice from the selected file using the Web Audio API.
@@ -117,10 +124,10 @@ Arrow keys move focus through the page in order when audio is **not** being acti
 | Key | Action |
 |-----|--------|
 | `Space` | Play / Pause active audio player |
-| `S` | Stop active audio player (pause and reset to start) |
 | `T` | Mark trim start point at current playback time |
 | `E` | Mark trim end point at current playback time |
 | `Enter` (on trim input) | Trim and download audio |
 
 # integrating the audio to stl coverter into the choose print option pg
 
+## Audio to 3D conversion Logic

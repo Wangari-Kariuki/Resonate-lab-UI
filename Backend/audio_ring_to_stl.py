@@ -226,7 +226,7 @@ def main():
                      help="Duration (s) used to map profile position -> playback time. "
                           "Default: actual duration of the wav file (the node graph hard-codes "
                           "10.0s to match its specific sample).")
-    ap.add_argument("--gain", type=float, default=50.0,
+    ap.add_argument("--gain", type=float, default=20.0,
                      help="Extra multiplier on the sampled amplitude before it's scaled/clamped, "
                           "since Blender's internal amplitude normalization isn't public; use this "
                           "to match the amount of corrugation you see in Blender.")
