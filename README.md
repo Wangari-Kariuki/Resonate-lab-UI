@@ -1,6 +1,6 @@
 ﻿# Resonate-lab-UI
 Accessible Audio to 3D interface for blind and visually impaired users. 
-
+<!-- 
 ## File Structure
 
 ```
@@ -25,7 +25,7 @@ Resonate-lab-UI/
     │   └── Settings.html
     └── Scripts/
         └── landing-newP.js
-```
+``` -->
 ### Cloning 
 1. Open terminal in command line
 2. Copy the github link to this repository
@@ -128,6 +128,6 @@ Arrow keys move focus through the page in order when audio is **not** being acti
 | `E` | Mark trim end point at current playback time |
 | `Enter` (on trim input) | Trim and download audio |
 
-# integrating the audio to stl coverter into the choose print option pg
+<!-- # integrating the audio to stl coverter into the choose print option pg
 
-## Audio to 3D conversion Logic
+## Audio to 3D conversion Logic -->
