@@ -3,66 +3,98 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-     <link rel="stylesheet" type="text/css" href="../Styling/Print_options.css">
-     <link rel="stylesheet" type="text/css" href="../Styling/loading.css">
+    <title>Choose 3D model</title>
+    <link rel="stylesheet" type="text/css" href="../Styling/Print_options.css">
+    <link rel="stylesheet" type="text/css" href="../Styling/loading.css">
+    <link rel="stylesheet" type="text/css" href="../Styling/adjust-panel.css">
+    <!-- Lets adjust-panel.js import Three.js; must come before any module script -->
+    <script type="importmap">
+    { "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+    } }
+    </script>
 </head>
 <body>
-    <!-- Part 1:header-->
+    <!-- Part 1: header -->
     <header>
-        
-        <section id = "title">
+        <section id="title">
             <h1>Choose 3D model</h1>
         </section>
-            <nav id="side-navigation" aria-label="Sidebar navigation" tabindex="-1">
-                <ul>
-                <li><button id = "skip-to-main" aria-label="Skip to main content">Skip to Main Content</button></li>
+        <nav id="side-navigation" aria-label="Sidebar navigation" tabindex="-1">
+            <ul>
+                <li><button id="skip-to-main" aria-label="Skip to main content">Skip to Main Content</button></li>
                 <li><a href="./landing_page.html" aria-label="Go to home page">Go to Home page</a></li>
-                <li><a href="/new-project.html" aria-label="Go to trimmig">Back to trimmer</a></li>
+                <li><a href="./new-project.html" aria-label="Go to trimming">Back to trimmer</a></li>
                 <li><a href="./project-history.html" aria-label="View project history">Project History</a></li>
                 <li><a href="./help.html" aria-label="Open help">Help</a></li>
-                </ul>
+            </ul>
         </nav>
     </header>
-     
 
-     <!-- Part 2: Model options inimage format : IMAGES MUST HAVE DESCRIPTIVE ALT TEXT -->
-    <main class= "print-options">
-        <section id = "image-box">
-            <img src="../Assets/cylinder-1.png" alt="A 3D-rendered gray ccylindrical ring with vertical grooves on the outer surface.">
-            <p id="img-description"><button  style="display: block;" id="select1" >Select</button> <span id="select1-status" class="model-status" role="status" aria-live="polite"></span> <span style="display: block;">Cylindrical ring</span> rendered image of a 3d printed audio spectrogram in the shape of a ring. 
-                
-            </p>
+    <main class="print-options">
+        <!-- Part 2: options grid (left) + adjustment column (right) -->
+        <div class="options-layout">
+            <div class="options-grid">
+                <section id="image-box">
+                    <img src="../Assets/cylinder-1.png" alt="A 3D-rendered gray cylindrical ring with vertical grooves on the outer surface.">
+                    <p id="img-description"><button style="display: block;" id="select1">Select</button> <span id="select1-status" class="model-status" role="status" aria-live="polite"></span> <span style="display: block;">Cylindrical ring</span> rendered image of a 3d printed audio spectrogram in the shape of a ring.</p>
+                </section>
+
+                <section id="image-box">
+                    <img src="../Assets/ring-1.png" alt="Gray 3D-rendered ribbed bracelet or circular coil on a dark background, featuring a thicker clasp-like section at the front right.">
+                    <p id="img-description"><button id="select2" style="display: block;">Select</button> <span id="select2-status" class="model-status" role="status" aria-live="polite"></span><span style="display: block; font-weight: 400;">Concentrated ring</span> Computer rendered image of a 3d printed audio spectrogram in the shape of a ring.</p>
+                </section>
+
+                <section id="image-box">
+                    <img src="../Assets/ring-2.png" alt="A gray, smooth, circular ring with a ridged texture is shown on a dark background.">
+                    <p id="img-description"><button id="select3" style="display: block;">Select</button> <span id="select3-status" class="model-status" role="status" aria-live="polite"></span> <span style="display: block;">Spread out ring</span>Computer rendered image of a 3d printed audio spectrogram in the shape of a ring.</p>
+                </section>
+            </div>
+
+            <aside id="adjust-column" aria-label="Adjust selected model">
+                <p id="adjust-empty">Select a model to adjust its size and ridges.</p>
+
+                <section id="adjust-panel" hidden tabindex="-1" aria-labelledby="adjust-heading">
+                    <h2 id="adjust-heading">Adjust <span id="adjust-model-name"></span></h2>
+
+                    <div class="slider-row">
+                        <label for="ctl-diameter">Ring width <output id="out-diameter" for="ctl-diameter"></output></label>
+                        <input type="range" id="ctl-diameter" min="40" max="80" step="1">
+                    </div>
+                    <div class="slider-row">
+                        <label for="ctl-height">Ridge height <output id="out-height" for="ctl-height"></output></label>
+                        <input type="range" id="ctl-height" min="0.5" max="6" step="0.1">
+                    </div>
+                    <div class="slider-row">
+                        <label for="ctl-count">Number of ridges <output id="out-count" for="ctl-count"></output></label>
+                        <input type="range" id="ctl-count" min="24" max="160" step="1">
+                    </div>
+
+                    <button type="button" id="adjust-reset">Reset to model defaults</button>
+
+                    <figure id="adjust-scene">
+                        <canvas id="adjust-canvas" tabindex="0" role="img"
+                                aria-label="Interactive 3D preview of the adjusted ring. Drag to rotate, scroll to zoom, or use the arrow keys."></canvas>
+                        <figcaption id="adjust-summary" role="status" aria-live="polite"></figcaption>
+                    </figure>
+                </section>
+            </aside>
+        </div>
+
+        <!-- Part 3: confirming option, preparing model and sending to print -->
+        <section id="confirm-prep-send">
+            <button id="confirm-save-stl" aria-label="Confirm selected 3D model option">Confirm Option</button>
+            <section id="prep" class="hidden">
+                <img src="../Assets/spinner.gif" alt="" aria-hidden="true">
+                <p id="preparing-model-announcement" role="status" aria-live="polite"></p>
+            </section>
+            <a type="button" href="../Pages/new-project.html">Back to project</a>
+            <button id="Send-to-lab" aria-label="Send selected model to Resonate">Send Model to Resonate</button>
+            <button aria-label="Print selected 3D model">Print</button>
         </section>
-        <section id = "image-box">
-            <img src="../Assets/ring-1.png" alt = "Gray 3D-rendered ribbed bracelet or circular coil on a dark background, featuring a thicker clasp-like section at the front right.">
-               <p id="img-description"><button id="select2" style="display: block;" >Select</button> <span id="select2-status" class="model-status" role="status" aria-live="polite"></span><span style="display: block; font-weight: 400;">Concentrated ring</span> Computer rendered image of a 3d printed audio spectrogram in the shape of a ring. 
-            </p>
-
-        </section>
-
-        <section id = "image-box">
-            <img src="../Assets/ring-2.png" alt ="A gray, smooth, circular ring with a ridged texture is shown on a dark background." >
-                <p id="img-description"><button id="select3" style="display: block;" >Select</button> <span id="select3-status" class="model-status" role="status" aria-live="polite"></span> <span style="display: block;">Spread out ring</span>Computer rendered image of a 3d printed audio spectrogram in the shape of a ring. 
-                
-                </p>
-        </section>
-      </section>
-
-      <!-- Part 3: confirming option, preparing model and sending to print -->
-       <section id="confirm-prep-send">
-        <button id = "confirm-save-stl" aria-label="Confirm selected 3D model option"> Confirm Option</button>
-        <section id="prep" class="hidden">
-            <img src="../Assets/spinner.gif" alt="" aria-hidden="true">
-            <p id="preparing-model-announcement" role="status" aria-live="polite"></p>
-        </section>
-
-        <button id="Send-to-lab" aria-label="Send selected model to Resonate"> Send Model to Resonate</button>
-        <button aria-label="Print selected 3D model">Print</button>
-        
     </main>
-
-
 </body>
 <script type="module" src="../Scripts/printing_options.js"></script>
+<script type="module" src="../Scripts/adjust-panel.js"></script>
 </html>

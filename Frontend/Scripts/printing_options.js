@@ -76,7 +76,7 @@ SendToDrive?.addEventListener("click", async () => {
 });
 
 ["select1", "select2", "select3"].forEach((id) => {
-    const button = document.getElementById(id);
+    const  button = document.getElementById(id);
     const statusEl = document.getElementById(`${id}-status`);
     const optionSection = button?.closest("#image-box");
 

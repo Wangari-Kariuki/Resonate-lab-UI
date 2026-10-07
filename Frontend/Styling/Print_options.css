@@ -74,42 +74,32 @@ header {
 }
 /* Part 2: model options */
 .print-options {
-   max-width: 40rem;
+  max-width: 72rem;
   margin: 0 auto;
   padding: 2.5rem 1.5rem;
 }
-.print-options #image-box{
+.print-options #image-box {
   display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  gap: 3rem;
-}
-.print-options p{
-  width: 100%;
-}
-.print-options img {
-  display: block;
-  width: 280px;
-  height: 280px;
-  object-fit: cover;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border: 0.7px solid transparent;
   border-radius: 16px;
+}
+.print-options #image-box img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
   border: var(--border);
   background: var(--surface);
+}
+.print-options #img-description {
+  margin: 0;
+}
+.print-options #img-description button {
   margin-bottom: 0.5rem;
-}
-
-.print-options label {
-  display: block;
-  font-family: var(--font-display);
-  font-size: 0.95rem;
-  text-align: center;
-}
-
-/* If images become selectable inputs/buttons, this highlights the chosen one */
-.print-options img:hover,
-.print-options img:focus-visible {
-  border-color: var(--selected);
 }
 
 /* highlights the option section chosen via its Select/Download button */
@@ -134,7 +124,19 @@ header {
 #confirm-prep-send {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: 0.75rem;
+  margin-top: 2rem;
+}
+
+#confirm-prep-send > a {
+  padding: 0.7em 1.5em;
+  border-radius: var(--radius);
+  border: var(--border);
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  text-decoration: none;
 }
 
 button {
