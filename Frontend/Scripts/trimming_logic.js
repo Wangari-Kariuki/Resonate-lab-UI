@@ -217,12 +217,17 @@ function announceTrimmedAudio(startTime, endTime, durationSeconds) {
 
 //stores the trimmed mp3 as a local blob URL without downloading it
 async function saveTrimmedAudio() {
+    showSendStatus("Saving audio...", "sending");
     try {
         const mp3Blob = await buildTrimmedMp3();
         const url = URL.createObjectURL(mp3Blob);
         setTrimmedAudioUrl(url);
+        showSendStatus("Audio saved successfully.");
+        return true;
     } catch (error) {
         console.error(error);
+        showSendStatus(error.message || "Failed to save audio.", "error");
+        return false;
     }
 }
 
@@ -237,6 +242,7 @@ async function downloadTrimmedAudio() {
 }
 
 saveButton?.addEventListener("click", saveTrimmedAudio);
+
 downloadButton?.addEventListener("click", downloadTrimmedAudio);
 
 //Enter key trigger when trim input is focused

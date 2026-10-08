@@ -17,6 +17,8 @@ const summary = document.getElementById('adjust-summary');
 const modelName = document.getElementById('adjust-model-name');
 const resetBtn = document.getElementById('adjust-reset');
 
+
+
 const ctl = {
     diameter: document.getElementById('ctl-diameter'),
     height: document.getElementById('ctl-height'),
