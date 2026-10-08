@@ -96,14 +96,23 @@ app.post("/api/stl", upload.single("audio"), async (req, res) => {
     }
 
     // use the project's virtualenv python so scipy/numpy are available
-    const venvPython = path.join(__dirname, "..", ".venv", "Scripts", "python.exe");
+    const venvPython = path.join(__dirname, ".venv", "Scripts", "python.exe");
     const pythonExecutable = require("node:fs").existsSync(venvPython) ? venvPython : "python";
 
-    const python = spawn(pythonExecutable, [
-        path.join(__dirname, "audio_ring_to_stl.py"),
-        inputAudioPath,
-        outputStlPath
-    ]);
+    // only pass settings that are numbers inside the slider ranges
+    const num = (v, lo, hi) => {
+        const n = Number(v);
+        return Number.isFinite(n) && n >= lo && n <= hi ? String(n) : null;
+    };
+    const diameter = num(req.body.diameter, 40, 80);
+    const height = num(req.body.height, 0.5, 6);
+    const count = num(req.body.count, 24, 160);
+
+    const args = [path.join(__dirname, "audio_ring_to_stl.py"), inputAudioPath, outputStlPath];
+    if (diameter) args.push("--diameter", diameter);
+    if (height) args.push("--height", height);
+    if (count) args.push("--count", count);
+    const python = spawn(pythonExecutable, args);
 
     let stderr = "";
     python.stderr.on("data", (chunk) => { stderr += chunk; });
@@ -122,7 +131,6 @@ app.post("/api/stl", upload.single("audio"), async (req, res) => {
         res.status(500).json({ error: "Could not start STL generation" });
     });
 });
-
 
 // //initializing blender
 //     //listen to users request to get stl

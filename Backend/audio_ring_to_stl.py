@@ -16,6 +16,32 @@ import struct
 
 import numpy as np
 from scipy.io import wavfile
+from fastapi import FastAPI
+from pydantic import BaseModel, Field
+
+app = FastAPI()
+class RingSettings(BaseModel):
+    diameter:float = Field(gt=0)
+    height: float = Field(gt=0)
+    count: int = Field(ge=24, le=160)
+
+#this endpoint only receives and reports the settings, to effect an stl we use the mapped values in the mesh generation path
+@app.post("/set-size")
+def set_size(settings: RingSettings):
+    #diameter becomes backends length unitsand half of it is our radius
+    diameter_m = settings.diameter /1000
+    height_m = settings.height / 1000
+    ring_radius = diameter_m / 2
+    profile_length = 2 * np.pi * ring_radius
+
+    n_profiles = settings.count
+    #the number of sampled profiles used to build the ring
+    return {"status": "success", 
+    "ring_radius_m": ring_radius, 
+    "profile_length_m": profile_length, 
+    "n_profiles": n_profiles,
+    
+    }
 
 # # --------------------------------------------------------------------------- #
 # # Parameters copied 1:1 from the node trees (step-1.txt / step-2.txt / step-5.txt)
@@ -127,10 +153,10 @@ def envelope(t_norm, points=ENVELOPE_POINTS):
 # # Mesh construction
 # # --------------------------------------------------------------------------- #
 # 
-def compute_strengths(sr, data, sound_length, n_profile, gain):
+def compute_strengths(sr, data, sound_length, n_profile, gain, profile_length, target_height_m = None):
     """Reproduce Step-2's math graph, returning one strength value per profile point."""
-    y = np.linspace(0.0, PROFILE_LENGTH, n_profile)                 # Mesh Line Y positions
-    t_sample = (y / PROFILE_LENGTH) * sound_length                  # Map Range.005
+    y = np.linspace(0.0, profile_length, n_profile)                 # Mesh Line Y positions
+    t_sample = (y / profile_length) * sound_length                  # Map Range.005
     t_norm = t_sample / sound_length                                # Map Range.006 (== y/PROFILE_LENGTH)
 
     amplitude = sample_band_amplitude(data, sr, t_sample, FFT_SIZE, FREQ_LOW, FREQ_HIGH)
@@ -140,10 +166,16 @@ def compute_strengths(sr, data, sound_length, n_profile, gain):
     raw = amplitude * curve_val                                     # Math.015
     strength = raw * STRENGTH_SCALE + STRENGTH_OFFSET               # Math.001 -> Math.007
     strength = np.clip(strength, STRENGTH_MIN, STRENGTH_MAX)        # Clamp.001
+
+    # normalize so the quietest point is a thin base and the loudest is the full height
+    if target_height_m is not None and strength.max() > strength.min():
+        base = 0.35 * target_height_m
+        span = (strength - strength.min()) / (strength.max() - strength.min())
+        strength = base + span * (target_height_m - base)
     return y, strength
 
 
-def build_ring_mesh(y, strength, ring_radius, tube_sides):
+def build_ring_mesh(y, strength, ring_radius, tube_sides, profile_length):
     """
     Screw (revolve profile around its own axis) + Curve (bend straight tube
     around a circle) collapsed into one direct construction:
@@ -151,7 +183,7 @@ def build_ring_mesh(y, strength, ring_radius, tube_sides):
     strength[i], centered on a circle of radius `ring_radius`.
     """
     n_length = len(y)
-    theta = (y / PROFILE_LENGTH) * 2.0 * np.pi          # position around the big ring
+    theta = (y / profile_length) * 2.0 * np.pi          # position around the big ring
     phi = np.linspace(0.0, 2.0 * np.pi, tube_sides, endpoint=False)  # around tube cross-section
 
     cos_t, sin_t = np.cos(theta), np.sin(theta)         # (n_length,)
@@ -230,19 +262,31 @@ def main():
                      help="Extra multiplier on the sampled amplitude before it's scaled/clamped, "
                           "since Blender's internal amplitude normalization isn't public; use this "
                           "to match the amount of corrugation you see in Blender.")
+    ap.add_argument("--diameter", type=float, default=None, help="Ring diameter in mm")
+    ap.add_argument("--height", type=float, default=None, help="max ridge height in mm")
+    ap.add_argument("--count", type=int, default=None, help="Number of profile samples")
     args = ap.parse_args()
 
     sr, data = load_audio(args.wav_path)
     sound_length = args.sound_length if args.sound_length is not None else data.shape[0] / sr
-    ring_radius = args.ring_radius if args.ring_radius is not None else PROFILE_LENGTH / (2 * np.pi)
 
-    y, strength = compute_strengths(sr, data, sound_length, args.n_profile, args.gain)
-    verts = build_ring_mesh(y, strength, ring_radius, args.tube_sides)
+    if args.diameter is not None:
+        ring_radius = args.diameter / 2
+        profile_length = 2 * np.pi * ring_radius
+    else:
+        profile_length = PROFILE_LENGTH
+        ring_radius = PROFILE_LENGTH / (2 * np.pi)
+
+    n_profile = args.count if args.count is not None else args.n_profile
+
+    y, strength = compute_strengths(sr, data, sound_length, n_profile, args.gain,
+                                    profile_length, args.height)
+    verts = build_ring_mesh(y, strength, ring_radius, args.tube_sides, profile_length)
     tris = mesh_to_triangles(verts)
     write_binary_stl(args.stl_path, tris)
 
     print(f"Wrote {args.stl_path}: {len(tris)} triangles "
-          f"(profile points={args.n_profile}, tube sides={args.tube_sides}, "
+          f"(profile points={n_profile}, tube sides={args.tube_sides}, "
           f"ring radius={ring_radius:.5f}, sound length={sound_length:.3f}s)")
 
 
