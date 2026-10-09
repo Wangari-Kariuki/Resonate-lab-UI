@@ -1,3 +1,5 @@
+import { saveProject, loadProject } from './projectstore.js';
+
 export const audioState = {
   selectedAudioFile: null,
   trimStart: null,
@@ -29,7 +31,6 @@ export function setTrimRange(start, end) {
   if (audioState.trimStart === start && audioState.trimEnd === end) {
     return;
   }
-
   audioState.trimStart = start;
   audioState.trimEnd = end;
 
@@ -42,6 +43,27 @@ export function setTrimRange(start, end) {
     })
   );
 }
+
+// Registered once: persists the trim range whenever it changes.
+document.addEventListener("trim-range-changed", async (e) => {
+  const { start, end } = e.detail;
+  const hasRange = Number.isFinite(start) && Number.isFinite(end);
+  try {
+    const stored = await loadProject();
+    // Nothing stored yet (no audio uploaded) or range identical (restore): don't write.
+    if (!stored || (stored.trimStart === start && stored.trimEnd === end)) return;
+    await saveProject({
+      trimStart: hasRange ? start : null,
+      trimEnd: hasRange ? end : null,
+      duration: hasRange ? end - start : null,
+      // a changed range makes any previously trimmed audio stale
+      trimmedWav: null,
+      trimmedMp3: null,
+    });
+  } catch (err) {
+    console.error("Could not save trim range:", err);
+  }
+});
 
 export function clearTrimSelection() {
   audioState.trimStart = null;

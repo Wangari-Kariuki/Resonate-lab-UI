@@ -1,4 +1,5 @@
-import { audioState, setSelectedAudioFile, clearTrimSelection, selectActivePlayer, clearActivePlayer } from './audioState.js';
+import { audioState, setSelectedAudioFile, clearTrimSelection, selectActivePlayer, clearActivePlayer, setTrimRange } from './audioState.js';
+import { saveProject, loadProject } from './projectstore.js';
 import { initTrimKeyboard, initNewTrimButton } from './navigating_trimmer.js';
 export const uploadInput = document.getElementById("audio-input");
 const uploadLabel = document.querySelector('label[for="audio-input"]');
@@ -118,13 +119,54 @@ export async function loadAudioFile(file) {
     announceFileStatus(`Audio uploaded successfully. File: ${file.name}. Size: ${Math.round(file.size / 1024)} KB. Length: ${minutes}: ${remainingSeconds.toString().padStart(2, "0")} mm:ss. `);
 }
 
-function uploadFile(event){
+async function uploadFile(event){
     const selectedFile = event.target.files[0];
+    if (!selectedFile) return;
+
     setSelectedAudioFile(selectedFile);
     clearTrimSelection();
-    loadAudioFile(selectedFile);
+    // one merged write: new original audio replaces every derived value
+    try {
+        await saveProject({
+            originalAudio: selectedFile,
+            fileName: selectedFile.name,
+            fileType: selectedFile.type,
+            trimStart: null,
+            trimEnd: null,
+            duration: null,
+            trimmedWav: null,
+            trimmedMp3: null,
+        });
+    } catch (err) {
+        console.error("Could not save original audio:", err);
+    }
+    await loadAudioFile(selectedFile);
 
     previewPlayer.focus()
+}
+
+// Rebuilds the page from the saved project (original audio + trim range) after navigation or reload.
+async function restoreProject() {
+    if (!previewPlayer || !trimPlayer) return;
+    try {
+        const record = await loadProject();
+        if (!record?.originalAudio) return;
+
+        const file = new File([record.originalAudio], record.fileName || "audio", { type: record.fileType || record.originalAudio.type });
+        setSelectedAudioFile(file);
+        await loadAudioFile(file);
+
+        if (Number.isFinite(record.trimStart) && Number.isFinite(record.trimEnd)) {
+            setTrimRange(record.trimStart, record.trimEnd);
+            const startEl = document.getElementById("Start-time");
+            const endEl = document.getElementById("End-time");
+            if (startEl) startEl.textContent = `${record.trimStart.toFixed(2)} seconds`;
+            if (endEl) endEl.textContent = `${record.trimEnd.toFixed(2)} seconds`;
+            updateTrimDuration();
+        }
+    } catch (err) {
+        console.error("Could not restore project:", err);
+    }
 }
 
 if (uploadInput) {
@@ -257,3 +299,5 @@ initNewTrimButton({
     durationTimeEl: durationTime,
     updateTrimDuration,
 });
+
+restoreProject();

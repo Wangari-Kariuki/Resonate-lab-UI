@@ -191,8 +191,23 @@ button:disabled {
   border-radius: 16px;
   background: var(--surface);
   padding: 1.5rem;
+  box-shadow: 0 4px 6px rgba(71, 68, 68, 0.7);
 }
- 
+
+/* Waveform panel */
+#waveform-panel{
+      background: var(--bg);
+  border: 1px dashed var(--accent);
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 4px 6px rgba(71, 68, 68, 0.7);
+
+}
+#open-waveform-btn {
+  display: flex;
+  margin: 0 auto 1.5rem;
+}
 #trim-guide {
   background: var(--bg);
   border: 1px dashed var(--accent);
@@ -200,19 +215,38 @@ button:disabled {
   padding: 1rem;
   margin-bottom: 1.5rem;
 }
- 
+#trim-actions {
+    background: var(--bg);
+  border: 1px dashed var(--accent);
+  border-radius: 12px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 4px 6px rgba(71, 68, 68, 0.7);
+}
+
 #trim-guide p {
   font-size: 0.85rem;
   margin: 0.3em 0;
 }
- 
+ #after-trim-actions{
+  display:flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+
+ }
+ #after-trim-actions button {
+  padding: 0.4em 1em;
+ }
+
 #trim-time-input {
-  padding: 0.5em 1em;
+  padding: 0.5em 0.4em;
   border-radius: var(--radius);
   border: var(--border);
-  width: 100%;
-  max-width: 10rem;
-  margin: 0.5rem 0 1rem;
+  width: 30%;
+  max-width: 8rem;
+  
 }
  
 #time-display {

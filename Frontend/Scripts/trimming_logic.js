@@ -1,6 +1,6 @@
 import lamejs from "@breezystack/lamejs";
 import { audioState, selectActivePlayer, setTrimmedAudioUrl } from './audioState.js';
-import { saveTrimmedAudioForHandoff } from './audioHandoff.js';
+import { saveProject } from './projectstore.js';
 
 //Trimming logic 
 async function extractAudioSlice(file, startTime, endTime){
@@ -174,7 +174,7 @@ function encodeWav(trimmedBuffer){
     return new Blob([buffer], { type: "audio/wav" });
 }
 
-const saveButton = document.getElementById("save-Mp3-trim");
+//const saveButton = document.getElementById("save-Mp3-trim");
 const downloadButton = document.getElementById("download-Mp3-trim");
 const trimPreview = document.getElementById("trim-preview");
 const trimPlayer = document.getElementById("trim-player");
@@ -241,7 +241,7 @@ async function downloadTrimmedAudio() {
     }
 }
 
-saveButton?.addEventListener("click", saveTrimmedAudio);
+//saveButton?.addEventListener("click", saveTrimmedAudio);
 
 downloadButton?.addEventListener("click", downloadTrimmedAudio);
 
@@ -357,12 +357,11 @@ proceedToPrintLink?.addEventListener("click", async (event) => {
         // hand off raw WAV (not the lossy MP3) since STL generation needs the trimmed PCM samples
         const trimmedBuffer = await getTrimmedBuffer("saving");
         const wavBlob = encodeWav(trimmedBuffer);
-        await saveTrimmedAudioForHandoff(wavBlob, "trimmed-audio.wav");
-        window.location.href = proceedToPrintLink.href;
+        await saveProject({ trimmedWav: wavBlob });
     } catch (error) {
         console.error("Could not carry trimmed audio to the next page:", error);
-        window.location.href = proceedToPrintLink.href;
     }
+    window.location.href = proceedToPrintLink.href;
 });
 
 

@@ -1,4 +1,4 @@
-import { loadTrimmedAudioForHandoff, clearTrimmedAudioForHandoff } from './audioHandoff.js';
+import { loadProject } from './projectstore.js';
 
 const SendToDrive = document.getElementById("Send-to-lab");
 const confirmButton = document.getElementById("confirmchanges");
@@ -8,9 +8,11 @@ const prepAnnouncement = document.getElementById("preparing-model-announcement")
 let handoffAudio = null;
 let latestStlBlob = null;
 
-loadTrimmedAudioForHandoff().then((result) => {
-    handoffAudio = result;
-});
+loadProject().then((record) => {
+    if (record?.trimmedWav) {
+        handoffAudio = { blob: record.trimmedWav, name: "trimmed-audio.wav" };
+    }
+}).catch((error) => console.error("Could not load saved project:", error));
 
 function showProcessingStatus(message) {
     prepSection.classList.remove("hidden");
@@ -77,7 +79,6 @@ SendToDrive?.addEventListener("click", async () => {
         const uploadedFile = await uploadTrimmedAudio(handoffAudio.blob, handoffAudio.name);
         console.log("uploaded file:", uploadedFile);
         showProcessingStatus("Audio sent to Resonate.");
-        clearTrimmedAudioForHandoff();
     } catch (error) {
         console.error("upload Failed", error);
         showProcessingStatus(error.message || "Audio could not be sent.");
