@@ -11,7 +11,7 @@
   --font-body:    'Inter', system-ui, sans-serif;
  
   --radius: 999px; /* pill shape used on links */
-  --border: 2px solid var(--accent);
+  --border: 1px solid rgba(26, 26, 26, 0.14);
 }
  
 * { box-sizing: border-box; }

@@ -15,9 +15,10 @@
 #adjust-column {
     /* position: sticky; */
     top: 1rem;
-    border: 1px solid rgba(128, 128, 128, .45);
-    border-radius: 8px;
+    border: 1px solid rgba(26, 26, 26, .14);
+    border-radius: 12px;
     padding: 1.5rem;
+    box-shadow: 0 8px 24px rgba(26, 26, 26, .08);
 }
 #adjust-empty { margin: 0; opacity: .8; }
 #adjust-panel[hidden] { display: none; }
@@ -40,7 +41,8 @@
     width: 100%;
     aspect-ratio: 1 / 1;
     background: #15171c;
-    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, .1);
+    border-radius: 10px;
     touch-action: none;
     cursor: grab;
 }

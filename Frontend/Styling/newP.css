@@ -12,7 +12,7 @@
   --font-body:    'Inter', system-ui, sans-serif;
  
   --radius: 999px; /* pill shape used on buttons and inputs */
-  --border: 0.7px solid var(--accent);
+  --border: 1px solid rgba(26, 26, 26, 0.14);
 }
  
 * { box-sizing: border-box; }
@@ -95,7 +95,7 @@ h2, #trim-heading {
   display: block;
   width: 100%;
   padding: 1rem;
-  border: 0.7px solid var(--accent);
+  border: 1px solid rgba(26, 26, 26, 0.14);
   border-radius: 12px;
   background: var(--surface);
   margin-bottom: 1rem;
@@ -164,7 +164,7 @@ button:disabled {
   align-self: center;
   order: 1;
   padding: 0.6em 1em;
-  border: 1px solid var(--accent);
+  border: 1px solid rgba(26, 26, 26, 0.14);
   border-radius: 12px;
   background: var(--bg);
   color: var(--ink);
@@ -191,17 +191,17 @@ button:disabled {
   border-radius: 16px;
   background: var(--surface);
   padding: 1.5rem;
-  box-shadow: 0 4px 6px rgba(71, 68, 68, 0.7);
+  box-shadow: 0 8px 24px rgba(26, 26, 26, 0.08);
 }
 
 /* Waveform panel */
 #waveform-panel{
       background: var(--bg);
-  border: 1px dashed var(--accent);
+  border: 1px dashed rgba(26, 26, 26, 0.22);
   border-radius: 12px;
   padding: 1rem;
   margin-bottom: 1.5rem;
-  box-shadow: 0 4px 6px rgba(71, 68, 68, 0.7);
+  box-shadow: 0 8px 24px rgba(26, 26, 26, 0.08);
 
 }
 #open-waveform-btn {
@@ -210,18 +210,18 @@ button:disabled {
 }
 #trim-guide {
   background: var(--bg);
-  border: 1px dashed var(--accent);
+  border: 1px dashed rgba(26, 26, 26, 0.22);
   border-radius: 12px;
   padding: 1rem;
   margin-bottom: 1.5rem;
 }
 #trim-actions {
     background: var(--bg);
-  border: 1px dashed var(--accent);
+  border: 1px dashed rgba(26, 26, 26, 0.22);
   border-radius: 12px;
   padding: 1rem;
   margin-bottom: 1.5rem;
-  box-shadow: 0 4px 6px rgba(71, 68, 68, 0.7);
+  box-shadow: 0 8px 24px rgba(26, 26, 26, 0.08);
 }
 
 #trim-guide p {
