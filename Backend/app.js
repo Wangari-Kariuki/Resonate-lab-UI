@@ -1,7 +1,9 @@
 require("dotenv").config({
     path: require("path").join(__dirname, ".env")
 });
-
+export default defineConfig({
+  base: '/audio-to-3D/',
+});
 const { spawn } = require("node:child_process");
 const express = require("express");
 const cors = require("cors"); //to allow cross orogin resouse sharing between the two different ports 
