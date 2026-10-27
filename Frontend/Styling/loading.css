@@ -27,7 +27,7 @@
   width: 50px;
   height: 50px;
   border: 5px solid #f3f3f3; /* Light grey track */
-  border-top: 5px solid #3498db; /* Blue active spinning part */
+  border-top: 5px solid #147d8b;
   border-radius: 50%;
   margin: 0 auto 15px auto;
   animation: spin 1s linear infinite;

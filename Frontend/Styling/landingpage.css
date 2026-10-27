@@ -1,11 +1,12 @@
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&family=Inter:wght@400;500&display=swap');
  
 :root {
-  --bg:       #ffffff; /* FILL IN — page background */
-  --surface:  #fafafa; /* FILL IN — nav / footer background */
-  --ink:      #1a1a1a; /* FILL IN — text */
-  --muted:    #5a5a5a; /* FILL IN — helper / footer text */
-  --accent:   #1a1a1a; /* FILL IN — links, borders, focus ring */
+  --bg:       #f2f5f6;
+  --surface:  #ffffff;
+  --ink:      #20343a;
+  --muted:    #596a70;
+  --accent:   #d9e2e5;
+  --teal:     #147d8b;
  
   --font-display: 'Space Grotesk', sans-serif;
   --font-body:    'Inter', system-ui, sans-serif;
@@ -27,7 +28,7 @@ body {
 p { color: var(--muted); }
  
 :focus-visible {
-  outline: 3px solid var(--accent);
+  outline: 3px solid var(--teal);
   outline-offset: 3px;
 }
  
@@ -37,7 +38,9 @@ p { color: var(--muted); }
   align-items: center;
   gap: 1rem;
   padding: 1.5rem 2rem;
-  border-bottom: var(--border);
+  background: var(--teal);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  color: #ffffff;
 }
 
 #top-container #side-navigation {
@@ -116,13 +119,19 @@ p { color: var(--muted); }
   align-items: center;
   padding: 0.5em 1.1em;
   border-radius: var(--radius);
-  border: var(--border);
-  background: var(--surface);
-  color: var(--ink);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  background: transparent;
+  color: #ffffff;
   text-decoration: none;
   font-family: var(--font-body);
   font-weight: 500;
   font-size: 0.9rem;
+}
+
+#side-navigation a:hover {
+  background: #ffffff;
+  border-color: #ffffff;
+  color: var(--teal);
 }
  
 /* Project links */
@@ -152,10 +161,17 @@ p { color: var(--muted); }
   font-size: 1rem;
   text-align: center;
 }
+
+#links-to-projects a:hover {
+  border-color: var(--teal);
+  background: var(--teal);
+  color: #ffffff;
+}
  
 #new-project-link {
-  background: var(--accent);
-  color: var(--bg);
+  background: var(--teal);
+  border-color: var(--teal);
+  color: #ffffff;
 }
  
 /* Footer */

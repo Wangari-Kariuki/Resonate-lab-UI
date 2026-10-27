@@ -9,12 +9,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&family=Inter:wght@400;500&display=swap');
 
 :root {
-  --bg:       #FFFF; /* FILL IN — page background */
-  --surface:  #fafafa; /* FILL IN — option card background */
-  --ink:      #1a1a1a; /* FILL IN — text */
-  --muted:    #080808; /* FILL IN — helper text */
-  --accent:   #1a1a1a; /* FILL IN — buttons, borders, focus ring */
-  --selected: #1a1a1a; /* FILL IN — border/fill for the chosen option */
+  --bg:       #f2f5f6;
+  --surface:  #ffffff;
+  --ink:      #20343a;
+  --muted:    #596a70;
+  --accent:   #d9e2e5;
+    --teal:     #50d2e4;
+  --selected: #147d8b;
 
   --font-display: 'Space Grotesk', sans-serif;
   --font-body:    'Inter', system-ui, sans-serif;
@@ -35,13 +36,14 @@ body {
 p { color: var(--muted); }
 
 :focus-visible {
-  outline: 3px solid var(--accent);
+  outline: 3px solid var(--teal);
   outline-offset: 3px;
 }
 
 
 header {
- background-color: antiquewhite;
+ background-color: var(--teal);
+ color: #ffffff;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -67,10 +69,16 @@ header {
 #side-navigation a {
   padding: 0.4em 1em;
   border-radius: var(--radius);
-  border: var(--border);
-  color: var(--ink);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  color: #ffffff;
   text-decoration: none;
   font-size: 0.9rem;
+}
+
+#side-navigation a:hover {
+  background: #ffffff;
+  border-color: #ffffff;
+  color: var(--teal);
 }
 /* Part 2: model options */
 .print-options {
@@ -151,6 +159,22 @@ button {
   font-family: var(--font-display);
   font-size: 0.9rem;
   cursor: pointer;
+  transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+button:not(:disabled):hover,
+#confirm-prep-send > a:hover {
+  background: var(--teal);
+  border-color: var(--teal);
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(20, 125, 139, 0.2);
+  transform: translateY(-1px);
+}
+
+button:not(:disabled):active,
+#confirm-prep-send > a:active {
+  transform: translateY(0);
+  box-shadow: none;
 }
 
 button:disabled {
@@ -159,8 +183,9 @@ button:disabled {
 }
 
 #confirm-prep-send > button {
-  background: var(--accent);
-  color: var(--bg);
+  background: var(--teal);
+  border-color: var(--teal);
+  color: #ffffff;
 }
 
 #prep {

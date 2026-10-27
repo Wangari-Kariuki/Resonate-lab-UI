@@ -15,9 +15,10 @@
 #adjust-column {
     /* position: sticky; */
     top: 1rem;
-    border: 1px solid rgba(128, 128, 128, .45);
-    border-radius: 8px;
+    border: 1px solid #d9e2e5;
+    border-radius: 12px;
     padding: 1.5rem;
+    box-shadow: 0 8px 24px rgba(32, 52, 58, .08);
 }
 #adjust-empty { margin: 0; opacity: .8; }
 #adjust-panel[hidden] { display: none; }

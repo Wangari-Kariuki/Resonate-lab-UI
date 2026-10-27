@@ -50,7 +50,7 @@ controls.maxDistance = 300;
 controls.listenToKeyEvents(canvas);  // arrow keys rotate when canvas is focused
 controls.addEventListener('change', render);
 
-const material = new THREE.MeshStandardMaterial({ color: 0xb9bcc4, roughness: 0.55, metalness: 0.15 });
+const material = new THREE.MeshStandardMaterial({ color: 0xb9bcc4, roughness: 0.55, metalness: 0.15, side: THREE.DoubleSide });
 const ringGroup = new THREE.Group();
 scene.add(ringGroup);
 
@@ -60,6 +60,16 @@ const audio = Array.from({ length: 160 }, (_, i) => {
     return Math.min(1, Math.max(0.15, v));
 });
 
+/* Matches audio_ring_to_stl.py: the quietest point is 35% of the ridge height and the
+   loudest is the full height (min-max normalised). No extra core or contrast curve. */
+const BASE_FRACTION = 0.35;
+const AUDIO_LO = Math.min(...audio);
+const AUDIO_HI = Math.max(...audio);
+
+function ridgeAmount(i) {
+    const span = (audio[i % audio.length] - AUDIO_LO) / (AUDIO_HI - AUDIO_LO);
+    return BASE_FRACTION + (1 - BASE_FRACTION) * span;
+}
 function weight(shape, t) {
     // t runs 0..1 around the ring
     if (shape === 'concentrated') {
@@ -73,26 +83,42 @@ function buildRing({ diameter, height, count }, model) {
     ringGroup.traverse(o => { if (o.geometry) o.geometry.dispose(); });
     ringGroup.clear();
 
-    const r = diameter / 2;
-    const band = new THREE.Mesh(new THREE.CylinderGeometry(r, r, BAND_HEIGHT, 128, 1, true), material.clone());
-    band.material.side = THREE.DoubleSide;
-    ringGroup.add(band);
+    // Same construction as the STL converter: a circular tube swept around the ring, one profile
+    // point per ridge (count), with the tube radius set by the audio amplitude at that point.
+    const R = diameter / 2;
+    const SIDES = 32;                        // tube cross-section resolution
+    const n = count;
 
-    const ridges = new THREE.InstancedMesh(new THREE.BoxGeometry(1, 1, 1), material, count);
-    const dummy = new THREE.Object3D();
-    const slot = (2 * Math.PI * r) / count;
-    for (let i = 0; i < count; i++) {
-        const t = i / count;
-        const a = t * 2 * Math.PI;
-        const amp = Math.max(0.3, audio[i % audio.length] * height * weight(model.shape, t));
-        dummy.position.set(Math.cos(a) * (r + amp / 2), 0, Math.sin(a) * (r + amp / 2));
-        dummy.rotation.set(0, -a, 0);
-        dummy.scale.set(amp, BAND_HEIGHT, slot * model.fill);
-        dummy.updateMatrix();
-        ridges.setMatrixAt(i, dummy.matrix);
+    const positions = new Float32Array(n * SIDES * 3);
+    for (let i = 0; i < n; i++) {
+        const tubeR = height * ridgeAmount(i) * weight(model.shape, i / n);
+        const theta = (i / n) * 2 * Math.PI;
+        const c = Math.cos(theta), s = Math.sin(theta);
+        for (let j = 0; j < SIDES; j++) {
+            const phi = (j / SIDES) * 2 * Math.PI;
+            const radial = R + tubeR * Math.cos(phi);
+            const o = (i * SIDES + j) * 3;
+            positions[o] = radial * c;
+            positions[o + 1] = tubeR * Math.sin(phi);
+            positions[o + 2] = radial * s;
+        }
     }
-    ridges.instanceMatrix.needsUpdate = true;
-    ringGroup.add(ridges);
+
+    const index = [];
+    for (let i = 0; i < n; i++) {
+        const i2 = (i + 1) % n;                                // wrap so the ring closes
+        for (let j = 0; j < SIDES; j++) {
+            const j2 = (j + 1) % SIDES;
+            const a = i * SIDES + j, b = i * SIDES + j2, c2 = i2 * SIDES + j2, d = i2 * SIDES + j;
+            index.push(a, d, b, b, d, c2);
+        }
+    }
+
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geo.setIndex(index);
+    geo.computeVertexNormals();
+    ringGroup.add(new THREE.Mesh(geo, material));
 }
 
 function render() { renderer.render(scene, camera); }
