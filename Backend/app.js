@@ -1,9 +1,6 @@
 require("dotenv").config({
     path: require("path").join(__dirname, ".env")
 });
-export default defineConfig({
-  base: '/audio-to-3D/',
-});
 const { spawn } = require("node:child_process");
 const express = require("express");
 const cors = require("cors"); //to allow cross orogin resouse sharing between the two different ports 
@@ -134,7 +131,54 @@ app.post("/api/stl", upload.single("audio"), async (req, res) => {
         res.status(500).json({ error: "Could not start STL generation" });
     });
 });
+app.post("/api/plane-stl", upload.single("audio"), async (req, res) => {
+    if(!req.file){
+        return res.status(400).json({error:"No audio file found"})
+    }
+    const jobId = randomUUID();
+    const inputAudioPath = path.join(__dirname, "tmp", `${jobId}.wav`);
+    const outputStlPath = path.join(__dirname, "tmp", `${jobId}.stl`);
 
+    try {
+        await require("node:fs/promises").mkdir(path.join(__dirname, "tmp"), { recursive: true });
+        await require("node:fs/promises").writeFile(inputAudioPath, req.file.buffer);
+    } catch (error) {
+        console.error("Failed to save uploaded audio:", error);
+        return res.status(500).json({ error: "Could not save uploaded audio" });
+    }
+     const venvPython = path.join(__dirname, ".venv", "Scripts", "python.exe");
+    const pythonExecutable = require("node:fs").existsSync(venvPython)
+        ? venvPython
+        : "python";
+
+    const args = [
+        path.join(__dirname, "plane_stl.py"),
+        inputAudioPath,
+        outputStlPath
+    ];
+     const python = spawn(pythonExecutable, args);
+    let stderr = "";
+
+    python.stderr.on("data", (chunk) => {
+        stderr += chunk;
+    });
+
+    python.on("close", (code) => {
+        if (code !== 0) {
+            console.error("Plane STL generation failed:", stderr);
+            return res.status(500).json({ error: "STL generation failed" });
+        }
+
+        res.download(outputStlPath, "plane.stl");
+    });
+
+    python.on("error", (error) => {
+        console.error("Failed to start Python process:", error);
+        if (!res.headersSent) {
+            res.status(500).json({ error: "Could not start STL generation" });
+        }
+    });
+});
 // //initializing blender
 //     //listen to users request to get stl
 
