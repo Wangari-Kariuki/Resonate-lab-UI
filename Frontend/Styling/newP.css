@@ -119,7 +119,8 @@ audio {
  
 /* Buttons */
 button,
-#proceed-to-print {
+#proceed-to-print,
+#proceed-after-save {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -142,9 +143,14 @@ button:disabled {
 #save-audio,
 #save-trim-mp3,
 #save-trim-stl,
-#proceed-to-print {
+#proceed-to-print,
+#proceed-after-save {
   background: var(--accent);
   color: var(--bg);
+}
+
+#proceed-after-save[hidden] {
+  display: none;
 }
  
 #action-row,

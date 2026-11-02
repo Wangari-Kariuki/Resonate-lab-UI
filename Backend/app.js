@@ -156,7 +156,7 @@ app.post("/api/plane-stl", upload.single("audio"), async (req, res) => {
         inputAudioPath,
         outputStlPath
     ];
-     const python = spawn(pythonExecutable, args);
+    const python = spawn(pythonExecutable, args);
     let stderr = "";
 
     python.stderr.on("data", (chunk) => {

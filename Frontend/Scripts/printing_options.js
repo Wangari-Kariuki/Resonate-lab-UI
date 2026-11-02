@@ -57,13 +57,13 @@ async function requestStlFromHandoff() {
     if (!handoffAudio) {
         throw new Error("No trimmed audio found. Go back and trim your audio first.");
     }
-
-    const settings = {
+    const model = MODEL_ENDPOINTS[selectedId];
+    const settings = model.sendSettings ? {
         diameter: document.getElementById("ctl-diameter").value,
         height: document.getElementById("ctl-height").value,
         count: document.getElementById("ctl-count").value
-    };
-    const response = await postAudioFile(handoffAudio.blob, handoffAudio.name, "http://127.0.0.1:3000/api/stl", settings);
+    } : {};
+    const response = await postAudioFile(handoffAudio.blob, handoffAudio.name, model.url, settings);
     if (!response.ok) {
         throw new Error(`STL request failed: ${response.status}`);
     }
@@ -87,7 +87,11 @@ SendToDrive?.addEventListener("click", async () => {
 
 const modelIds = ["select1", "select2", "select3"];
 let selectedId = null;
-
+const MODEL_ENDPOINTS = {
+    select1: {url: "http://127.0.0.1:3000/api/stl", file: "audio-ring.stl", sendSettings: true },
+    select2: {url: "http://127.0.0.1:3000/api/stl", file: "audio-ring.stl", sendSettings: true },
+    select3: {url: "http://127.0.0.1:3000/api/plane-stl", file: "plane.stl", sendSettings: false}
+};
 function setModelStatus(id, message) {
     const statusEl = document.getElementById(`${id}-status`);
     if (statusEl) statusEl.textContent = message;
@@ -130,7 +134,7 @@ confirmButton?.addEventListener("click", async () => {
 
     // once ready, the same button downloads instead of re-requesting the STL
     if (confirmButton.dataset.state === "ready") {
-        downloadBlob(latestStlBlob, "audio-ring.stl");
+        downloadBlob(latestStlBlob, MODEL_ENDPOINTS[selectedId].file);
         return;
     }
 
@@ -161,7 +165,7 @@ confirmButton?.addEventListener("click", async () => {
 const saveStlButton = document.getElementById("save-stl");
 saveStlButton?.addEventListener("click", () => {
     if (latestStlBlob) {
-        downloadBlob(latestStlBlob, "audio-ring.stl");
+        downloadBlob(latestStlBlob, MODEL_ENDPOINTS[selectedId]?.file ?? "audio-ring.stl");
     } else {
         showProcessingStatus("No STL available. Please confirm the model first.");
     }

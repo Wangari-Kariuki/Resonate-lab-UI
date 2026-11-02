@@ -230,6 +230,32 @@ async function saveTrimmedAudio() {
         return false;
     }
 }
+async function getFullAudioWav(file){
+    const audioCtX = new( window.AudioContext || window.webkitAudioContext)();
+    try{
+        const buffer = await audioCtX.decodeAudioData(await file.arrayBuffer());
+        return encodeWav(buffer);
+    }finally{
+        audioCtX.close();
+    }
+}
+const saveAudioButton = document.getElementById("save-audio");
+saveAudioButton?.addEventListener("click", async () =>{
+    try {
+        const file = audioState.selectedAudioFile;
+        if (!file) throw new Error ("Upload an audio file first."); 
+        //save without trimming hands off the whole upload as WAV
+        const wavBlob = await getFullAudioWav(file);
+        await saveProject ({ trimmedWav: wavBlob})
+        const proceedLink = document.getElementById("proceed-after-save");
+        if (proceedLink) {
+            proceedLink.hidden = false;
+            proceedLink.focus();
+        }
+    }catch (error){
+        console.error("Failed to save full audio as WAV.", error);
+    }
+});
 
 //downloads the trimmed mp3 to the user's computer, building it first if needed
 async function downloadTrimmedAudio() {
