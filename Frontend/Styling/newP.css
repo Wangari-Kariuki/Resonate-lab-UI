@@ -1,158 +1,50 @@
+/* New project page (upload + trim). Shared colors, fonts, header and buttons live in theme.css.
+   Rules are tied to the existing IDs that the scripts use, so no markup inside main changed. */
 
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&family=Inter:wght@400;500&display=swap');
- 
-:root {
-  --bg:       #ffff; /* FILL IN — page background */
-  --surface:  #f1dc63; /* FILL IN — trim panel background */
-  --ink:      #1a1a1a; /* FILL IN — text */
-  --muted:    #5a5a5a; /* FILL IN — helper text */
-  --accent:   #1a1a1a; /* FILL IN — buttons, focus ring, borders */
- 
-  --font-display: 'Space Grotesk', sans-serif;
-  --font-body:    'Inter', system-ui, sans-serif;
- 
-  --radius: 999px; /* pill shape used on buttons and inputs */
-  --border: 1px solid rgba(26, 26, 26, 0.14);
-}
- 
-* { box-sizing: border-box; }
- 
-body {
-  margin: 0;
-  background: var(--bg);
-  color: var(--ink);
-  font-family: var(--font-body);
-  line-height: 1.5;
-}
- 
-p { color: var(--muted); }
- 
-:focus-visible {
-  outline: 3px solid var(--accent);
-  outline-offset: 3px;
-}
- 
-/* Skip link */
-.skip-link {
-  position: absolute;
-  left: -9999px;
-  top: 0;
-  background: var(--ink);
-  color: var(--bg);
-  padding: 0.5em 1em;
-}
-.skip-link:focus { left: 0; }
- 
-/* Header */
-header {
-  background-color: antiquewhite;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 1rem;
-  padding: 1.5rem 2rem;
-  border-bottom: var(--border);
-}
- 
-#side-navigation ul {
-  display: flex;
-  gap: 0.5rem;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
- 
-#side-navigation a {
-  padding: 0.4em 1em;
-  border-radius: var(--radius);
-  border: var(--border);
-  color: var(--ink);
-  text-decoration: none;
-  font-size: 0.9rem;
-}
- 
-#title h1 {
-  font-family: var(--font-display);
-  font-size: clamp(1.5rem, 4vw, 2.25rem);
-  margin: 0;
-}
- 
-/* Main content */
-#mid-container {
-  max-width: 40rem;
-  margin: 0 auto;
-  padding: 2.5rem 1.5rem;
-}
- 
-h2, #trim-heading {
-  font-family: var(--font-display);
-  font-size: 1.25rem;
-}
- 
+.project-body { max-width: 46rem; }
+
+#upload-section { padding: clamp(1.25rem, 4vw, 2rem); }
+#upload-section > label[for="audio-input"] { display: block; margin-bottom: 0.4rem; }
+
 /* Upload input */
 #audio-input {
   display: block;
   width: 100%;
   padding: 1rem;
-  border: 1px solid rgba(26, 26, 26, 0.14);
-  border-radius: 12px;
+  border: 2px dashed var(--line);
+  border-radius: var(--radius-md);
   background: var(--surface);
   margin-bottom: 1rem;
+  cursor: pointer;
 }
- 
+
 #file-info {
   display: inline-block;
   padding: 0.4em 1em;
-  border-radius: var(--radius);
-  border: var(--border);
-  font-size: 0.85rem;
+  border-radius: var(--pill);
+  background: var(--banner);
+  color: var(--ink);
+  font-size: 0.95rem;
   margin-bottom: 1.5rem;
 }
- 
-audio {
-  display: block;
-  width: 100%;
-  border-radius: var(--radius);
-  margin-bottom: 1rem;
-}
- 
-/* Buttons */
-button,
-#proceed-to-print,
-#proceed-after-save {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.7em 1.5em;
-  border-radius: var(--radius);
-  border: var(--border);
-  background: var(--bg);
-  color: var(--ink);
-  font-family: var(--font-display);
-  font-size: 0.9rem;
-  text-decoration: none;
-  cursor: pointer;
-}
- 
-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
- 
-#save-audio,
-#save-trim-mp3,
-#save-trim-stl,
-#proceed-to-print,
-#proceed-after-save {
-  background: var(--accent);
-  color: var(--bg);
-}
 
-#proceed-after-save[hidden] {
-  display: none;
+#upload-section audio { margin-bottom: 1rem; }
+
+/* Main actions */
+#save-audio,
+#proceed-to-print,
+#proceed-after-save {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: var(--primary-ink);
 }
- 
+#proceed-to-print, #proceed-after-save {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-height: var(--target); padding: 0.55rem 1.4rem; border-radius: var(--pill);
+  font-family: var(--font-display); font-weight: 700; text-decoration: none;
+}
+#proceed-to-print[aria-disabled="true"] { opacity: 0.55; pointer-events: none; }
+
 #action-row,
 #trim-actions {
   display: flex;
@@ -160,118 +52,71 @@ button:disabled {
   gap: 0.75rem;
   margin-bottom: 1.5rem;
 }
-
-.trim-preview-actions {
-  justify-content: center;
-  align-items: center;
-}
+.trim-preview-actions { justify-content: center; align-items: center; }
 
 #send-status {
   align-self: center;
   order: 1;
   padding: 0.6em 1em;
-  border: 1px solid rgba(26, 26, 26, 0.14);
-  border-radius: 12px;
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius-sm);
   background: var(--bg);
   color: var(--ink);
-  font-size: 0.85rem;
+  font-size: 0.95rem;
 }
+#Send-to-lab { order: 0; }
+/* error: thicker border plus the message text itself, not color alone */
+#send-status[data-state="error"] { border: 2px solid var(--error); color: var(--error); }
 
-#Send-to-lab {
-  order: 0;
-}
-
-#send-status[data-state="error"] {
-  border-color: #9b2226;
-  color: #9b2226;
-}
- 
-#proceed-to-print[aria-disabled="true"] {
-  opacity: 0.5;
-  pointer-events: none;
-}
- 
-/* Trim panel */
+/* Trim panel: the wide rounded banner from the layout */
 #audio-trimmer {
-  border: var(--border);
-  border-radius: 16px;
-  background: var(--surface);
-  padding: 1.5rem;
-  box-shadow: 0 8px 24px rgba(26, 26, 26, 0.08);
+  border-radius: var(--radius-lg);
+  background: var(--banner);
+  padding: clamp(1rem, 4vw, 1.75rem);
+  margin-top: 1rem;
 }
+#trim-heading { font-size: 1.3rem; }
 
-/* Waveform panel */
-#waveform-panel{
-      background: var(--bg);
-  border: 1px dashed rgba(26, 26, 26, 0.22);
-  border-radius: 12px;
-  padding: 1rem;
-  margin-bottom: 1.5rem;
-  box-shadow: 0 8px 24px rgba(26, 26, 26, 0.08);
-
-}
-#open-waveform-btn {
-  display: flex;
-  margin: 0 auto 1.5rem;
-}
-#trim-guide {
+#trim-guide,
+#trim-actions,
+#waveform-panel {
   background: var(--bg);
-  border: 1px dashed rgba(26, 26, 26, 0.22);
-  border-radius: 12px;
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius-md);
   padding: 1rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.25rem;
+  box-shadow: var(--shadow);
 }
-#trim-actions {
-    background: var(--bg);
-  border: 1px dashed rgba(26, 26, 26, 0.22);
-  border-radius: 12px;
-  padding: 1rem;
-  margin-bottom: 1.5rem;
-  box-shadow: 0 8px 24px rgba(26, 26, 26, 0.08);
-}
+#trim-guide p { font-size: 0.95rem; margin: 0.3em 0; }
 
-#trim-guide p {
-  font-size: 0.85rem;
-  margin: 0.3em 0;
-}
- #after-trim-actions{
-  display:flex;
-  flex-direction: row;
+#after-trim-actions {
+  display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
-  gap: 1rem;
-
- }
- #after-trim-actions button {
-  padding: 0.4em 1em;
- }
-
-#trim-time-input {
-  padding: 0.5em 0.4em;
-  border-radius: var(--radius);
-  border: var(--border);
-  width: 30%;
-  max-width: 8rem;
-  
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
 }
- 
+
+#open-waveform-btn { display: flex; margin: 0 auto 1.25rem; }
+#waveform-panel button { margin: 0.5rem 0.5rem 0 0; }
+
+#trim-time-input { width: 100%; max-width: 10rem; }
+
 #time-display {
   display: flex;
-  gap: 1.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1.5rem;
   padding: 0.75rem 1rem;
-  border-radius: 12px;
-  background: var(--bg);
-  border: var(--border);
-  margin-bottom: 1.5rem;
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  margin-top: 0.4rem;
 }
- 
-#time-display p { margin: 0; font-size: 0.9rem; color: var(--ink); }
-#time-display span { font-family: var(--font-display); }
- 
-/* Responsive */
+#time-display p { margin: 0; font-size: 0.95rem; color: var(--ink); }
+#time-display span { font-family: var(--font-display); font-weight: 700; }
+
 @media (max-width: 40rem) {
-  header { flex-direction: column; align-items: flex-start; }
-  #action-row, #trim-actions { flex-direction: column; align-items: stretch; }
-  .trim-preview-actions { align-items: center; }
+  #action-row, #trim-actions, #after-trim-actions { flex-direction: column; align-items: stretch; }
+  .trim-preview-actions { align-items: stretch; }
 }
- 

@@ -1,194 +1,63 @@
-/* ==========================================================================
-   Print_options.css — same simplified theme as newP.css
-   Bold headings, pill-shaped buttons, rounded selectable option cards.
+/* Choose a shape page (Printing_options.html). Also loaded by My Sounds before my-sounds.css.
+   Shared colors, fonts, header, hero and buttons live in theme.css. */
 
-   Colors are placeholders — fill them in below and everything updates,
-   since every rule references a variable instead of a hex value.
-   ========================================================================== */
-
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&family=Inter:wght@400;500&display=swap');
-
-:root {
-  --bg:       #FFFF; /* FILL IN — page background */
-  --surface:  #fafafa; /* FILL IN — option card background */
-  --ink:      #1a1a1a; /* FILL IN — text */
-  --muted:    #080808; /* FILL IN — helper text */
-  --accent:   #1a1a1a; /* FILL IN — buttons, borders, focus ring */
-  --selected: #1a1a1a; /* FILL IN — border/fill for the chosen option */
-
-  --font-display: 'Space Grotesk', sans-serif;
-  --font-body:    'Inter', system-ui, sans-serif;
-
-  --radius: 999px; /* pill shape used on buttons */
-  --border: 1px solid rgba(26, 26, 26, 0.14);
-}
-
-* { box-sizing: border-box; }
-
-body {
-  background: var(--bg);
-  color: var(--ink);
-  font-family: var(--font-body);
-  line-height: 1.5;
-}
-
-p { color: var(--muted); }
-
-:focus-visible {
-  outline: 3px solid var(--accent);
-  outline-offset: 3px;
-}
-
-
-header {
- background-color: antiquewhite;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 1rem;
-  padding: 1.5rem 2rem;
-  border-bottom: var(--border);
-}
-#side-navigation ul {
-  display: flex;
-  gap: 0.5rem;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
- 
-#title h1 {
-  font-family: var(--font-display);
-  font-size: clamp(1.5rem, 4vw, 2.25rem);
-  margin: 0;
-}
- 
-#side-navigation a {
-  padding: 0.4em 1em;
-  border-radius: var(--radius);
-  border: var(--border);
-  color: var(--ink);
-  text-decoration: none;
-  font-size: 0.9rem;
-}
-/* Part 2: model options */
-.print-options {
-  max-width: 72rem;
-  margin: 0 auto;
-  padding: 2.5rem 1.5rem;
-}
+/* Shape options: image cards from the layout's card row */
 .print-options #image-box {
   display: flex;
   flex-direction: column;
-  align-items: stretch;
   gap: 0.75rem;
   padding: 0.75rem;
-  border: 1px solid transparent;
-  border-radius: 16px;
+  background: var(--bg);
+  border: 2px solid var(--line-soft);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow);
 }
 .print-options #image-box img {
   display: block;
   width: 100%;
-  height: auto;
-  border-radius: 12px;
-  border: var(--border);
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: var(--radius-sm);
   background: var(--surface);
 }
-.print-options #img-description {
-  margin: 0;
-}
-.print-options #img-description button {
-  margin-bottom: 0.5rem;
-}
+.print-options #img-description { margin: 0; padding: 0 0.25rem 0.25rem; }
+.print-options #img-description button { margin-bottom: 0.6rem; }
+.option-name { display: block; font-family: var(--font-display); font-weight: 700; color: var(--ink); }
 
-/* highlights the option section chosen via its Select/Download button */
+/* Chosen option: thick border and a check mark word, plus the status text from printing_options.js */
 .print-options #image-box.selected {
-  background: var(--surface);
-  border: var(--border);
-  border-color: var(--selected);
-  border-radius: 16px;
-  box-shadow: 0 8px 24px rgba(26, 26, 26, 0.08);
+  border: 3px solid var(--primary);
+  background: var(--banner);
 }
+.print-options #image-box.selected #img-description button::after { content: " \2713"; }
 
-.print-options #image-box.selected img {
-  border-color: var(--selected);
-}
+.model-status { display: block; font-size: 0.95rem; color: var(--ink); }
+.model-status:empty { display: none; }
 
-.model-status {
-  font-family: var(--font-body);
-  font-size: 0.85rem;
-  color: var(--muted);
-}
-
-/* Part 3: confirm, prepare, send */
+/* Confirm, prepare, send */
 #confirm-prep-send {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 0.75rem;
   margin-top: 2rem;
+  padding: clamp(1rem, 4vw, 1.5rem);
+  background: var(--surface);
+  border-radius: var(--radius-lg);
 }
-
-#confirm-prep-send > a {
-  padding: 0.7em 1.5em;
-  border-radius: var(--radius);
-  border: var(--border);
-  color: var(--ink);
-  font-family: var(--font-display);
-  font-size: 0.9rem;
-  text-decoration: none;
-}
-
-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.7em 1.5em;
-  border-radius: var(--radius);
-  border: var(--border);
-  background: var(--bg);
-  color: var(--ink);
-  font-family: var(--font-display);
-  font-size: 0.9rem;
-  cursor: pointer;
-}
-
-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-#confirm-prep-send > button {
-  background: var(--accent);
-  color: var(--bg);
-}
-
 #prep {
   display: flex;
   align-items: center;
   gap: 0.75rem;
   width: 100%;
   padding: 1rem;
-  border-radius: 12px;
-  background: var(--surface);
-  border: 1px dashed rgba(26, 26, 26, 0.22);
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  border: 2px dashed var(--line);
 }
+#prep img { width: 1.5rem; height: 1.5rem; }
+#prep p { margin: 0; color: var(--ink); }
 
-#prep img {
-  width: 1.5rem;
-  height: 1.5rem;
-}
-
-#prep p {
-  margin: 0;
-  font-size: 0.9rem;
-}
-
-/* Responsive */
 @media (max-width: 30rem) {
-  #confirm-prep-send {
-    flex-direction: column;
-    align-items: stretch;
-  }
+  #confirm-prep-send { flex-direction: column; align-items: stretch; }
 }

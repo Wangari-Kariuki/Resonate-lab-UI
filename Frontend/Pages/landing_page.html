@@ -4,41 +4,174 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Resonate Lab</title>
-    <link rel="stylesheet" type="text/css" href="../Styling/landingpage.css"/>
+    <link rel="stylesheet" type="text/css" href="../Styling/theme.css">
+    <link rel="stylesheet" type="text/css" href="../Styling/landingpage.css">
     <script type="module" src="../Scripts/landing-clear-project.js"></script>
+    <script type="module" src="../Scripts/site.js"></script>
 </head>
 <body class="landing-page">
-    <header id = "top-container">
-        <img src="../Assets/audioprint.jpg" alt="Resonate lab logo">
-        <nav id = "side-navigation" aria-label="Top navigation">
+    <a class="skip-link" href="#mid-container">Skip to main content</a>
+
+    <header class="site-header" id="top-container">
+        <a class="brand" href="./landing_page.html"><img src="../Assets/audioprint.jpg" alt=""> Resonate Lab</a>
+        <nav id="side-navigation" aria-label="Main">
             <ul>
-                <li><a href="./Settings.html" tabindex="1">Go to Settings</a></li>
-                <li><a href="./project-history.html" tabindex="2">Project History</a></li>
-                <li><a href="./help.html" tabindex="3">Help</a></li>
+                <li><a href="./landing_page.html" aria-current="page">Home</a></li>
+                <li><a href="./new-project.html">New project</a></li>
+                <li><a href="./Printing_options.html">Choose a shape</a></li>
+                <li><a href="./my-sounds.html">My Sounds</a></li>
+                <li><a href="./Settings.html">Settings</a></li>
+                <li><a href="./help.html">Help</a></li>
             </ul>
         </nav>
+        <button type="button" class="sound-toggle" data-sound-toggle aria-pressed="false">Sound effects <span class="toggle-state" aria-hidden="true">Off</span></button>
     </header>
 
-    <main id="mid-container">
-        <section id="middle">
-            <h1 id ="header">Welcome to Resonate Lab</h1>
-            <section id="description">
-                Resonate is an audio to 3d User interface designed for all users. 
-                Make tactile representations of your chosen audio file 
-            </section>
+    <main id="mid-container" tabindex="-1">
+        <!-- Hero: rest of the dark band -->
+        <section class="hero" id="middle" aria-labelledby="header">
+            <h1 id="header">Turn sound into a shape you can hold</h1>
+            <p id="description">Pick a sound. We make it into a 3D ring you can print and touch.</p>
+            <div class="hero-actions" id="links-to-projects">
+                <a id="new-project-link" class="btn btn-hero" href="./new-project.html">Start a new project</a>
+                <a id="guide-page-link" class="btn btn-ghost-hero" href="./guide.html">
+                    <span class="icon-circle" aria-hidden="true">
+                        <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>
+                    </span>
+                    Read the quick guide
+                </a>
+            </div>
+            <ul class="hero-stats">
+                <li>
+                    <span class="icon-circle" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 12h3l2-6 4 12 2-6h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                    <span><strong>3 steps</strong> Upload, pick a shape, print</span>
+                </li>
+                <li>
+                    <span class="icon-circle" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="7" fill="none" stroke="currentColor" stroke-width="3"/></svg></span>
+                    <span><strong>2 shapes</strong> A ring or a flat plane</span>
+                </li>
+            </ul>
         </section>
-         
-        <section id="links-to-projects">
-            <a id="guide-page-link" href="./guide.html" tabindex="4">Click here for a quick guide</a>
-            <a id="new-project-link" aria-label="Open tab for new project" href="./new-project.html" tabindex="5">Click to start new Project</a> 
+
+        <!-- Wide banner: how it works -->
+        <section class="container section" aria-labelledby="how-heading">
+            <div class="banner">
+                <div>
+                    <h2 id="how-heading">How it works</h2>
+                    <p>Three small steps. Do one at a time.</p>
+                </div>
+                <ol class="steps">
+                    <li>
+                        <span class="step-number" aria-hidden="true">1</span>
+                        <h3>Add a sound</h3>
+                        <p>Upload a sound file. Cut it to the part you like.</p>
+                        <a class="more-link" href="./new-project.html">Add a sound <span aria-hidden="true">&rarr;</span></a>
+                    </li>
+                    <li>
+                        <span class="step-number" aria-hidden="true">2</span>
+                        <h3>Pick a shape</h3>
+                        <p>Choose a ring or a plane. Then download it to print.</p>
+                        <a class="more-link" href="./Printing_options.html">Pick a shape <span aria-hidden="true">&rarr;</span></a>
+                    </li>
+                    <li>
+                        <span class="step-number" aria-hidden="true">3</span>
+                        <h3>Listen and touch</h3>
+                        <p>Hold your print while the sound plays.</p>
+                        <a class="more-link" href="./my-sounds.html">Go to My Sounds <span aria-hidden="true">&rarr;</span></a>
+                    </li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- Two columns: text left, small cards right -->
+        <section class="container section split" aria-labelledby="everyone-heading">
+            <div>
+                <h2 id="everyone-heading">Made for every hand and ear</h2>
+                <p>You can use the whole app with a keyboard or a screen reader. Sound effects can help you know what happened.</p>
+                <a class="btn btn-primary" href="./help.html">See the keys</a>
+            </div>
+            <ul class="feature-grid">
+                <li class="card">
+                    <span class="icon-tile" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M7 11h1M11 11h2M16 11h1M8 15h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+                    <h3>Keyboard first</h3>
+                    <p>Tab moves you. Enter or Space presses a button.</p>
+                </li>
+                <li class="card">
+                    <span class="icon-tile tile-mint" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 10v4h4l5 4V6L8 10z" fill="currentColor"/><path d="M16 9a4 4 0 0 1 0 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+                    <h3>Screen reader ready</h3>
+                    <p>Every button and picture has a clear name.</p>
+                </li>
+                <li class="card">
+                    <span class="icon-tile tile-pink" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 18V6l10-2v12" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="7" cy="18" r="2.5" fill="currentColor"/><circle cx="17" cy="16" r="2.5" fill="currentColor"/></svg></span>
+                    <h3>Sound effects</h3>
+                    <p>Short sounds tell you a button worked. They are off until you turn them on.</p>
+                </li>
+                <li class="card">
+                    <span class="icon-tile tile-sky" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="7" fill="none" stroke="currentColor" stroke-width="3"/><path d="M12 2v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+                    <h3>Hold your sound</h3>
+                    <p>Loud parts feel tall. Quiet parts feel low.</p>
+                </li>
+            </ul>
+        </section>
+
+        <!-- Card row: the shapes -->
+        <section class="container section" aria-labelledby="shapes-heading">
+            <div class="section-head">
+                <h2 id="shapes-heading">Shapes you can make</h2>
+                <p>Each shape shows your sound in a different way.</p>
+            </div>
+            <ul class="card-row">
+                <li class="card image-card">
+                    <img src="../Assets/sound_ring.png" alt="A gray 3D ring with bumps all around the outside.">
+                    <div class="card-body">
+                        <h3>Sound torus</h3>
+                        <p>Your sound wraps around a ring. Follow it with your finger.</p>
+                    </div>
+                </li>
+                <li class="card image-card">
+                    <img src="../Assets/sound_plane.png" alt="A flat 3D plate with rows of ridges on top.">
+                    <div class="card-body">
+                        <h3>Sound plane</h3>
+                        <p>Your sound lies flat. Feel it from one side to the other.</p>
+                    </div>
+                </li>
+                <li class="card image-card">
+                    <img src="../Assets/3dring.jpg" alt="A dark blue printed ring made of twisting bands, standing on its edge.">
+                    <div class="card-body">
+                        <h3>Printed ring</h3>
+                        <p>This is what a real print can look like.</p>
+                    </div>
+                </li>
+            </ul>
+        </section>
+
+        <!-- Split promo card -->
+        <section class="container section" aria-labelledby="explore-promo-heading">
+            <div class="promo">
+                <div class="promo-text">
+                    <h2 id="explore-promo-heading">Listen as you explore</h2>
+                    <p>Hold your print. Play your sound. Move your finger from the start bump all the way around.</p>
+                    <a class="btn btn-primary" href="./my-sounds.html">Open My Sounds</a>
+                </div>
+                <img src="../Assets/soundPallet.jpg" alt="A blue 3D printed plate with tall peaks where the sound is loud.">
+            </div>
+        </section>
+
+        <!-- Closing call to action -->
+        <section class="container section" aria-labelledby="ready-heading">
+            <div class="cta-band">
+                <div>
+                    <h2 id="ready-heading">Ready to make one?</h2>
+                    <p>It only takes a sound file.</p>
+                </div>
+                <a class="btn btn-primary" href="./new-project.html">Start now</a>
+            </div>
         </section>
     </main>
 
-
-    <footer id = "bottom-container">
-        <p>Copy right 2026 Resonate Lab</p>
-        <p> contact us at resonatelab@whitman.edu</p>
-
-    </footer>   
+    <footer class="site-footer" id="bottom-container">
+        <p>Copyright 2026 Resonate Lab</p>
+        <p>Contact us at <a href="mailto:resonatelab@whitman.edu">resonatelab@whitman.edu</a></p>
+    </footer>
 </body>
 </html>

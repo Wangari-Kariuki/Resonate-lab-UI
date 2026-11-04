@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick guide | Resonate Lab</title>
+    <link rel="stylesheet" type="text/css" href="../Styling/theme.css">
+    <script type="module" src="../Scripts/site.js"></script>
+</head>
+<body>
+    <a class="skip-link" href="#main">Skip to main content</a>
+
+    <header class="site-header">
+        <a class="brand" href="./landing_page.html"><img src="../Assets/audioprint.jpg" alt=""> Resonate Lab</a>
+        <nav id="side-navigation" aria-label="Main">
+            <ul>
+                <li><a href="./landing_page.html">Home</a></li>
+                <li><a href="./new-project.html">New project</a></li>
+                <li><a href="./Printing_options.html">Choose a shape</a></li>
+                <li><a href="./my-sounds.html">My Sounds</a></li>
+                <li><a href="./Settings.html">Settings</a></li>
+                <li><a href="./help.html">Help</a></li>
+            </ul>
+        </nav>
+        <button type="button" class="sound-toggle" data-sound-toggle aria-pressed="false">Sound effects <span class="toggle-state" aria-hidden="true">Off</span></button>
+    </header>
+
+    <main id="main" tabindex="-1">
+        <section class="hero hero-compact">
+            <h1>Quick guide</h1>
+            <p>How to turn a sound into a shape.</p>
+        </section>
+        <section class="container section" aria-labelledby="steps-heading">
+            <div class="banner">
+                <div>
+                    <h2 id="steps-heading">Three steps</h2>
+                    <p>Do one step at a time.</p>
+                </div>
+                <ol class="steps">
+                    <li>
+                        <span class="step-number" aria-hidden="true">1</span>
+                        <h3>Add a sound</h3>
+                        <p>Choose a sound file. Press Trim if you want only part of it. Then press Save.</p>
+                        <a class="more-link" href="./new-project.html">Add a sound <span aria-hidden="true">&rarr;</span></a>
+                    </li>
+                    <li>
+                        <span class="step-number" aria-hidden="true">2</span>
+                        <h3>Pick a shape</h3>
+                        <p>Choose the ring or the plane. Change the size. Press Confirm, then Download.</p>
+                        <a class="more-link" href="./Printing_options.html">Pick a shape <span aria-hidden="true">&rarr;</span></a>
+                    </li>
+                    <li>
+                        <span class="step-number" aria-hidden="true">3</span>
+                        <h3>Listen and touch</h3>
+                        <p>Print your shape. Hold it while your sound plays.</p>
+                        <a class="more-link" href="./my-sounds.html">Go to My Sounds <span aria-hidden="true">&rarr;</span></a>
+                    </li>
+                </ol>
+            </div>
+        </section>
+        <section class="container section" aria-labelledby="ready-heading">
+            <div class="cta-band">
+                <div>
+                    <h2 id="ready-heading">Ready?</h2>
+                    <p>Start with step 1.</p>
+                </div>
+                <a class="btn btn-primary" href="./new-project.html">Add a sound</a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <p>Copyright 2026 Resonate Lab</p>
+        <p>Contact us at <a href="mailto:resonatelab@whitman.edu">resonatelab@whitman.edu</a></p>
+    </footer>
+</body>
+</html>

@@ -1,9 +1,89 @@
-<!-- import { createRoot } from 'react-dom/client'
-import { Canvas } from '@react-three/fiber'
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help | Resonate Lab</title>
+    <link rel="stylesheet" type="text/css" href="../Styling/theme.css">
+    <script type="module" src="../Scripts/site.js"></script>
+</head>
+<body>
+    <a class="skip-link" href="#main">Skip to main content</a>
 
-function App() {
-  return (
-    <div id="canvas-container">
-      <Canvas />
-    
-  )} -->
+    <header class="site-header">
+        <a class="brand" href="./landing_page.html"><img src="../Assets/audioprint.jpg" alt=""> Resonate Lab</a>
+        <nav id="side-navigation" aria-label="Main">
+            <ul>
+                <li><a href="./landing_page.html">Home</a></li>
+                <li><a href="./new-project.html">New project</a></li>
+                <li><a href="./Printing_options.html">Choose a shape</a></li>
+                <li><a href="./my-sounds.html">My Sounds</a></li>
+                <li><a href="./Settings.html">Settings</a></li>
+                <li><a href="./help.html" aria-current="page">Help</a></li>
+            </ul>
+        </nav>
+        <button type="button" class="sound-toggle" data-sound-toggle aria-pressed="false">Sound effects <span class="toggle-state" aria-hidden="true">Off</span></button>
+    </header>
+
+    <main id="main" tabindex="-1">
+        <section class="hero hero-compact">
+            <h1>Help</h1>
+            <p>Keys and tips for using Resonate Lab.</p>
+        </section>
+        <section class="container section split" aria-labelledby="keys-heading">
+            <div>
+                <h2 id="keys-heading">Keys you can use</h2>
+                <p>These keys work the same way on every page.</p>
+                <a class="btn btn-primary" href="./guide.html">Read the quick guide</a>
+            </div>
+            <ul class="feature-grid">
+                <li class="card">
+                    <h3>Tab</h3>
+                    <p>Go to the next button or link. Shift and Tab goes back.</p>
+                </li>
+                <li class="card">
+                    <h3>Enter or Space</h3>
+                    <p>Press the button you are on.</p>
+                </li>
+                <li class="card">
+                    <h3>Arrow keys</h3>
+                    <p>Move a slider, pick a sound in a list, or turn a 3D view.</p>
+                </li>
+                <li class="card">
+                    <h3>Home and End</h3>
+                    <p>Jump a slider to the start or the end.</p>
+                </li>
+            </ul>
+        </section>
+
+        <section class="container section" aria-labelledby="trim-keys-heading">
+            <div class="banner">
+                <div>
+                    <h2 id="trim-keys-heading">Trim keys</h2>
+                    <p>These work in the trim player on the New project page.</p>
+                </div>
+                <ul class="steps">
+                    <li><h3>Space</h3><p>Play or pause.</p></li>
+                    <li><h3>T and E</h3><p>T marks the start. E marks the end.</p></li>
+                    <li><h3>Up and Down</h3><p>Jump 5 seconds ahead or back.</p></li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="container section" aria-labelledby="sound-help-heading">
+            <div class="cta-band">
+                <div>
+                    <h2 id="sound-help-heading">Sound effects</h2>
+                    <p>Short sounds tell you a button worked. They are off at the start. Use the Sound effects button at the top to turn them on.</p>
+                </div>
+                <a class="btn btn-primary" href="./Settings.html">Open settings</a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <p>Copyright 2026 Resonate Lab</p>
+        <p>Contact us at <a href="mailto:resonatelab@whitman.edu">resonatelab@whitman.edu</a></p>
+    </footer>
+</body>
+</html>

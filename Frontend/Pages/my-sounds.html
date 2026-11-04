@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Sounds | Resonate Lab</title>
+    <link rel="stylesheet" type="text/css" href="../Styling/theme.css">
+    <link rel="stylesheet" type="text/css" href="../Styling/my-sounds.css">
+    <!-- Same Three.js import map as Printing_options.html; must come before any module script -->
+    <script type="importmap">
+    { "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+    } }
+    </script>
+</head>
+<body>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+
+    <header class="site-header">
+        <a class="brand" href="./landing_page.html"><img src="../Assets/audioprint.jpg" alt=""> Resonate Lab</a>
+        <nav id="side-navigation" aria-label="Main">
+            <ul>
+                <li><a href="./landing_page.html">Home</a></li>
+                <li><a href="./new-project.html">New project</a></li>
+                <li><a href="./Printing_options.html">Choose a shape</a></li>
+                <li><a href="./my-sounds.html" aria-current="page">My Sounds</a></li>
+                <li><a href="./Settings.html">Settings</a></li>
+                <li><a href="./help.html">Help</a></li>
+            </ul>
+        </nav>
+        <button type="button" class="sound-toggle" data-sound-toggle aria-pressed="false">Sound effects <span class="toggle-state" aria-hidden="true">Off</span></button>
+    </header>
+
+    <main id="main-content" class="my-sounds" tabindex="-1">
+        <section class="hero hero-compact">
+            <h1>My Sounds</h1>
+            <p>Step 3 of 3: play your sound and feel your print.</p>
+        </section>
+
+        <div class="container section my-sounds-body">
+            <section id="sound-picker" class="banner-card" aria-labelledby="sounds-heading">
+                <h2 id="sounds-heading">Your sounds</h2>
+                <p id="sounds-loading">Loading your sounds…</p>
+                <p id="sounds-empty" hidden>You have no sounds yet. <a href="./new-project.html">Start a new project</a> to add one.</p>
+                <fieldset id="sound-list" hidden>
+                    <legend>Pick a sound to play</legend>
+                    <!-- radio options are added by my_sounds.js -->
+                </fieldset>
+            </section>
+
+            <section id="explore" class="card" aria-labelledby="explore-heading" hidden>
+                <h2 id="explore-heading">Listen as you explore</h2>
+
+                <audio id="explore-audio" controls preload="metadata" aria-label="Sound player"></audio>
+                <p id="explore-time"><span class="visually-hidden">Time played: </span><span id="explore-time-text">0:00 / 0:00</span></p>
+
+                <div id="explore-buttons">
+                    <button type="button" id="explore-activate" class="btn-primary" data-cue="own">Activate listen as you explore mode</button>
+                    <button type="button" id="explore-restart" class="btn-primary" data-cue="own" hidden
+                            aria-label="Restart: play the sound and turn the torus from the beginning">Restart</button>
+                    <button type="button" id="explore-deactivate" data-cue="own" hidden
+                            aria-label="Deactivate mode: stop the sound and reset the torus">Deactivate mode</button>
+                </div>
+
+                <div id="explore-stage" hidden>
+                    <p id="explore-instruction">Hold your printed torus as you listen. Follow along from the start marker to the end.</p>
+                    <p id="explore-marker-help">The start marker is a bump with one steep side. Start at the steep side. Move along the gentle slope. The sound ends when you get back to the steep side.</p>
+                    <figure id="explore-scene">
+                        <canvas id="explore-canvas" tabindex="0" role="img" aria-describedby="explore-canvas-desc"></canvas>
+                        <figcaption id="explore-canvas-desc"></figcaption>
+                    </figure>
+                </div>
+
+                <!-- State changes only (Activated, Playing, Restarted, Deactivated, Finished), never the running time -->
+                <p id="explore-announcer" class="visually-hidden" role="status" aria-live="polite" aria-atomic="true" data-cue="own"></p>
+            </section>
+
+            <section id="shape" class="card" aria-labelledby="shape-heading" hidden>
+                <h2 id="shape-heading">Hear the shape</h2>
+                <p id="shape-help">Move the slider to walk around your torus. High notes are loud parts. Low notes are quiet parts. The note moves from your left ear to your right ear as you go from start to end.</p>
+                <label for="shape-slider">Place on the torus</label>
+                <input type="range" id="shape-slider" min="1" max="16" step="1" value="1" aria-describedby="shape-help">
+                <p id="shape-readout">Part 1 of 16</p>
+                <button type="button" id="shape-play" data-cue="own">Play the whole shape</button>
+                <p id="shape-sound-hint">Sound effects are off. Turn them on at the top of the page to hear the notes.</p>
+            </section>
+        </div>
+    </main>
+
+    <script type="module" src="../Scripts/my_sounds.js"></script>
+    <script type="module" src="../Scripts/site.js"></script>
+</body>
+</html>

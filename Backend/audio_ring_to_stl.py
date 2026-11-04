@@ -175,6 +175,32 @@ def compute_strengths(sr, data, sound_length, n_profile, gain, profile_length, t
     return y, strength
 
 
+START_MARKER_RAMP = 0.04  # fraction of the ring covered by the marker's gentle slope
+
+
+def add_start_marker(strength, ramp_fraction=START_MARKER_RAMP):
+    """
+    Tactile start marker at theta = 0, where the sound begins.
+
+    Shaped like a sawtooth so a finger can tell the direction: a steep edge on the
+    end-of-sound side, then a gentle slope running the way the sound plays.
+    The envelope already makes the start/end the quietest stretch of the ring, so
+    the marker stands out against a smooth valley. It is raised (not cut in)
+    because that quiet stretch is already the thinnest part of the tube, and its
+    peak equals the loudest point so the print's overall size doesn't change.
+    """
+    strength = strength.copy()
+    n = len(strength)
+    peak = strength.max()
+    ramp = max(2, int(round((n - 1) * ramp_fraction)))
+    slope = peak * (1.0 - np.arange(ramp + 1) / (ramp + 1))  # peak at theta = 0, falling off
+    strength[:ramp + 1] = np.maximum(strength[:ramp + 1], slope)
+    # the last profile point sits at 2*pi, the same place as the first; matching
+    # them keeps the mesh closed and makes the one-step rise the steep edge
+    strength[-1] = peak
+    return strength
+
+
 def build_ring_mesh(y, strength, ring_radius, tube_sides, profile_length):
     """
     Screw (revolve profile around its own axis) + Curve (bend straight tube
@@ -265,6 +291,8 @@ def main():
     ap.add_argument("--diameter", type=float, default=None, help="Ring diameter in mm")
     ap.add_argument("--height", type=float, default=None, help="max ridge height in mm")
     ap.add_argument("--count", type=int, default=None, help="Number of profile samples")
+    ap.add_argument("--no-start-marker", action="store_true",
+                     help="Leave out the tactile start marker at the beginning of the sound")
     args = ap.parse_args()
 
     sr, data = load_audio(args.wav_path)
@@ -281,6 +309,8 @@ def main():
 
     y, strength = compute_strengths(sr, data, sound_length, n_profile, args.gain,
                                     profile_length, args.height)
+    if not args.no_start_marker:
+        strength = add_start_marker(strength)
     verts = build_ring_mesh(y, strength, ring_radius, args.tube_sides, profile_length)
     tris = mesh_to_triangles(verts)
     write_binary_stl(args.stl_path, tris)

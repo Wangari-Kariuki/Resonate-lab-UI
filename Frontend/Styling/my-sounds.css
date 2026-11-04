@@ -1,0 +1,80 @@
+/* My Sounds page. Shared colors, fonts, header, hero, cards and buttons live in theme.css. */
+
+.my-sounds-body {
+    max-width: 46rem;
+    display: grid;
+    gap: 1.5rem;
+}
+
+/* Sound list: the wide rounded banner */
+.banner-card {
+    background: var(--banner);
+    border-radius: var(--radius-lg);
+    padding: clamp(1.25rem, 4vw, 2rem);
+}
+#sound-list {
+    border: 0;
+    margin: 0;
+    padding: 0;
+}
+#sound-list legend { padding: 0; margin-bottom: 0.5rem; font-weight: 700; color: var(--ink); }
+.sound-option {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    min-height: var(--target);
+    padding: 0.75rem 1rem;
+    margin-bottom: 0.5rem;
+    background: var(--bg);
+    border-radius: var(--radius-md);
+}
+.sound-option input { margin-top: 0.2rem; flex-shrink: 0; }
+.sound-option label { cursor: pointer; flex: 1; }
+.sound-option .sound-note { display: block; font-weight: 400; color: var(--muted); }
+
+/* Listen as you explore: centered */
+#explore { text-align: center; padding: clamp(1.25rem, 4vw, 2rem); }
+#explore-time {
+    font-variant-numeric: tabular-nums;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: var(--ink);
+    margin: 0.75rem 0 1rem;
+}
+#explore-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+#explore-instruction { font-size: 1.15rem; font-weight: 700; color: var(--ink); }
+
+#explore-scene { margin: 1rem auto 0; max-width: 28rem; }
+#explore-canvas {
+    display: block;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    background: #15171c;
+    border-radius: var(--radius-md);
+    touch-action: none;
+}
+#explore-canvas-desc { margin-top: 0.5rem; text-align: left; }
+
+/* Hear the shape */
+#shape { padding: clamp(1.25rem, 4vw, 2rem); }
+#shape label { display: block; margin-bottom: 0.25rem; }
+#shape-slider { display: block; width: 100%; }
+#shape-readout {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.15rem;
+    color: var(--ink);
+    margin: 0.5rem 0 1rem;
+}
+#shape-sound-hint { margin: 0.75rem 0 0; }
+
+@media (max-width: 30rem) {
+    #explore-buttons { flex-direction: column; align-items: stretch; }
+}

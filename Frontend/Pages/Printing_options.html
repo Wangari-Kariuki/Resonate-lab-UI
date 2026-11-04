@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Choose 3D model</title>
+    <title>Choose a shape | Resonate Lab</title>
+    <link rel="stylesheet" type="text/css" href="../Styling/theme.css">
     <link rel="stylesheet" type="text/css" href="../Styling/Print_options.css">
     <link rel="stylesheet" type="text/css" href="../Styling/loading.css">
     <link rel="stylesheet" type="text/css" href="../Styling/adjust-panel.css">
@@ -16,29 +17,35 @@
     </script>
 </head>
 <body>
-    <!-- Part 1: header -->
-    <header>
-        <section id="title">
-            <h1>Choose 3D model</h1>
-        </section>
-        <nav id="side-navigation" aria-label="Sidebar navigation" tabindex="-1">
+    <a class="skip-link" href="#main">Skip to main content</a>
+
+    <header class="site-header">
+        <a class="brand" href="./landing_page.html"><img src="../Assets/audioprint.jpg" alt=""> Resonate Lab</a>
+        <nav id="side-navigation" aria-label="Main">
             <ul>
-                <li><button id="skip-to-main" aria-label="Skip to main content">Skip to Main Content</button></li>
-                <li><a href="./landing_page.html" aria-label="Go to home page">Go to Home page</a></li>
-                <li><a href="./new-project.html" aria-label="Go to trimming">Back to trimmer</a></li>
-                <li><a href="./project-history.html" aria-label="View project history">Project History</a></li>
-                <li><a href="./help.html" aria-label="Open help">Help</a></li>
+                <li><a href="./landing_page.html">Home</a></li>
+                <li><a href="./new-project.html">New project</a></li>
+                <li><a href="./Printing_options.html" aria-current="page">Choose a shape</a></li>
+                <li><a href="./my-sounds.html">My Sounds</a></li>
+                <li><a href="./Settings.html">Settings</a></li>
+                <li><a href="./help.html">Help</a></li>
             </ul>
         </nav>
+        <button type="button" class="sound-toggle" data-sound-toggle aria-pressed="false">Sound effects <span class="toggle-state" aria-hidden="true">Off</span></button>
     </header>
 
-    <main class="print-options">
+    <main id="main" class="print-options" tabindex="-1">
+        <section class="hero hero-compact" id="title">
+            <h1>Choose a shape</h1>
+            <p>Step 2 of 3: pick a shape, change its size, then download it.</p>
+        </section>
+        <div class="container section">
         <!-- Part 2: options grid (left) + adjustment column (right) -->
         <div class="options-layout">
             <div class="options-grid">
                 <section id="image-box">
-                    <img src="../Assets/sound_ring.png" alt="A 3D-rendered gray cylindrical ring with vertical grooves on the outer surface.">
-                    <p id="img-description"><button style="display: block;" id="select1">Sound-Torus</button> <span id="select1-status" class="model-status" role="status" aria-live="polite"></span> <span style="display: block;">Cylindrical ring</span> rendered image of a 3d printed audio spectrogram in the shape of a ring.</p>
+                    <img src="../Assets/sound_ring.png" alt="A gray 3D ring with bumps all around the outside.">
+                    <p id="img-description"><button style="display: block;" id="select1">Sound-Torus</button> <span id="select1-status" class="model-status" role="status" aria-live="polite"></span> <span class="option-name">Ring</span> Your sound wraps around a ring.</p>
                 </section>
                   <!-- <section id="image-box">
                     <img src="../Assets/ring-1.png" alt="Gray 3D-rendered ribbed bracelet or circular coil on a dark background, featuring a thicker clasp-like section at the front right.">
@@ -46,14 +53,14 @@
                 </section> -->
 
                 <section id="image-box">
-                    <img src="../Assets/sound_plane.png" alt="A rectangular 3D-rendered plane with a ridged texture.">
-                    <p id="img-description"><button id="select3" style="display: block;">Sound-plane</button> <span id="select3-status" class="model-status" role="status" aria-live="polite"></span> <span style="display: block;">Spread out ring</span>Computer rendered image of a 3d printed audio spectrogram in the shape of a ring.</p>
+                    <img src="../Assets/sound_plane.png" alt="A flat 3D plate with rows of ridges on top.">
+                    <p id="img-description"><button id="select3" style="display: block;">Sound-plane</button> <span id="select3-status" class="model-status" role="status" aria-live="polite"></span> <span class="option-name">Flat plane</span> Your sound lies flat, from one side to the other.</p>
                 </section>
 
             </div>
 
             <aside id="adjust-column" aria-label="Adjust selected model">
-                <p id="adjust-empty">Select a model to adjust its size and ridges.</p>
+                <p id="adjust-empty">Pick a shape first. Then you can change its size here.</p>
 
                 <section id="adjust-panel" hidden tabindex="-1" aria-labelledby="adjust-heading">
                     <h2 id="adjust-heading">Adjust <span id="adjust-model-name"></span></h2>
@@ -84,17 +91,20 @@
 
         <!-- Part 3: confirming option, preparing model and sending to print -->
         <section id="confirm-prep-send">
-            <button id="confirmchanges" aria-label="Confirm selected 3D model option">Confirm Option</button>
+            <button id="confirmchanges" type="button" class="btn-primary">Confirm Option</button>
             <section id="prep" class="hidden">
                 <img src="../Assets/spinner.gif" alt="" aria-hidden="true">
                 <p id="preparing-model-announcement" role="status" aria-live="polite"></p>
             </section>
-            <a type="button" href="../Pages/new-project.html">Back to project</a>
+            <a class="btn" href="../Pages/new-project.html">Back to project</a>
             <button id="Send-to-lab" aria-label="Send selected model to Resonate">Send Model to Resonate</button>
-            <button aria-label="Print selected 3D model" id="save-stl">Download STL</button>
+            <button id="save-stl" type="button">Download STL</button>
+            <button aria-label="Cancel and go back to project" id="cancel" type="button">Cancel</button>
         </section>
+        </div>
     </main>
 </body>
 <script type="module" src="../Scripts/printing_options.js"></script>
 <script type="module" src="../Scripts/adjust-panel.js"></script>
+<script type="module" src="../Scripts/site.js"></script>
 </html>

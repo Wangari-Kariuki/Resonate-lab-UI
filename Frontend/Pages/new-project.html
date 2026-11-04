@@ -4,29 +4,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>New Project | Resonate Lab</title>
+    <link rel="stylesheet" type="text/css" href="../Styling/theme.css">
     <link rel="stylesheet" type="text/css" href="../Styling/newP.css">
-
+    <script type="module" src="../Scripts/site.js"></script>
 </head>
 <body class="new-project-page">
-    <header>
-        
-    <section id = "title">
-        <h1>Create a new project</h1>
-    </section>
-         <nav id="side-navigation" aria-label="Sidebar navigation" tabindex="-1">
+    <!-- id="skip-to-main" is required: landing-newP.js attaches to it without a null check -->
+    <a id="skip-to-main" class="skip-link" href="#mid-container">Skip to main content</a>
+
+    <header class="site-header">
+        <a class="brand" href="./landing_page.html"><img src="../Assets/audioprint.jpg" alt=""> Resonate Lab</a>
+        <nav id="side-navigation" aria-label="Main" tabindex="-1">
             <ul>
-            <li><button id = "skip-to-main" aria-label="Skip to main content">Skip to Main Content</button></li>
-            <li><a href="./landing_page.html" aria-label="Go to home page">Go to Home page</a></li>
-            <li><a href="/settings.html" aria-label="Go to settings">Go to Settings</a></li>
-            <li><a href="./project-history.html" aria-label="View project history">Project History</a></li>
-            <li><a href="./help.html" aria-label="Open help">Help</a></li>
+                <li><a href="./landing_page.html">Home</a></li>
+                <li><a href="./new-project.html" aria-current="page">New project</a></li>
+                <li><a href="./Printing_options.html">Choose a shape</a></li>
+                <li><a href="./my-sounds.html">My Sounds</a></li>
+                <li><a href="./Settings.html">Settings</a></li>
+                <li><a href="./help.html">Help</a></li>
             </ul>
-    </nav>
-
-
+        </nav>
+        <button type="button" class="sound-toggle" data-sound-toggle aria-pressed="false">Sound effects <span class="toggle-state" aria-hidden="true">Off</span></button>
     </header>
-    <main id="mid-container">
-        <section id="upload-section" aria-labelledby="upload-heading">
+
+    <main id="mid-container" tabindex="-1">
+        <section class="hero hero-compact" id="title">
+            <h1>Create a new project</h1>
+            <p>Step 1 of 3: add a sound. You can cut it shorter if you like.</p>
+        </section>
+        <div class="container section project-body">
+        <section id="upload-section" class="card" aria-labelledby="upload-heading">
             <h2 id="upload-heading">Start a new project</h2>
             <p id="upload-help" style="position:absolute;left:-10000px;width:1px;height:1px;overflow: hidden;">To upload a new audio file, click choose file. </p>
 
@@ -104,6 +111,7 @@
                 <br>
             </section>
         </section>
+        </div>
     </main>
 
     <script type="module" src="../Scripts/landing-newP.js"></script>
